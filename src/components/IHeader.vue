@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <HeaderLogo />
   </div>
 </template>
@@ -8,12 +8,4 @@
 import HeaderLogo from '@/components/HeaderLogo.vue'
 </script>
 
-<style>
-.container {
-  background-color: #000000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-}
-</style>
+<style></style>
