@@ -1,11 +1,12 @@
 <template>
   <IHeader />
-  <IIntro />
+  <main>
+    <router-view />
+  </main>
 </template>
 
 <script setup lang="ts">
 import IHeader from '@/components/IHeader.vue'
-import IIntro from './components/IIntro.vue'
 </script>
 
 <style>

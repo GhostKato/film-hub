@@ -1,9 +1,7 @@
 <template>
-  <div class="container">
-    <div class="logo-wrapper">
-      <div class="gradient-bg"></div>
-      <img :src="logo" alt="Логотип" class="logo" />
-    </div>
+  <div class="logo-wrapper">
+    <div class="gradient-bg"></div>
+    <img :src="logo" alt="Логотип" class="logo" />
   </div>
 </template>
 
@@ -12,14 +10,6 @@ import logo from '@/assets/images/logo.png'
 </script>
 
 <style scoped>
-.container {
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-}
-
 .logo-wrapper {
   position: relative;
   display: inline-block;
@@ -52,11 +42,17 @@ import logo from '@/assets/images/logo.png'
 }
 
 .logo {
-  width: 250px;
+  width: 200px;
   height: auto;
   position: relative;
   z-index: 1;
   display: block;
+}
+
+@media (min-width: 768px) {
+  .logo {
+    width: 250px;
+  }
 }
 
 @keyframes gradientMove {
