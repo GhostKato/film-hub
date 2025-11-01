@@ -13,9 +13,16 @@
     <!-- Прожектор -->
     <div class="projector-light" :class="{ hide: hideProjector }"></div>
 
-    <!-- Логотип -->
-    <div class="logo-container" :class="{ fall: hideLogo }">
-      <img src="@/assets/images/logo.png" alt="FilmHub Logo" class="logo" />
+    <!-- Відео -->
+    <div class="video-container" :class="{ fall: hideLogo }">
+      <video
+        src="@/assets/videos/intro.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="intro-video"
+      ></video>
     </div>
   </div>
 </template>
@@ -31,14 +38,14 @@ onMounted(() => {
   // 1. Відкрити штори
   setTimeout(() => (isOpen.value = true), 1000)
 
-  // 2. Через 3 секунди після повного відкриття штор — загасити прожектор і логотип падає
+  // 2. Через 3 секунди після повного відкриття штор — загасити прожектор і логотип (відео) падає
   setTimeout(
     () => {
       hideProjector.value = true
       hideLogo.value = true
     },
     1000 + 2500 + 2000,
-  ) // 1000ms затримка + 2500ms анімація штор + 3000ms після відкриття
+  )
 })
 </script>
 
@@ -114,30 +121,41 @@ onMounted(() => {
   transform: scale(1.2);
 }
 
-/* ====== ЛОГОТИП ====== */
-.logo-container {
+/* ====== ВІДЕО ====== */
+.video-container {
   position: absolute;
-  top: 45%;
-  left: 50%;
+  top: 44%;
+  left: 49%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
-  border-radius: 12px;
-  background-color: black;
-  transform: translate(-50%, -50%);
-  z-index: 25;
-  opacity: 1;
-  transition:
-    transform 2s ease-in,
-    opacity 2s ease-in;
-}
-.logo-container.fall {
-  transform: translate(-50%, 150%);
-  opacity: 0;
+  transform: translate(-49%, -50%);
+  z-index: 15;
 }
 
-.logo {
-  width: 300px;
+.intro-video {
+  width: 335px;
+  height: 140px;
+  object-fit: cover;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .intro-video {
+    width: 450px;
+    height: 200px;
+  }
+}
+@media (min-width: 1080px) {
+  .intro-video {
+    width: 400px;
+    height: 170px;
+  }
+}
+
+@media (min-width: 2160px) {
+  .intro-video {
+    width: 525px;
+    height: 230px;
+  }
 }
 </style>

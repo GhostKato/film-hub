@@ -1,11 +1,11 @@
 <template>
-  <MainHeader />
-  <FilmHubIntro />
+  <IHeader />
+  <IIntro />
 </template>
 
 <script setup lang="ts">
-import MainHeader from '@/components/MainHeader.vue'
-import FilmHubIntro from './components/FilmHubIntro.vue'
+import IHeader from '@/components/IHeader.vue'
+import IIntro from './components/IIntro.vue'
 </script>
 
 <style>

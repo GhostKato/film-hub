@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <BigLogo />
+    <HeaderLogo />
   </div>
 </template>
 
 <script setup lang="ts">
-import BigLogo from '@/components/BigLogo.vue'
+import HeaderLogo from '@/components/HeaderLogo.vue'
 </script>
 
 <style>
