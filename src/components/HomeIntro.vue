@@ -1,20 +1,11 @@
 <template>
   <div class="container">
-    <!-- Ліва штора -->
     <div class="curtain curtain-left" :class="{ open: isOpen }"></div>
-    <!-- Права штора -->
     <div class="curtain curtain-right" :class="{ open: isOpen }"></div>
 
-    <!-- Фонова картинка -->
-    <div class="background-image">
-      <img src="@/assets/images/background.jpg" alt="Background" />
-    </div>
-
-    <!-- Прожектор -->
     <div class="projector-light" :class="{ hide: hideProjector }"></div>
 
-    <!-- Відео -->
-    <div class="video-container" :class="{ fall: hideLogo }">
+    <div class="video-container">
       <video
         src="@/assets/videos/intro.mp4"
         autoplay
@@ -24,25 +15,30 @@
         class="intro-video"
       ></video>
     </div>
+
+    <div class="background-image">
+      <div class="main-hello" :class="{ visible: visibilityMainHello }">
+        <h1 class="main-title">Hello, movie buff! What are we watching today?</h1>
+        <BaseButton to="/catalog" variant="button"> Catalog </BaseButton>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import BaseButton from './BaseButton.vue'
 
 const isOpen = ref(false)
 const hideProjector = ref(false)
-const hideLogo = ref(false)
+const visibilityMainHello = ref(false)
 
 onMounted(() => {
-  // 1. Відкрити штори
   setTimeout(() => (isOpen.value = true), 1000)
-
-  // 2. Через 3 секунди після повного відкриття штор — загасити прожектор і логотип (відео) падає
   setTimeout(
     () => {
       hideProjector.value = true
-      hideLogo.value = true
+      visibilityMainHello.value = true
     },
     1000 + 2500 + 2000,
   )
@@ -59,8 +55,6 @@ onMounted(() => {
   background-color: black;
   overflow: hidden;
 }
-
-/* ====== ШТОРИ ====== */
 .curtain {
   position: absolute;
   top: 0;
@@ -85,23 +79,6 @@ onMounted(() => {
 .curtain-right.open {
   transform: translateX(100%);
 }
-
-/* ====== ФОН ====== */
-.background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-}
-.background-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ====== ПРОЖЕКТОР ====== */
 .projector-light {
   position: absolute;
   width: 140%;
@@ -119,9 +96,8 @@ onMounted(() => {
 .projector-light.hide {
   opacity: 0;
   transform: scale(1.2);
+  pointer-events: none;
 }
-
-/* ====== ВІДЕО ====== */
 .video-container {
   position: absolute;
   top: 44%;
@@ -132,17 +108,51 @@ onMounted(() => {
   transform: translate(-49%, -50%);
   z-index: 15;
 }
-
 .intro-video {
   width: 335px;
   height: 140px;
   object-fit: cover;
   overflow: hidden;
 }
+.background-image {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-image: url('@/assets/images/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.main-hello {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 60px;
+  opacity: 0;
+  transition:
+    opacity 5s ease-in-out,
+    transform 2s ease-in-out;
+}
+.main-hello.visible {
+  opacity: 1;
+}
+.main-title {
+  font-size: 35px;
+  font-weight: bold;
+  color: white;
+}
+.main-hello.visible {
+  opacity: 1;
+}
 @media (min-width: 768px) {
   .intro-video {
     width: 450px;
     height: 200px;
+  }
+  .main-title {
+    font-size: 40px;
   }
 }
 @media (min-width: 1080px) {
@@ -151,7 +161,6 @@ onMounted(() => {
     height: 170px;
   }
 }
-
 @media (min-width: 2160px) {
   .intro-video {
     width: 525px;

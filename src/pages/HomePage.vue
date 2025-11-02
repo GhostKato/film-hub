@@ -1,7 +1,7 @@
 <template>
-  <IIntro />
+  <HomeIntro />
 </template>
 
 <script setup lang="ts">
-import IIntro from '@/components/IIntro.vue'
+import HomeIntro from '@/components/HomeIntro.vue'
 </script>
