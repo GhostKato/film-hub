@@ -1,6 +1,8 @@
 {
   "name": "film-hub",
   "version": "0.0.0",
+  "description": "Site with movie catalog and trailers",
+  "author": "GhostKato <osadchenko.maksym@gmail.com>",
   "private": true,
   "type": "module",
   "engines": {
