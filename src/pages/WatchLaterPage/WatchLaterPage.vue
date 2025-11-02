@@ -1,11 +1,11 @@
 <template>
   <IBackground>
-    <h1>CatalogPage</h1>
+    <h1>Watch Later Page</h1>
   </IBackground>
 </template>
 
 <script setup lang="ts">
-import IBackground from '@/components/IBackground.vue'
+import IBackground from '@/components/IBackground/IBackground.vue'
 </script>
 
 <style scoped>

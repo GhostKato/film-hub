@@ -14,10 +14,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import BaseButton from '../components/BaseButton.vue'
-import HomeCurtains from '../components/HomeCurtains.vue'
-import HomeProjector from '../components/HomeProjector.vue'
-import HomeVideo from '../components/HomeVideo.vue'
+import BaseButton from '@/components/BaseButton/BaseButton.vue'
+import HomeCurtains from './components/HomeCurtains.vue'
+import HomeProjector from './components/HomeProjector.vue'
+import HomeVideo from './components/HomeVideo.vue'
 
 const isOpen = ref(false)
 const hideProjector = ref(false)

@@ -1,11 +1,11 @@
 <template>
   <IBackground>
-    <h1>Not Found Page</h1>
+    <h1>Collection Page</h1>
   </IBackground>
 </template>
 
 <script setup lang="ts">
-import IBackground from '@/components/IBackground.vue'
+import IBackground from '@/components/IBackground/IBackground.vue'
 </script>
 
 <style scoped>

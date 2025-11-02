@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import HomePage from '../pages/HomePage.vue'
-import CatalogPage from '../pages/CatalogPage.vue'
-import MoviePage from '../pages/MoviePage.vue'
-import CollectionPage from '../pages/CollectionPage.vue'
-import WatchLaterPage from '../pages/WatchLaterPage.vue'
-import NotFoundPage from '../pages/NotFoundPage.vue'
+import HomePage from '../pages/HomePage/HomePage.vue'
+import CatalogPage from '../pages/CatalogPage/CatalogPage.vue'
+import MoviePage from '../pages/MoviePage/MoviePage.vue'
+import CollectionPage from '../pages/CollectionPage/CollectionPage.vue'
+import WatchLaterPage from '../pages/WatchLaterPage/WatchLaterPage.vue'
+import NotFoundPage from '../pages/NotFoundPage/NotFoundPage.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomePage },

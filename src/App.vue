@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import IHeader from '@/components/IHeader.vue'
+import IHeader from '@/components/IHeader/IHeader.vue'
 </script>
 
 <style>

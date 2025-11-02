@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import HeaderLogo from '@/components/HeaderLogo.vue'
-import BaseButton from './BaseButton.vue'
+import HeaderLogo from '@/components/IHeader/HeaderLogo.vue'
+import BaseButton from '../BaseButton/BaseButton.vue'
 </script>
 
 <style scoped>
