@@ -1,6 +1,6 @@
 <template>
   <IBackground>
-    <h1>CatalogPage</h1>
+    <h1>Catalog Page</h1>
   </IBackground>
 </template>
 

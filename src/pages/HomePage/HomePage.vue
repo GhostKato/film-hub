@@ -4,8 +4,9 @@
     <HomeProjector :hideProjector="hideProjector" />
     <HomeVideo />
     <div class="background-image">
+      <TrendingSlider :visibilityTrendingSlider="visibilityTrendingSlider" />
       <div class="main-hello" :class="{ visible: visibilityMainHello }">
-        <h1 class="main-title">Hello, movie buff! What are we watching today?</h1>
+        <h1 class="main-title">What are we watching today?</h1>
         <BaseButton to="/catalog" variant="button"> Catalog </BaseButton>
       </div>
     </div>
@@ -18,10 +19,12 @@ import BaseButton from '@/components/BaseButton/BaseButton.vue'
 import HomeCurtains from './components/HomeCurtains.vue'
 import HomeProjector from './components/HomeProjector.vue'
 import HomeVideo from './components/HomeVideo.vue'
+import TrendingSlider from './components/TrendingSlider.vue'
 
 const isOpen = ref(false)
 const hideProjector = ref(false)
 const visibilityMainHello = ref(false)
+const visibilityTrendingSlider = ref(false)
 
 onMounted(() => {
   setTimeout(() => (isOpen.value = true), 1000)
@@ -29,18 +32,16 @@ onMounted(() => {
     () => {
       hideProjector.value = true
       visibilityMainHello.value = true
+      visibilityTrendingSlider.value = true
     },
-    1000 + 2500 + 2000,
+    1000 + 2500 + 1000,
   )
 })
 </script>
 
 <style scoped>
 .container {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  width: 100%;
+  position: relative;
   height: calc(100vh - 100px);
   background-color: black;
   overflow: hidden;
@@ -48,7 +49,8 @@ onMounted(() => {
 
 .background-image {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   background-image: url('@/assets/images/background.jpg');
@@ -58,24 +60,34 @@ onMounted(() => {
 }
 .main-hello {
   display: flex;
+  width: 100%;
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 60px;
+  padding: 20px;
   opacity: 0;
-  transition:
-    opacity 5s ease-in-out,
-    transform 2s ease-in-out;
+  transition: opacity 5s ease-in-out;
 }
 .main-hello.visible {
   opacity: 1;
 }
 .main-title {
-  font-size: 35px;
+  font-size: 30px;
   font-weight: bold;
   color: white;
 }
-.main-hello.visible {
-  opacity: 1;
+@media (min-width: 768px) {
+  .main-title {
+    font-size: 35px;
+  }
+}
+@media (min-width: 1280px) {
+  .main-hello {
+    justify-content: center;
+    align-items: flex-start;
+    margin-left: 30px;
+    margin-bottom: 50px;
+  }
 }
 </style>

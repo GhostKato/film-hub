@@ -37,7 +37,7 @@
     font-size: 40px;
   }
 }
-@media (min-width: 1080px) {
+@media (min-width: 1280px) {
   .intro-video {
     width: 400px;
     height: 170px;
