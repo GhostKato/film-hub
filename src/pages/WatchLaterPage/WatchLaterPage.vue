@@ -11,7 +11,6 @@ import IBackground from '@/components/IBackground/IBackground.vue'
 <style scoped>
 h1 {
   position: relative;
-  color: #fff;
   font-size: 40px;
   font-weight: bold;
   z-index: 2;

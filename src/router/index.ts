@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import HomePage from '../pages/HomePage/HomePage.vue'
 import CatalogPage from '../pages/CatalogPage/CatalogPage.vue'
-import MoviePage from '../pages/MoviePage/MoviePage.vue'
+import MediaPage from '../pages/MediaPage/MediaPage.vue'
 import CollectionPage from '../pages/CollectionPage/CollectionPage.vue'
 import WatchLaterPage from '../pages/WatchLaterPage/WatchLaterPage.vue'
 import NotFoundPage from '../pages/NotFoundPage/NotFoundPage.vue'
@@ -10,7 +10,7 @@ import NotFoundPage from '../pages/NotFoundPage/NotFoundPage.vue'
 const routes = [
   { path: '/', name: 'home', component: HomePage },
   { path: '/catalog', name: 'catalog', component: CatalogPage },
-  { path: '/movie/:id', name: 'movie', component: MoviePage },
+  { path: '/media/:type/:id', name: 'media', component: MediaPage, props: true },
   { path: '/collection', name: 'collection', component: CollectionPage },
   { path: '/watch-later', name: 'watch-later', component: WatchLaterPage },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },

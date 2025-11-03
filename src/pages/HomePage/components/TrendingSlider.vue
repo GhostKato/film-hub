@@ -10,7 +10,7 @@
       :breakpoints="breakpoints"
     >
       <SwiperSlide v-for="movie in moviesWithPoster" :key="movie.id">
-        <router-link :to="`/movie/${movie.id}`">
+        <router-link :to="`/media/${movie.media_type}/${movie.id}`">
           <img
             :src="getPosterUrl(movie.poster_path!)"
             :alt="movie.title || movie.name"
@@ -43,6 +43,7 @@ interface Movie {
   title?: string
   name?: string
   poster_path?: string
+  media_type: 'movie' | 'tv'
 }
 
 const movies = ref<Movie[]>([])

@@ -16,3 +16,8 @@ export async function getTrendingAllDay(page = 1) {
   })
   return data
 }
+
+export async function getMediaById(id: number | string, type: 'movie' | 'tv') {
+  const { data } = await api.get(`/${type}/${id}`)
+  return data
+}

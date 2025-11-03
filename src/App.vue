@@ -17,5 +17,6 @@ body {
   box-sizing: border-box;
   overflow-x: hidden;
   height: 100%;
+  color: white;
 }
 </style>

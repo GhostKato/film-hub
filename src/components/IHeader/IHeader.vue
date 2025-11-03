@@ -43,6 +43,12 @@ import BaseButton from '../BaseButton/BaseButton.vue'
   }
   .empty-div {
     display: block;
+    width: 200px;
+  }
+}
+@media (min-width: 768px) {
+  .empty-div {
+    display: block;
     width: 250px;
   }
 }
