@@ -7,7 +7,8 @@
 <style scoped>
 .cinema-background {
   width: 100%;
-  height: calc(100vh - 100px);
+  overflow-y: auto;
+  min-height: 100vh;
   background: linear-gradient(
     180deg,
     #000000 10%,
@@ -17,9 +18,6 @@
     #000000 90%
   );
   position: relative;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
 }
 
 .cinema-background::before {
@@ -62,14 +60,5 @@
   100% {
     opacity: 0.05;
   }
-}
-
-h1 {
-  position: relative;
-  color: #fff;
-  font-size: 40px;
-  font-weight: bold;
-  z-index: 2;
-  text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
 }
 </style>
