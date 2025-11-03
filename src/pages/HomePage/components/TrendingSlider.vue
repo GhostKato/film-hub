@@ -12,7 +12,7 @@
       <SwiperSlide v-for="movie in moviesWithPoster" :key="movie.id">
         <router-link :to="`/media/${movie.media_type}/${movie.id}`">
           <img
-            :src="getPosterUrl(movie.poster_path!)"
+            :src="getImageUrl(movie.poster_path, 'poster', 'w500')"
             :alt="movie.title || movie.name"
             class="poster"
           />
@@ -31,6 +31,7 @@ import 'swiper/css/autoplay'
 import 'swiper/css/navigation'
 
 import { getTrendingAllDay } from '@/api/tmdb'
+import { getImageUrl } from '@/utils/getImageUrl'
 
 interface Props {
   visibilityTrendingSlider: boolean
@@ -49,8 +50,6 @@ interface Movie {
 const movies = ref<Movie[]>([])
 
 const moviesWithPoster = computed(() => movies.value.filter((m) => m.poster_path))
-
-const getPosterUrl = (path: string) => `https://image.tmdb.org/t/p/w500${path}`
 
 const breakpoints = {
   320: { slidesPerView: 5 },
@@ -94,10 +93,9 @@ onMounted(() => {
   height: 100px;
   border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.3s ease-in-out;
 }
-
 .poster:hover {
-  transform: scale(1.05);
+  transform: scale(1.05) translateY(10px);
 }
 </style>

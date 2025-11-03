@@ -12,12 +12,12 @@
       <div class="images">
         <img
           v-if="media.poster_path"
-          :src="getImageUrl(media.poster_path, 'poster')"
+          :src="getImageUrl(media.poster_path, 'poster', 'w500')"
           alt="Poster"
         />
         <img
           v-if="media.backdrop_path"
-          :src="getImageUrl(media.backdrop_path, 'backdrop')"
+          :src="getImageUrl(media.backdrop_path, 'backdrop', 'w780')"
           alt="Backdrop"
         />
       </div>
@@ -47,12 +47,12 @@ import IBackground from '@/components/IBackground/IBackground.vue'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getMediaById } from '../../api/tmdb'
+import { getImageUrl } from '@/utils/getImageUrl' // імпорт універсальної функції
 
 interface Genre {
   id: number
   name: string
 }
-
 interface ProductionCountry {
   name: string
 }
@@ -81,18 +81,6 @@ const id = Number(route.params.id)
 
 const media = ref<Media | null>(null)
 
-const BASE_URL = 'https://image.tmdb.org/t/p/'
-const IMAGE_SIZES: Record<string, string[]> = {
-  poster: ['w500', 'original'],
-  backdrop: ['w780', 'original'],
-}
-const getImageUrl = (path: string, type: string = 'poster', size?: string) => {
-  if (!path) return ''
-  const sizes = IMAGE_SIZES[type] || ['original']
-  const selectedSize = size && sizes.includes(size) ? size : sizes[0]
-  return `${BASE_URL}${selectedSize}${path}`
-}
-
 onMounted(async () => {
   try {
     media.value = await getMediaById(id, type)
@@ -110,62 +98,37 @@ onMounted(async () => {
   color: #fff;
   overflow-y: auto;
 }
-
 .media-page h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
 }
-
 .tagline {
   font-style: italic;
   margin-bottom: 15px;
   color: #ccc;
 }
-
 .overview {
   margin: 15px 0;
   font-size: 1.1rem;
 }
-
 .images {
   display: flex;
   gap: 20px;
   margin: 20px 0;
   flex-wrap: wrap;
 }
-
 .images img {
   border-radius: 10px;
   max-width: 100%;
   object-fit: cover;
 }
-
 .genres span {
   background: #444;
   padding: 4px 10px;
   margin-right: 5px;
   border-radius: 5px;
 }
-
 .extra-info p {
   margin: 5px 0;
-}
-
-.media-page::-webkit-scrollbar {
-  width: 6px;
-}
-
-.media-page::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.media-page::-webkit-scrollbar-thumb {
-  background-color: #000;
-  border-radius: 3px;
-}
-
-.media-page {
-  scrollbar-width: thin;
-  scrollbar-color: #000 transparent;
 }
 </style>
