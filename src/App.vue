@@ -44,4 +44,10 @@ body {
   scrollbar-width: thin;
   scrollbar-color: #333 #1a1a1a;
 }
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
 </style>

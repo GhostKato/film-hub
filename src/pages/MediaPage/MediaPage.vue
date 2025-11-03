@@ -1,33 +1,24 @@
 <template>
   <IBackground>
     <div v-if="media" class="media-page">
-      <h1>{{ media.title || media.name }}</h1>
-      <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
-      <p class="overview">{{ media.overview }}</p>
-      <p class="release-date" v-if="media.release_date || media.first_air_date">
-        Release: {{ media.release_date || media.first_air_date }}
-      </p>
-      <p v-if="media.vote_average">Rating: {{ media.vote_average }}/10</p>
-
-      <div class="images">
+      <div class="poster-container">
+        <p class="rating" v-if="media.vote_average">{{ media.vote_average }}/10</p>
         <img
+          class="poster"
           v-if="media.poster_path"
-          :src="getImageUrl(media.poster_path, 'poster', 'w500')"
+          :src="getImageUrl(media.poster_path, 'poster', 'w342')"
           alt="Poster"
         />
-        <img
-          v-if="media.backdrop_path"
-          :src="getImageUrl(media.backdrop_path, 'backdrop', 'w780')"
-          alt="Backdrop"
-        />
       </div>
 
-      <div v-if="media.genres?.length" class="genres">
-        <strong>Genres:</strong>
-        <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
-      </div>
+      <div class="information">
+        <h1 class="title">{{ media.title || media.name }}</h1>
+        <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
+        <p class="overview">{{ media.overview }}</p>
+        <p class="release-date" v-if="media.release_date || media.first_air_date">
+          Release: {{ media.release_date || media.first_air_date }}
+        </p>
 
-      <div class="extra-info">
         <p v-if="media.runtime">Duration: {{ media.runtime }} min</p>
         <p v-if="media.episode_run_time?.length">
           Episode length: {{ media.episode_run_time[0] }} min
@@ -35,7 +26,20 @@
         <p v-if="media.production_countries?.length">
           Countries: {{ media.production_countries.map((c) => c.name).join(', ') }}
         </p>
+
+        <div v-if="media.genres?.length" class="genres">
+          <strong>Genres:</strong>
+          <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
+        </div>
       </div>
+
+      <!-- <div class="images">
+        <img
+          v-if="media.backdrop_path"
+          :src="getImageUrl(media.backdrop_path, 'backdrop', 'w780')"
+          alt="Backdrop"
+        />
+      </div> -->
     </div>
 
     <div v-else>Loading...</div>
@@ -44,10 +48,11 @@
 
 <script setup lang="ts">
 import IBackground from '@/components/IBackground/IBackground.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { getMediaById } from '../../api/tmdb'
-import { getImageUrl } from '@/utils/getImageUrl' // імпорт універсальної функції
+import { getMediaById } from '@/api/tmdb'
+import { getImageUrl } from '@/utils/getImageUrl'
+import { useLanguageStore } from '@/stores/language.'
 
 interface Genre {
   id: number
@@ -56,7 +61,6 @@ interface Genre {
 interface ProductionCountry {
   name: string
 }
-
 interface Media {
   id: number
   title?: string
@@ -80,47 +84,64 @@ const type = route.params.type as 'movie' | 'tv'
 const id = Number(route.params.id)
 
 const media = ref<Media | null>(null)
+const languageStore = useLanguageStore()
 
-onMounted(async () => {
+const fetchMedia = async () => {
   try {
     media.value = await getMediaById(id, type)
   } catch (err) {
     console.error('Error fetching media:', err)
   }
-})
+}
+
+onMounted(fetchMedia)
+
+watch(
+  () => languageStore.lang,
+  () => {
+    fetchMedia()
+  },
+)
 </script>
 
 <style scoped>
 .media-page {
-  max-width: 900px;
-  margin: 0 auto;
   padding: 20px;
-  color: #fff;
-  overflow-y: auto;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
-.media-page h1 {
+.poster-container {
+  position: relative;
+}
+.rating {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: #9f1b19;
+  font-size: 20px;
+  font-weight: bold;
+}
+.information {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.title {
   font-size: 2.5rem;
   margin-bottom: 10px;
 }
 .tagline {
   font-style: italic;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   color: #ccc;
 }
 .overview {
   margin: 15px 0;
   font-size: 1.1rem;
-}
-.images {
-  display: flex;
-  gap: 20px;
-  margin: 20px 0;
-  flex-wrap: wrap;
-}
-.images img {
-  border-radius: 10px;
-  max-width: 100%;
-  object-fit: cover;
 }
 .genres span {
   background: #444;
@@ -128,7 +149,8 @@ onMounted(async () => {
   margin-right: 5px;
   border-radius: 5px;
 }
-.extra-info p {
-  margin: 5px 0;
+.poster {
+  border-radius: 10px;
+  object-fit: cover;
 }
 </style>

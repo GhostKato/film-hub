@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay } from 'swiper/modules'
 import 'swiper/css'
@@ -32,6 +32,7 @@ import 'swiper/css/navigation'
 
 import { getTrendingAllDay } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
+import { useLanguageStore } from '@/stores/language.'
 
 interface Props {
   visibilityTrendingSlider: boolean
@@ -48,7 +49,6 @@ interface Movie {
 }
 
 const movies = ref<Movie[]>([])
-
 const moviesWithPoster = computed(() => movies.value.filter((m) => m.poster_path))
 
 const breakpoints = {
@@ -61,17 +61,24 @@ const breakpoints = {
 const fetchTrending = async () => {
   try {
     const allResults: Movie[] = []
-
     for (let page = 1; page <= 3; page++) {
       const data = await getTrendingAllDay(page)
       allResults.push(...data.results)
     }
-
     movies.value = allResults
   } catch (err) {
     console.error('Failed to fetch trending movies:', err)
   }
 }
+
+const languageStore = useLanguageStore()
+
+watch(
+  () => languageStore.lang,
+  () => {
+    fetchTrending()
+  },
+)
 
 onMounted(() => {
   fetchTrending()
@@ -83,11 +90,16 @@ onMounted(() => {
   margin: 0 auto;
   width: 95%;
   opacity: 0;
-  transition: opacity 5s ease-in-out;
+  transition: opacity 1s ease-in-out;
 }
 .trending-slider.visible {
   opacity: 1;
 }
+
+.mySwiper {
+  overflow: visible;
+}
+
 .poster {
   width: auto;
   height: 100px;
@@ -95,6 +107,7 @@ onMounted(() => {
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
 }
+
 .poster:hover {
   transform: scale(1.05) translateY(10px);
 }

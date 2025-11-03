@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useLanguageStore } from '@/stores/language.'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
 const TOKEN = import.meta.env.VITE_TMDB_TOKEN
@@ -10,10 +11,15 @@ export const api = axios.create({
   },
 })
 
+api.interceptors.request.use((config) => {
+  const languageStore = useLanguageStore()
+  if (!config.params) config.params = {}
+  config.params.language = languageStore.lang
+  return config
+})
+
 export async function getTrendingAllDay(page = 1) {
-  const { data } = await api.get('/trending/all/day', {
-    params: { page },
-  })
+  const { data } = await api.get('/trending/all/day', { params: { page } })
   return data
 }
 

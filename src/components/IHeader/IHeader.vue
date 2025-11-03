@@ -8,13 +8,16 @@
       <BaseButton to="/watch-later" variant="header-link"> Watch later </BaseButton>
     </nav>
 
-    <div class="empty-div"></div>
+    <div class="language-div">
+      <LanguageSwitcher />
+    </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import HeaderLogo from '@/components/IHeader/HeaderLogo.vue'
 import BaseButton from '../BaseButton/BaseButton.vue'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 </script>
 
 <style scoped>
@@ -41,14 +44,14 @@ import BaseButton from '../BaseButton/BaseButton.vue'
     flex-direction: row;
     justify-content: space-around;
   }
-  .empty-div {
-    display: block;
+  .language-div {
+    display: flex;
+    justify-content: flex-end;
     width: 200px;
   }
 }
-@media (min-width: 768px) {
-  .empty-div {
-    display: block;
+@media (min-width: 1024px) {
+  .language-div {
     width: 250px;
   }
 }
