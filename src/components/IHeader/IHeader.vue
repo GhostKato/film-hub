@@ -5,6 +5,7 @@
     <nav class="nav">
       <BaseButton to="/movies" variant="header-link"> Movies </BaseButton>
       <BaseButton to="/series" variant="header-link"> Series </BaseButton>
+      <BaseButton to="/collections" variant="header-link"> Collections </BaseButton>
     </nav>
 
     <div class="language-div">
@@ -23,6 +24,7 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
 .container {
   background-color: black;
   display: flex;
+  gap: 10px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -31,11 +33,13 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
 
 .nav {
   display: flex;
-  gap: 10px;
+  gap: 20px;
 }
 
-.empty-div {
-  display: none;
+.language-div {
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 
 @media (min-width: 768px) {
@@ -44,6 +48,7 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
     justify-content: space-around;
   }
   .language-div {
+    position: static;
     display: flex;
     justify-content: flex-end;
     width: 200px;

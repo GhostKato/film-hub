@@ -1,6 +1,8 @@
 <template>
   <div class="cinema-background">
-    <slot />
+    <div class="content">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -60,5 +62,9 @@
   100% {
     opacity: 0.05;
   }
+}
+.content {
+  position: relative;
+  z-index: 2;
 }
 </style>

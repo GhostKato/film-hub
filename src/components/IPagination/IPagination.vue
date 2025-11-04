@@ -40,13 +40,18 @@ const next = () => {
   padding: 8px 12px;
   border: none;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #1a1a1a;
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pagination button:not(:disabled):hover {
+  background-color: #ff3d00;
 }
 
 .pagination button:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: default;
 }
 </style>

@@ -129,19 +129,19 @@ h1 {
   padding: 10px 15px;
   border: none;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #1a1a1a;
   color: white;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .categories button.active {
-  background: #ff3d00;
+  background: #9f1b19;
   color: white;
 }
 
 .categories button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #ff3d00;
 }
 
 .loading-more {

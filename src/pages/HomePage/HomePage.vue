@@ -50,8 +50,6 @@ onMounted(() => {
 .background-image {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
   height: 100%;
   background-image: url('@/assets/images/background.jpg');
   background-size: cover;
@@ -60,11 +58,10 @@ onMounted(() => {
 }
 .main-hello {
   display: flex;
-  width: 100%;
-  height: 100%;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  height: 65%;
   padding: 20px;
   opacity: 0;
   transition: opacity 5s ease-in-out;
@@ -84,10 +81,6 @@ onMounted(() => {
 }
 @media (min-width: 1280px) {
   .main-hello {
-    justify-content: center;
-    align-items: flex-start;
-    margin-left: 30px;
-    margin-bottom: 50px;
   }
 }
 </style>

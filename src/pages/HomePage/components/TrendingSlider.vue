@@ -54,7 +54,7 @@ const moviesWithPoster = computed(() => movies.value.filter((m) => m.poster_path
 const breakpoints = {
   320: { slidesPerView: 5 },
   768: { slidesPerView: 8 },
-  1080: { slidesPerView: 20 },
+  1024: { slidesPerView: 20 },
   2160: { slidesPerView: 30 },
 }
 
@@ -98,7 +98,7 @@ onMounted(() => {
 
 .poster {
   width: auto;
-  height: 100px;
+  height: 95px;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;

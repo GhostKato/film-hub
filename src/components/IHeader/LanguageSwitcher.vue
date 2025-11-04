@@ -78,7 +78,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
   position: absolute;
   top: 110%;
   left: 0;
-  background: #111;
+  background: black;
   border: 1px solid #444;
   border-radius: 5px;
   list-style: none;
@@ -93,11 +93,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
   transition: all 0.2s;
 }
 .dropdown li:hover {
-  background: #333;
+  background: #ff3d00;
 }
 .dropdown li.active {
-  background: #fff;
-  color: #000;
+  background: #9f1b19;
   font-weight: bold;
 }
 </style>

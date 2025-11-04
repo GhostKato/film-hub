@@ -53,21 +53,32 @@ const handleClick = (e: Event) => {
 }
 
 .header-link:hover {
-  color: #3c0000;
+  color: #ff3d00;
 }
 
 .router-link-active {
   color: #9f1b19;
 }
 
-.button {
+.search {
   background-color: #9f1b19;
   border-radius: 8px;
-  width: 200px;
-  height: 50px;
-  margin-bottom: 20px;
+  width: 60px;
+  height: 40px;
+  border: none;
 }
-.button:hover {
-  background-color: #3c0000;
+.search:hover {
+  background-color: #ff3d00;
+}
+@media (min-width: 768px) {
+  .search {
+    width: 90px;
+    height: 50px;
+  }
+}
+@media (min-width: 1024px) {
+  .header-link {
+    font-size: 30px;
+  }
 }
 </style>
