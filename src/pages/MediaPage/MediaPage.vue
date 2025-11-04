@@ -10,7 +10,6 @@
           alt="Poster"
         />
       </div>
-
       <div class="information">
         <h1 class="title">{{ media.title || media.name }}</h1>
         <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
@@ -18,7 +17,6 @@
         <p class="release-date" v-if="media.release_date || media.first_air_date">
           Release: {{ media.release_date || media.first_air_date }}
         </p>
-
         <p v-if="media.runtime">Duration: {{ media.runtime }} min</p>
         <p v-if="media.episode_run_time?.length">
           Episode length: {{ media.episode_run_time[0] }} min
@@ -26,62 +24,27 @@
         <p v-if="media.production_countries?.length">
           Countries: {{ media.production_countries.map((c) => c.name).join(', ') }}
         </p>
-
         <div v-if="media.genres?.length" class="genres">
           <strong>Genres:</strong>
           <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
         </div>
       </div>
-    </div>
-
-    <!-- ACTORS -->
-    <div v-if="cast.length" class="section">
-      <h2>Actors</h2>
-      <div class="people-list">
-        <router-link
-          v-for="actor in cast"
-          :key="actor.id"
-          :to="`/person/${actor.id}`"
-          class="person-card"
-        >
-          <img
-            v-if="actor.profile_path"
-            :src="getImageUrl(actor.profile_path, 'profile', 'w185')"
-            alt="Actor"
-          />
-          <div class="name">{{ actor.name }}</div>
-          <div class="character" v-if="actor.character">as {{ actor.character }}</div>
-        </router-link>
+      <div class="section" v-if="cast.length">
+        <h2>Actors</h2>
+        <PeopleList :people="cast" />
       </div>
-    </div>
-
-    <!-- CREW -->
-    <div v-if="crew.length" class="section">
-      <h2>Production Crew</h2>
-      <div class="people-list">
-        <router-link
-          v-for="person in crew"
-          :key="person.id"
-          :to="`/person/${person.id}`"
-          class="person-card"
-        >
-          <img
-            v-if="person.profile_path"
-            :src="getImageUrl(person.profile_path, 'profile', 'w185')"
-            alt="Crew Member"
-          />
-          <div class="name">{{ person.name }}</div>
-          <div class="character">{{ person.job }}</div>
-        </router-link>
+      <div class="section" v-if="crew.length">
+        <h2>Production Crew</h2>
+        <PeopleList :people="crew" />
       </div>
+      <div v-else-if="!media">Loading...</div>
     </div>
-
-    <div v-else-if="!media">Loading...</div>
   </IBackground>
 </template>
 
 <script setup lang="ts">
 import IBackground from '@/components/IBackground/IBackground.vue'
+import PeopleList from './components/PeopleList.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getMediaById, getMediaCredits } from '@/api/tmdb'
@@ -132,10 +95,10 @@ const fetchMedia = async () => {
   try {
     media.value = await getMediaById(id, type)
     const credits = await getMediaCredits(id, type)
-    cast.value = credits.cast.slice(0, 15)
-    crew.value = credits.crew.filter((p: Person) =>
-      ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''),
-    )
+    cast.value = credits.cast.filter((p: Person) => p.profile_path).slice(0, 15)
+    crew.value = credits.crew
+      .filter((p: Person) => ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''))
+      .filter((p: Person) => p.profile_path)
   } catch (err) {
     console.error('Error fetching media:', err)
   }
@@ -145,9 +108,7 @@ onMounted(fetchMedia)
 
 watch(
   () => languageStore.lang,
-  () => {
-    fetchMedia()
-  },
+  () => fetchMedia(),
 )
 </script>
 
@@ -160,11 +121,9 @@ watch(
   gap: 20px;
   flex-wrap: wrap;
 }
-
 .poster-container {
   position: relative;
 }
-
 .rating {
   position: absolute;
   top: 15px;
@@ -175,79 +134,32 @@ watch(
   font-size: 20px;
   font-weight: bold;
 }
-
 .information {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
-
 .title {
   font-size: 2.5rem;
   margin-bottom: 10px;
 }
-
 .tagline {
   font-style: italic;
   margin-bottom: 10px;
   color: #ccc;
 }
-
 .overview {
   margin: 15px 0;
   font-size: 1.1rem;
 }
-
 .genres span {
   background: #444;
   padding: 4px 10px;
   margin-right: 5px;
   border-radius: 5px;
 }
-
 .poster {
   border-radius: 10px;
   object-fit: cover;
-}
-
-/* ===== ACTORS & CREW ===== */
-.section {
-  margin: 30px 0;
-  padding: 0 20px;
-}
-
-.people-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.person-card {
-  width: 130px;
-  text-align: center;
-  color: white;
-  text-decoration: none;
-  transition: transform 0.2s;
-}
-
-.person-card:hover {
-  transform: scale(1.05);
-}
-
-.person-card img {
-  width: 130px;
-  height: 190px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.name {
-  font-weight: bold;
-  margin-top: 8px;
-}
-
-.character {
-  font-size: 0.9rem;
-  color: #ccc;
 }
 </style>
