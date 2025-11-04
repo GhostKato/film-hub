@@ -6,11 +6,11 @@
 
       <MediaList :items="results" :loading="loading" />
 
-      <div class="pagination" v-if="totalPages > 1">
-        <button @click="prevPage" :disabled="currentPage === 1">Попередня</button>
-        <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages">Наступна</button>
-      </div>
+      <IPagination
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @update:page="fetchSearchResults(route.query.query as string, $event)"
+      />
     </div>
   </IBackground>
 </template>
@@ -20,6 +20,7 @@ import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
+import IPagination from '@/components/IPagination/IPagination.vue'
 import { searchMulti } from '@/api/tmdb'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
@@ -61,18 +62,6 @@ watch(
   () => route.query.query,
   (newQuery) => fetchSearchResults(newQuery as string),
 )
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    fetchSearchResults(route.query.query as string, currentPage.value - 1)
-  }
-}
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    fetchSearchResults(route.query.query as string, currentPage.value + 1)
-  }
-}
 </script>
 
 <style scoped>
@@ -87,25 +76,8 @@ h1 {
   margin-bottom: 20px;
 }
 
-.pagination {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
+.loading-more {
+  text-align: center;
   margin-top: 20px;
-}
-
-.pagination button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 </style>

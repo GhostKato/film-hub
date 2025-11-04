@@ -96,10 +96,6 @@ onMounted(() => {
   opacity: 1;
 }
 
-.mySwiper {
-  overflow: visible;
-}
-
 .poster {
   width: auto;
   height: 100px;

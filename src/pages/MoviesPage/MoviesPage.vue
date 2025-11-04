@@ -17,13 +17,11 @@
 
       <MediaList :items="movies" :loading="loading" />
 
-      <div class="pagination" v-if="totalPages > 1">
-        <button type="button" @click="prevPage" :disabled="currentPage === 1">Попередня</button>
-        <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button type="button" @click="nextPage" :disabled="currentPage === totalPages">
-          Наступна
-        </button>
-      </div>
+      <IPagination
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @update:page="fetchMovies(activeCategory, $event)"
+      />
 
       <div v-if="loading && currentPage > 1" class="loading-more">Завантаження...</div>
     </div>
@@ -34,6 +32,7 @@
 import { ref, onMounted, watch } from 'vue'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
+import IPagination from '@/components/IPagination/IPagination.vue'
 import {
   getPopularMovies,
   getTopRatedMovies,
@@ -50,7 +49,6 @@ interface Category {
 interface MovieItem {
   id: number
   title: string
-  name?: string
   poster_path?: string
   release_date?: string
   overview?: string
@@ -89,6 +87,7 @@ const fetchMovies = async (category: string, page = 1) => {
         data = await getUpcomingMovies(page)
         break
     }
+
     movies.value = data.results.filter((item: MovieItem) => item.poster_path)
     currentPage.value = data.page
     totalPages.value = data.total_pages
@@ -104,27 +103,11 @@ const changeCategory = (category: string) => {
   fetchMovies(category, 1)
 }
 
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    fetchMovies(activeCategory.value, currentPage.value - 1)
-  }
-}
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    fetchMovies(activeCategory.value, currentPage.value + 1)
-  }
-}
-
-onMounted(() => {
-  fetchMovies(activeCategory.value, currentPage.value)
-})
+onMounted(() => fetchMovies(activeCategory.value))
 
 watch(
   () => languageStore.lang,
-  () => {
-    fetchMovies(activeCategory.value, currentPage.value)
-  },
+  () => fetchMovies(activeCategory.value, currentPage.value),
 )
 </script>
 
@@ -164,28 +147,6 @@ h1 {
 
 .categories button:hover {
   background: rgba(255, 255, 255, 0.2);
-}
-
-.pagination {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.pagination button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 
 .loading-more {
