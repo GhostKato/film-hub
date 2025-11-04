@@ -10,6 +10,7 @@
           alt="Poster"
         />
       </div>
+
       <div class="information">
         <h1 class="title">{{ media.title || media.name }}</h1>
         <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
@@ -29,25 +30,36 @@
           <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
         </div>
       </div>
+
+      <YouTubePlayer v-if="trailerId" :videoId="trailerId" />
+
       <div class="section" v-if="cast.length">
         <h2>Actors</h2>
         <PeopleList :people="cast" />
       </div>
+
       <div class="section" v-if="crew.length">
         <h2>Production Crew</h2>
         <PeopleList :people="crew" />
       </div>
-      <div v-else-if="!media">Loading...</div>
+
+      <div class="section" v-if="media.id">
+        <MediaReviews :mediaId="media.id" :type="type" />
+      </div>
     </div>
+
+    <div v-else>Loading...</div>
   </IBackground>
 </template>
 
 <script setup lang="ts">
 import IBackground from '@/components/IBackground/IBackground.vue'
 import PeopleList from './components/PeopleList.vue'
+import YouTubePlayer from './components/YouTubePlayer.vue'
+import MediaReviews from './components/MediaReviews.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { getMediaById, getMediaCredits } from '@/api/tmdb'
+import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language.'
 
@@ -73,7 +85,6 @@ interface Media {
   runtime?: number
   episode_run_time?: number[]
 }
-
 interface Person {
   id: number
   name: string
@@ -89,16 +100,20 @@ const id = Number(route.params.id)
 const media = ref<Media | null>(null)
 const cast = ref<Person[]>([])
 const crew = ref<Person[]>([])
+const trailerId = ref<string | null>(null)
 const languageStore = useLanguageStore()
 
 const fetchMedia = async () => {
   try {
     media.value = await getMediaById(id, type)
+
     const credits = await getMediaCredits(id, type)
     cast.value = credits.cast.filter((p: Person) => p.profile_path).slice(0, 15)
     crew.value = credits.crew
       .filter((p: Person) => ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''))
       .filter((p: Person) => p.profile_path)
+
+    trailerId.value = await getMediaVideos(id, type)
   } catch (err) {
     console.error('Error fetching media:', err)
   }

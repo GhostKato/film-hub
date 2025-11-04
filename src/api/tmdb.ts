@@ -94,3 +94,64 @@ export async function getPersonCombinedCredits(id: number | string) {
   const { data } = await api.get(`/person/${id}/combined_credits`)
   return data
 }
+
+export type MediaType = 'movie' | 'tv'
+export interface Trailer {
+  id: string
+  key: string
+  name: string
+  site: string
+  type: string
+  iso_639_1: string
+}
+
+interface VideosResponse {
+  results?: Trailer[]
+}
+
+export async function getMediaVideos(id: number | string, type: MediaType): Promise<string | null> {
+  try {
+    const languageStore = useLanguageStore()
+    const lang = languageStore.lang
+
+    const { data } = await api.get<VideosResponse>(`/${type}/${id}/videos`)
+    const videos: Trailer[] = data.results ?? []
+
+    const trailers = videos.filter((v) => v.site === 'YouTube' && v.type === 'Trailer')
+
+    const langPriority =
+      lang === 'uk' ? ['uk', 'ru', 'en'] : lang === 'ru' ? ['ru', 'uk', 'en'] : ['en', 'uk', 'ru']
+
+    for (const l of langPriority) {
+      const video = trailers.find((v) => v.iso_639_1 === l)
+      if (video) return video.key
+    }
+
+    return null
+  } catch (error) {
+    console.error('Помилка при завантаженні відео:', error)
+    return null
+  }
+}
+
+export interface Review {
+  id: string
+  author: string
+  content: string
+  created_at: string
+  url: string
+}
+
+interface ReviewsResponse {
+  results?: Review[]
+}
+
+export async function getMediaReviews(id: number | string, type: MediaType): Promise<Review[]> {
+  try {
+    const { data } = await api.get<ReviewsResponse>(`/${type}/${id}/reviews`)
+    return data.results ?? []
+  } catch (error) {
+    console.error('Помилка при завантаженні відгуків:', error)
+    return []
+  }
+}
