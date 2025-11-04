@@ -5,7 +5,7 @@
     <nav class="nav">
       <BaseButton to="/movies" variant="header-link"> Movies </BaseButton>
       <BaseButton to="/series" variant="header-link"> Series </BaseButton>
-      <BaseButton to="/collections" variant="header-link"> Collections </BaseButton>
+      <BaseButton to="/collection" variant="header-link"> Collection </BaseButton>
     </nav>
 
     <div class="language-div">

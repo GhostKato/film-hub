@@ -32,17 +32,51 @@
           <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
         </div>
       </div>
-
-      <!-- <div class="images">
-        <img
-          v-if="media.backdrop_path"
-          :src="getImageUrl(media.backdrop_path, 'backdrop', 'w780')"
-          alt="Backdrop"
-        />
-      </div> -->
     </div>
 
-    <div v-else>Loading...</div>
+    <!-- ACTORS -->
+    <div v-if="cast.length" class="section">
+      <h2>Actors</h2>
+      <div class="people-list">
+        <router-link
+          v-for="actor in cast"
+          :key="actor.id"
+          :to="`/person/${actor.id}`"
+          class="person-card"
+        >
+          <img
+            v-if="actor.profile_path"
+            :src="getImageUrl(actor.profile_path, 'profile', 'w185')"
+            alt="Actor"
+          />
+          <div class="name">{{ actor.name }}</div>
+          <div class="character" v-if="actor.character">as {{ actor.character }}</div>
+        </router-link>
+      </div>
+    </div>
+
+    <!-- CREW -->
+    <div v-if="crew.length" class="section">
+      <h2>Production Crew</h2>
+      <div class="people-list">
+        <router-link
+          v-for="person in crew"
+          :key="person.id"
+          :to="`/person/${person.id}`"
+          class="person-card"
+        >
+          <img
+            v-if="person.profile_path"
+            :src="getImageUrl(person.profile_path, 'profile', 'w185')"
+            alt="Crew Member"
+          />
+          <div class="name">{{ person.name }}</div>
+          <div class="character">{{ person.job }}</div>
+        </router-link>
+      </div>
+    </div>
+
+    <div v-else-if="!media">Loading...</div>
   </IBackground>
 </template>
 
@@ -50,7 +84,7 @@
 import IBackground from '@/components/IBackground/IBackground.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { getMediaById } from '@/api/tmdb'
+import { getMediaById, getMediaCredits } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language.'
 
@@ -67,7 +101,6 @@ interface Media {
   name?: string
   overview?: string
   poster_path?: string
-  backdrop_path?: string
   release_date?: string
   first_air_date?: string
   vote_average?: number
@@ -76,7 +109,14 @@ interface Media {
   production_countries?: ProductionCountry[]
   runtime?: number
   episode_run_time?: number[]
-  [key: string]: unknown
+}
+
+interface Person {
+  id: number
+  name: string
+  profile_path?: string
+  character?: string
+  job?: string
 }
 
 const route = useRoute()
@@ -84,11 +124,18 @@ const type = route.params.type as 'movie' | 'tv'
 const id = Number(route.params.id)
 
 const media = ref<Media | null>(null)
+const cast = ref<Person[]>([])
+const crew = ref<Person[]>([])
 const languageStore = useLanguageStore()
 
 const fetchMedia = async () => {
   try {
     media.value = await getMediaById(id, type)
+    const credits = await getMediaCredits(id, type)
+    cast.value = credits.cast.slice(0, 15)
+    crew.value = credits.crew.filter((p: Person) =>
+      ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''),
+    )
   } catch (err) {
     console.error('Error fetching media:', err)
   }
@@ -111,10 +158,13 @@ watch(
   display: flex;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
+
 .poster-container {
   position: relative;
 }
+
 .rating {
   position: absolute;
   top: 15px;
@@ -125,32 +175,79 @@ watch(
   font-size: 20px;
   font-weight: bold;
 }
+
 .information {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
+
 .title {
   font-size: 2.5rem;
   margin-bottom: 10px;
 }
+
 .tagline {
   font-style: italic;
   margin-bottom: 10px;
   color: #ccc;
 }
+
 .overview {
   margin: 15px 0;
   font-size: 1.1rem;
 }
+
 .genres span {
   background: #444;
   padding: 4px 10px;
   margin-right: 5px;
   border-radius: 5px;
 }
+
 .poster {
   border-radius: 10px;
   object-fit: cover;
+}
+
+/* ===== ACTORS & CREW ===== */
+.section {
+  margin: 30px 0;
+  padding: 0 20px;
+}
+
+.people-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.person-card {
+  width: 130px;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.person-card:hover {
+  transform: scale(1.05);
+}
+
+.person-card img {
+  width: 130px;
+  height: 190px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.name {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.character {
+  font-size: 0.9rem;
+  color: #ccc;
 }
 </style>

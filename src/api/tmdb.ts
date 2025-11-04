@@ -28,6 +28,11 @@ export async function getMediaById(id: number | string, type: 'movie' | 'tv') {
   return data
 }
 
+export async function getMediaCredits(id: number | string, type: 'movie' | 'tv') {
+  const { data } = await api.get(`/${type}/${id}/credits`)
+  return data
+}
+
 export async function searchMulti(query: string, page = 1) {
   if (!query.trim()) return { results: [] }
 
@@ -78,5 +83,14 @@ export async function getOnTheAirTV(page = 1) {
 
 export async function getAiringTodayTV(page = 1) {
   const { data } = await api.get('/tv/airing_today', { params: { page } })
+  return data
+}
+
+export async function getPersonById(id: number | string) {
+  const { data } = await api.get(`/person/${id}`)
+  return data
+}
+export async function getPersonCombinedCredits(id: number | string) {
+  const { data } = await api.get(`/person/${id}/combined_credits`)
   return data
 }
