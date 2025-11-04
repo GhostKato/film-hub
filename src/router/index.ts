@@ -1,18 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import HomePage from '../pages/HomePage/HomePage.vue'
-import CatalogPage from '../pages/CatalogPage/CatalogPage.vue'
-import MediaPage from '../pages/MediaPage/MediaPage.vue'
+import MoviesPage from '../pages/MoviesPage/MoviesPage.vue'
+import SeriesPage from '../pages/SeriesPage/SeriesPage.vue'
 import CollectionPage from '../pages/CollectionPage/CollectionPage.vue'
-import WatchLaterPage from '../pages/WatchLaterPage/WatchLaterPage.vue'
+import MediaPage from '../pages/MediaPage/MediaPage.vue'
 import NotFoundPage from '../pages/NotFoundPage/NotFoundPage.vue'
+import SearchMultiPage from '@/pages/SearchMultiPage/SearchMultiPage.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomePage },
-  { path: '/catalog', name: 'catalog', component: CatalogPage },
-  { path: '/media/:type/:id', name: 'media', component: MediaPage, props: true },
+  { path: '/movies', name: 'movies', component: MoviesPage },
+  { path: '/series', name: 'series', component: SeriesPage },
   { path: '/collection', name: 'collection', component: CollectionPage },
-  { path: '/watch-later', name: 'watch-later', component: WatchLaterPage },
+  { path: '/media/:type/:id', name: 'media', component: MediaPage, props: true },
+  { path: '/search/multi', name: 'search-multi', component: SearchMultiPage },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
 ]
 

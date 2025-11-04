@@ -7,7 +7,7 @@
       <TrendingSlider :visibilityTrendingSlider="visibilityTrendingSlider" />
       <div class="main-hello" :class="{ visible: visibilityMainHello }">
         <h1 class="main-title">What are we watching today?</h1>
-        <BaseButton to="/catalog" variant="button"> Catalog </BaseButton>
+        <SearchBar />
       </div>
     </div>
   </div>
@@ -15,11 +15,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import BaseButton from '@/components/BaseButton/BaseButton.vue'
 import HomeCurtains from './components/HomeCurtains.vue'
 import HomeProjector from './components/HomeProjector.vue'
 import HomeVideo from './components/HomeVideo.vue'
 import TrendingSlider from './components/TrendingSlider.vue'
+import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
 const isOpen = ref(false)
 const hideProjector = ref(false)

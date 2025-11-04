@@ -3,9 +3,8 @@
     <BaseButton to="/"> <HeaderLogo /> </BaseButton>
 
     <nav class="nav">
-      <BaseButton to="/catalog" variant="header-link"> Catalog </BaseButton>
-      <BaseButton to="/collection" variant="header-link"> Collection </BaseButton>
-      <BaseButton to="/watch-later" variant="header-link"> Watch later </BaseButton>
+      <BaseButton to="/movies" variant="header-link"> Movies </BaseButton>
+      <BaseButton to="/series" variant="header-link"> Series </BaseButton>
     </nav>
 
     <div class="language-div">
