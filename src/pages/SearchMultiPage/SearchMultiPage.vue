@@ -67,13 +67,12 @@ watch(
 <style scoped>
 .search-results {
   padding: 20px;
-  color: white;
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 25px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .loading-more {

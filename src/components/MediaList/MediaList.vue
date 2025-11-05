@@ -72,7 +72,7 @@ const goToMedia = (item: MediaItem) => {
 }
 
 .media-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(53, 50, 50, 0.5);
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;

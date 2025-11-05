@@ -37,7 +37,6 @@ import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 
-// Інтерфейси
 interface Person {
   id: number
   name: string
@@ -89,7 +88,6 @@ const fetchPersonData = async () => {
 
 onMounted(fetchPersonData)
 
-// Автоматичне оновлення при зміні мови
 watch(
   () => languageStore.lang,
   () => {
@@ -100,14 +98,14 @@ watch(
 
 <style scoped>
 .person-page {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
 }
 
 .person-header {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 30px;
 }
 
@@ -122,5 +120,14 @@ watch(
 
 .person-credits h2 {
   margin-bottom: 15px;
+}
+@media (min-width: 768px) {
+  .person-page {
+    padding: 15px;
+  }
+  .person-header {
+    display: flex;
+    flex-direction: row;
+  }
 }
 </style>

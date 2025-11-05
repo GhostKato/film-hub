@@ -5,7 +5,7 @@
       v-model="query"
       @keyup.enter="search"
       type="text"
-      placeholder="Search movies, series, anime..."
+      placeholder="Search movies, series..."
     />
     <BaseButton variant="search" @click="search"> Search </BaseButton>
   </div>
