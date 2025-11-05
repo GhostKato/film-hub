@@ -1,0 +1,40 @@
+{
+  "header": {
+    "movies": "Movies",
+    "series": "Series",
+    "collection": "Collection"
+  },
+  "home_page": {
+    "title": "What are we watching today?"
+  },
+  "movies_page": {
+    "title": "Movies",
+    "popular": "Popular",
+    "top_rated": "Top Rated",
+    "now_playing": "Now Playing",
+    "upcoming": "Upcoming"
+  },
+  "series_page": {
+    "title": "Series",
+    "popular": "Popular",
+    "top_rated": "Top Rated",
+    "on_the_air": "On the Air",
+    "airing_today": "Airing Today"
+  },
+  "media_page": {
+    "release": "Release:",
+    "duration": "Duration:",
+    "countries": "Countries:",
+    "genres": "Genres:",
+    "actors_title": "Actors",
+    "production_crew_title": "Production Crew"
+  },
+  "person_page": {
+    "movies_series_title": "Movies and series"
+  },
+
+  "search_multi_page": {
+    "placeholder": "Search movies, series...",
+    "button": "Search"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "header": {
+    "movies": "Фільми",
+    "series": "Серіали",
+    "collection": "Колекція"
+  },
+  "home_page": {
+    "title": "Що ми сьогодні дивимося?"
+  },
+  "movies_page": {
+    "title": "Фільми",
+    "popular": "Популярні",
+    "top_rated": "Рейтингові",
+    "now_playing": "Зараз у кіно",
+    "upcoming": "Очікувані"
+  },
+  "series_page": {
+    "title": "Серіали",
+    "popular": "Популярні",
+    "top_rated": "Рейтингові",
+    "on_the_air": "На ефірі",
+    "airing_today": "Сьогодні на ефірі"
+  },
+  "media_page": {
+    "release": "Дата вихіду:",
+    "duration": "Тривалість:",
+    "countries": "Країни:",
+    "genres": "Жанри:",
+    "actors_title": "Актори",
+    "production_crew_title": "Виробнича бригада"
+  },
+  "person_page": {
+    "movies_series_title": "Фільми та серіали"
+  },
+
+  "search_multi_page": {
+    "placeholder": "Пошук фільмів, серіалів",
+    "button": "Пошук"
+  }
+}

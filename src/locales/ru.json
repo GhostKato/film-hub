@@ -1,0 +1,40 @@
+{
+  "header": {
+    "movies": "Фильмы",
+    "series": "Сериалы",
+    "collection": "Коллекция"
+  },
+  "home_page": {
+    "title": "Что мы смотрим сегодня?"
+  },
+  "movies_page": {
+    "title": "Фильмы",
+    "popular": "Популярные",
+    "top_rated": "Рейтинг",
+    "now_playing": "В кинотеатре",
+    "upcoming": "Ожидаемые"
+  },
+  "series_page": {
+    "title": "Сериалы",
+    "popular": "Популярные",
+    "top_rated": "Рейтинг",
+    "on_the_air": "В эфире",
+    "airing_today": "Сегодня в эфире"
+  },
+  "media_page": {
+    "release": "Дата выхода:",
+    "duration": "Продолжительность:",
+    "countries": "Страны:",
+    "genres": "Жанры:",
+    "actors_title": "Актёры",
+    "production_crew_title": "Съемочная группа"
+  },
+  "person_page": {
+    "movies_series_title": "Фильмы и сериалы"
+  },
+
+  "search_multi_page": {
+    "placeholder": "Поиск фильмов, сериалов...",
+    "button": "Поиск"
+  }
+}

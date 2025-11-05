@@ -1,7 +1,7 @@
 <template>
   <IBackground>
     <div class="series-page">
-      <h1 class="title">Серіали</h1>
+      <h1 class="title">{{ $t('series_page.title') }}</h1>
 
       <div class="categories">
         <button
@@ -34,7 +34,10 @@ import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
 import { getPopularTV, getTopRatedTV, getOnTheAirTV, getAiringTodayTV } from '@/api/tmdb'
-import { useLanguageStore } from '@/stores/language.'
+import { useLanguageStore } from '@/stores/language'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Category {
   key: string
@@ -50,10 +53,10 @@ interface SeriesItem {
 }
 
 const categories: Category[] = [
-  { key: 'popular', label: 'Популярні' },
-  { key: 'top_rated', label: 'Рейтингові' },
-  { key: 'on_the_air', label: 'На ефірі' },
-  { key: 'airing_today', label: 'Сьогодні на ефірі' },
+  { key: 'popular', label: t('series_page.popular') },
+  { key: 'top_rated', label: t('series_page.top_rated') },
+  { key: 'on_the_air', label: t('series_page.on_the_air') },
+  { key: 'airing_today', label: t('series_page.airing_today') },
 ]
 
 const activeCategory = ref('popular')
