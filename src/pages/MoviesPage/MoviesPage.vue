@@ -41,7 +41,7 @@ import {
 import { useLanguageStore } from '@/stores/language'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 interface Category {
   key: string
@@ -56,12 +56,20 @@ interface MovieItem {
   overview?: string
 }
 
-const categories: Category[] = [
-  { key: 'popular', label: t('movies_page.popular') },
-  { key: 'top_rated', label: t('movies_page.top_rated') },
-  { key: 'now_playing', label: t('movies_page.now_playing') },
-  { key: 'upcoming', label: t('movies_page.upcoming') },
-]
+const categories = ref<Category[]>([])
+
+watch(
+  () => locale.value,
+  () => {
+    categories.value = [
+      { key: 'popular', label: t('movies_page.popular') },
+      { key: 'top_rated', label: t('movies_page.top_rated') },
+      { key: 'now_playing', label: t('movies_page.now_playing') },
+      { key: 'upcoming', label: t('movies_page.upcoming') },
+    ]
+  },
+  { immediate: true },
+)
 
 const activeCategory = ref('popular')
 const movies = ref<MovieItem[]>([])

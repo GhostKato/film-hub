@@ -37,7 +37,7 @@ import { getPopularTV, getTopRatedTV, getOnTheAirTV, getAiringTodayTV } from '@/
 import { useLanguageStore } from '@/stores/language'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 interface Category {
   key: string
@@ -52,12 +52,20 @@ interface SeriesItem {
   overview?: string
 }
 
-const categories: Category[] = [
-  { key: 'popular', label: t('series_page.popular') },
-  { key: 'top_rated', label: t('series_page.top_rated') },
-  { key: 'on_the_air', label: t('series_page.on_the_air') },
-  { key: 'airing_today', label: t('series_page.airing_today') },
-]
+const categories = ref<Category[]>([])
+
+watch(
+  () => locale.value,
+  () => {
+    categories.value = [
+      { key: 'popular', label: t('series_page.popular') },
+      { key: 'top_rated', label: t('series_page.top_rated') },
+      { key: 'on_the_air', label: t('series_page.on_the_air') },
+      { key: 'airing_today', label: t('series_page.airing_today') },
+    ]
+  },
+  { immediate: true },
+)
 
 const activeCategory = ref('popular')
 const series = ref<SeriesItem[]>([])
