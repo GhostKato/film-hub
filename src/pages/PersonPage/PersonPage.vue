@@ -10,16 +10,20 @@
         />
         <div class="person-info">
           <h1>{{ person.name }}</h1>
-          <p v-if="person.birthday"><strong>Дата народження:</strong> {{ person.birthday }}</p>
-          <p v-if="person.place_of_birth">
-            <strong>Місце народження:</strong> {{ person.place_of_birth }}
+          <p v-if="person.birthday">
+            <strong>{{ $t('person_page.date_of_birth') }}</strong> {{ person.birthday }}
           </p>
-          <p v-if="person.biography"><strong>Біографія:</strong> {{ person.biography }}</p>
+          <p v-if="person.place_of_birth">
+            <strong>{{ $t('person_page.place_of_birth') }}</strong> {{ person.place_of_birth }}
+          </p>
+          <p v-if="person.biography">
+            <strong>{{ $t('person_page.biography') }}</strong> {{ person.biography }}
+          </p>
         </div>
       </div>
 
       <div class="person-credits" v-if="credits.length">
-        <h2>Фільми та серіали</h2>
+        <h2>{{ $t('person_page.movies_series_title') }}</h2>
         <MediaList :items="credits" />
       </div>
     </div>
@@ -32,7 +36,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getPersonById, getPersonCombinedCredits } from '@/api/tmdb'
-import { useLanguageStore } from '@/stores/language.'
+import { useLanguageStore } from '@/stores/language'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import { getImageUrl } from '@/utils/getImageUrl'

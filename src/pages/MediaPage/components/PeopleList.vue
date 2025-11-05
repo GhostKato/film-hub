@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="actors.length" class="section">
-      <h2>Actors</h2>
+      <h2>{{ $t('media_page.actors_title') }}</h2>
       <div class="people-list">
         <router-link
           v-for="person in actors"
@@ -17,7 +17,7 @@
     </div>
 
     <div v-if="crew.length" class="section">
-      <h2>Production Crew</h2>
+      <h2>{{ $t('media_page.production_crew_title') }}</h2>
       <div class="people-list">
         <router-link
           v-for="person in crew"

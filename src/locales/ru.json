@@ -24,15 +24,19 @@
   "media_page": {
     "release": "Дата выхода:",
     "duration": "Продолжительность:",
+    "episode_length": "Продолжительность эпизода:",
+    "min": "мин",
     "countries": "Страны:",
     "genres": "Жанры:",
     "actors_title": "Актёры",
     "production_crew_title": "Съемочная группа"
   },
   "person_page": {
+    "date_of_birth": "Дата рождения:",
+    "place_of_birth": "Место рождения:",
+    "biography": "Биография:",
     "movies_series_title": "Фильмы и сериалы"
   },
-
   "search_multi_page": {
     "placeholder": "Поиск фильмов, сериалов...",
     "button": "Поиск"

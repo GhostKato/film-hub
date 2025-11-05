@@ -23,17 +23,21 @@
           <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
           <p class="overview">{{ media.overview }}</p>
           <p class="release-date" v-if="media.release_date || media.first_air_date">
-            Release: {{ media.release_date || media.first_air_date }}
+            {{ $t('media_page.release') }} {{ media.release_date || media.first_air_date }}
           </p>
-          <p v-if="media.runtime">Duration: {{ media.runtime }} min</p>
+          <p v-if="media.runtime">
+            {{ $t('media_page.duration') }} {{ media.runtime }} {{ $t('media_page.min') }}
+          </p>
           <p v-if="media.episode_run_time?.length">
-            Episode length: {{ media.episode_run_time[0] }} min
+            {{ $t('media_page.episode_length') }} {{ media.episode_run_time[0] }}
+            {{ $t('media_page.min') }}
           </p>
           <p v-if="media.production_countries?.length">
-            Countries: {{ media.production_countries.map((c) => c.name).join(', ') }}
+            {{ $t('media_page.countries') }}
+            {{ media.production_countries.map((c) => c.name).join(', ') }}
           </p>
           <div v-if="media.genres?.length" class="genres">
-            <strong>Genres: </strong>
+            <strong>{{ $t('media_page.genres') }} </strong>
             <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
           </div>
         </div>
@@ -67,7 +71,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
-import { useLanguageStore } from '@/stores/language.'
+import { useLanguageStore } from '@/stores/language'
 import { getRatingColor } from '@/utils/getColors'
 
 interface Genre {

@@ -6,11 +6,11 @@
         v-model="query"
         @keyup.enter="search"
         type="text"
-        placeholder="Search movies, series..."
+        :placeholder="t('search_multi_page.placeholder')"
       />
       <BaseButton v-if="query" variant="clear" @click="clearQuery">✖</BaseButton>
     </div>
-    <BaseButton variant="search" @click="search">Search</BaseButton>
+    <BaseButton variant="search" @click="search">{{ $t('search_multi_page.button') }}</BaseButton>
   </div>
 </template>
 
@@ -18,6 +18,9 @@
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import BaseButton from '../BaseButton/BaseButton.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const query = ref('')
 const router = useRouter()

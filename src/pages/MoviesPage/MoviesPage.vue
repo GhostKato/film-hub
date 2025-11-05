@@ -1,7 +1,7 @@
 <template>
   <IBackground>
     <div class="movies-page">
-      <h1 class="title">Фільми</h1>
+      <h1 class="title">{{ $t('movies_page.title') }}</h1>
       <div class="categories">
         <button
           type="button"
@@ -38,7 +38,10 @@ import {
   getNowPlayingMovies,
   getUpcomingMovies,
 } from '@/api/tmdb'
-import { useLanguageStore } from '@/stores/language.'
+import { useLanguageStore } from '@/stores/language'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Category {
   key: string
@@ -54,10 +57,10 @@ interface MovieItem {
 }
 
 const categories: Category[] = [
-  { key: 'popular', label: 'Популярні' },
-  { key: 'top_rated', label: 'Рейтингові' },
-  { key: 'now_playing', label: 'Зараз у кіно' },
-  { key: 'upcoming', label: 'Очікувані' },
+  { key: 'popular', label: t('movies_page.popular') },
+  { key: 'top_rated', label: t('movies_page.top_rated') },
+  { key: 'now_playing', label: t('movies_page.now_playing') },
+  { key: 'upcoming', label: t('movies_page.upcoming') },
 ]
 
 const activeCategory = ref('popular')

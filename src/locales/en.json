@@ -24,15 +24,19 @@
   "media_page": {
     "release": "Release:",
     "duration": "Duration:",
+    "episode_length": "Episode length:",
+    "min": "min:",
     "countries": "Countries:",
     "genres": "Genres:",
     "actors_title": "Actors",
     "production_crew_title": "Production Crew"
   },
   "person_page": {
+    "date_of_birth": "Date of birth:",
+    "place_of_birth": "Place of birth:",
+    "biography": "Biography:",
     "movies_series_title": "Movies and series"
   },
-
   "search_multi_page": {
     "placeholder": "Search movies, series...",
     "button": "Search"

@@ -32,7 +32,7 @@ import 'swiper/css/navigation'
 
 import { getTrendingAllDay } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
-import { useLanguageStore } from '@/stores/language.'
+import { useLanguageStore } from '@/stores/language'
 
 interface Props {
   visibilityTrendingSlider: boolean

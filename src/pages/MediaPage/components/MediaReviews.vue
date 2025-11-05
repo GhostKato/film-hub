@@ -14,7 +14,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { getMediaReviews } from '@/api/tmdb'
 import type { Review, MediaType } from '@/api/tmdb'
-import { useLanguageStore } from '@/stores/language.'
+import { useLanguageStore } from '@/stores/language'
 
 const props = defineProps<{
   mediaId: number

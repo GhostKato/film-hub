@@ -24,17 +24,22 @@
   "media_page": {
     "release": "Дата вихіду:",
     "duration": "Тривалість:",
+    "episode_length": "Довжина епізоду:",
+    "min": "мін:",
     "countries": "Країни:",
     "genres": "Жанри:",
     "actors_title": "Актори",
     "production_crew_title": "Виробнича бригада"
   },
   "person_page": {
+    "date_of_birth": "Дата народження:",
+    "place_of_birth": "Місце народження:",
+    "biography": "Біографія:",
     "movies_series_title": "Фільми та серіали"
   },
 
   "search_multi_page": {
-    "placeholder": "Пошук фільмів, серіалів",
+    "placeholder": "Пошук фільмів, серіалів...",
     "button": "Пошук"
   }
 }

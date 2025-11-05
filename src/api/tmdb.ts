@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useLanguageStore } from '@/stores/language.'
+import { useLanguageStore } from '@/stores/language'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
 const TOKEN = import.meta.env.VITE_TMDB_TOKEN

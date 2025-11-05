@@ -6,7 +6,7 @@
     <div class="background-image">
       <TrendingSlider :visibilityTrendingSlider="visibilityTrendingSlider" />
       <div class="main-hello" :class="{ visible: visibilityMainHello }">
-        <h1 class="main-title">What are we watching today?</h1>
+        <h1 class="main-title">{{ $t('home_page.title') }}</h1>
         <SearchBar />
       </div>
     </div>

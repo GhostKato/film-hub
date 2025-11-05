@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { i18n } from '@/i18n'
 
 export const useLanguageStore = defineStore('language', {
   state: () => ({
@@ -8,6 +9,7 @@ export const useLanguageStore = defineStore('language', {
     setLanguage(newLang: 'en' | 'uk' | 'ru') {
       this.lang = newLang
       localStorage.setItem('lang', newLang)
+      i18n.global.locale.value = newLang
     },
   },
   getters: {

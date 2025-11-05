@@ -6,9 +6,11 @@
       <BaseButton to="/search/multi" variant="header-link">
         <SearchIcon />
       </BaseButton>
-      <BaseButton to="/movies" variant="header-link"> Movies </BaseButton>
-      <BaseButton to="/series" variant="header-link"> Series </BaseButton>
-      <BaseButton to="/collection" variant="header-link"> Collection </BaseButton>
+      <BaseButton to="/movies" variant="header-link"> {{ $t('header.movies') }} </BaseButton>
+      <BaseButton to="/series" variant="header-link"> {{ $t('header.series') }} </BaseButton>
+      <BaseButton to="/collection" variant="header-link">
+        {{ $t('header.collection') }}
+      </BaseButton>
     </nav>
 
     <div class="language-div">
