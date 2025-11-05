@@ -1,17 +1,38 @@
 <template>
-  <div v-if="peopleWithPhoto.length" class="people-list">
-    <router-link
-      v-for="person in peopleWithPhoto"
-      :key="person.id"
-      :to="`/person/${person.id}`"
-      class="person-card"
-    >
-      <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
-      <div class="name">{{ person.name }}</div>
-      <div class="character" v-if="person.character || person.job">
-        {{ person.character ? `as ${person.character}` : person.job }}
+  <div>
+    <div v-if="actors.length" class="section">
+      <h2>Actors</h2>
+      <div class="people-list">
+        <router-link
+          v-for="person in actors"
+          :key="person.id"
+          :to="`/person/${person.id}`"
+          class="person-card"
+        >
+          <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
+          <div class="name">{{ person.name }}</div>
+          <div class="character" v-if="person.character">as {{ person.character }}</div>
+        </router-link>
       </div>
-    </router-link>
+    </div>
+
+    <div v-if="crew.length" class="section">
+      <h2>Production Crew</h2>
+      <div class="people-list">
+        <router-link
+          v-for="person in crew"
+          :key="person.id"
+          :to="`/person/${person.id}`"
+          class="person-card"
+        >
+          <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
+          <div class="name">{{ person.name }}</div>
+          <div class="character" v-if="person.job">
+            {{ person.job }}
+          </div>
+        </router-link>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -32,12 +53,26 @@ const props = defineProps<{
 }>()
 
 const peopleWithPhoto = computed(() => props.people.filter((p) => p.profile_path))
+
+const actors = computed(() => peopleWithPhoto.value.filter((p) => p.character))
+const crew = computed(() => peopleWithPhoto.value.filter((p) => p.job && !p.character))
 </script>
 
 <style scoped>
+.section {
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
 .people-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 15px;
 }
 

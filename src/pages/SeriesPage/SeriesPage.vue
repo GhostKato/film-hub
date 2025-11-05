@@ -1,7 +1,7 @@
 <template>
   <IBackground>
     <div class="series-page">
-      <h1>Серіали</h1>
+      <h1 class="title">Серіали</h1>
 
       <div class="categories">
         <button
@@ -108,25 +108,27 @@ watch(
 
 <style scoped>
 .series-page {
-  padding: 20px;
-  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
 }
 
-h1 {
-  font-size: 40px;
+.title {
   font-weight: bold;
   text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  margin: 0;
   margin-bottom: 20px;
 }
 
 .categories {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
 .categories button {
-  padding: 10px 15px;
+  padding: 5px 5px;
   border: none;
   border-radius: 8px;
   background: #1a1a1a;
@@ -147,5 +149,24 @@ h1 {
 .loading-more {
   text-align: center;
   margin-top: 20px;
+}
+@media (min-width: 768px) {
+  .series-page {
+    display: block;
+  }
+  .categories {
+    padding-left: 20px;
+  }
+  .title {
+    padding-left: 20px;
+    font-size: 40px;
+  }
+  .categories {
+    gap: 10px;
+  }
+
+  .categories button {
+    padding: 10px 15px;
+  }
 }
 </style>

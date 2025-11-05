@@ -16,6 +16,9 @@ const { videoId } = defineProps<{
 <style scoped>
 .youtube-player {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
@@ -23,7 +26,6 @@ const { videoId } = defineProps<{
   border-radius: 12px;
   overflow: hidden;
 }
-
 .error {
   text-align: center;
   color: #ff5555;

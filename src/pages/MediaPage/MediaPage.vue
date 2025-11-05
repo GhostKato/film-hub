@@ -1,45 +1,45 @@
 <template>
   <IBackground>
     <div v-if="media" class="media-page">
-      <div class="poster-container">
-        <p class="rating" v-if="media.vote_average">{{ media.vote_average }}/10</p>
-        <img
-          class="poster"
-          v-if="media.poster_path"
-          :src="getImageUrl(media.poster_path, 'poster', 'w342')"
-          alt="Poster"
-        />
-      </div>
+      <div class="poster-inf-container">
+        <div class="poster-container">
+          <p class="rating" v-if="media.vote_average">{{ media.vote_average }}/10</p>
+          <img
+            class="poster"
+            v-if="media.poster_path"
+            :src="getImageUrl(media.poster_path, 'poster', 'w342')"
+            alt="Poster"
+          />
+        </div>
 
-      <div class="information">
-        <h1 class="title">{{ media.title || media.name }}</h1>
-        <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
-        <p class="overview">{{ media.overview }}</p>
-        <p class="release-date" v-if="media.release_date || media.first_air_date">
-          Release: {{ media.release_date || media.first_air_date }}
-        </p>
-        <p v-if="media.runtime">Duration: {{ media.runtime }} min</p>
-        <p v-if="media.episode_run_time?.length">
-          Episode length: {{ media.episode_run_time[0] }} min
-        </p>
-        <p v-if="media.production_countries?.length">
-          Countries: {{ media.production_countries.map((c) => c.name).join(', ') }}
-        </p>
-        <div v-if="media.genres?.length" class="genres">
-          <strong>Genres:</strong>
-          <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
+        <div class="information">
+          <h1 class="title">{{ media.title || media.name }}</h1>
+          <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
+          <p class="overview">{{ media.overview }}</p>
+          <p class="release-date" v-if="media.release_date || media.first_air_date">
+            Release: {{ media.release_date || media.first_air_date }}
+          </p>
+          <p v-if="media.runtime">Duration: {{ media.runtime }} min</p>
+          <p v-if="media.episode_run_time?.length">
+            Episode length: {{ media.episode_run_time[0] }} min
+          </p>
+          <p v-if="media.production_countries?.length">
+            Countries: {{ media.production_countries.map((c) => c.name).join(', ') }}
+          </p>
+          <div v-if="media.genres?.length" class="genres">
+            <strong>Genres: </strong>
+            <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
+          </div>
         </div>
       </div>
 
       <YouTubePlayer v-if="trailerId" :videoId="trailerId" />
 
       <div class="section" v-if="cast.length">
-        <h2>Actors</h2>
         <PeopleList :people="cast" />
       </div>
 
       <div class="section" v-if="crew.length">
-        <h2>Production Crew</h2>
         <PeopleList :people="crew" />
       </div>
 
@@ -154,6 +154,11 @@ watch(
   flex-direction: column;
   gap: 15px;
 }
+.poster-inf-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .title {
   font-size: 2.5rem;
   margin-bottom: 10px;
@@ -168,7 +173,7 @@ watch(
   font-size: 1.1rem;
 }
 .genres span {
-  background: #444;
+  background: #1a1a1a;
   padding: 4px 10px;
   margin-right: 5px;
   border-radius: 5px;
@@ -176,5 +181,12 @@ watch(
 .poster {
   border-radius: 10px;
   object-fit: cover;
+}
+@media (min-width: 1024px) {
+  .poster-inf-container {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+  }
 }
 </style>
