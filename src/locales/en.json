@@ -39,6 +39,7 @@
   },
   "search_multi_page": {
     "placeholder": "Search movies, series...",
-    "button": "Search"
+    "button": "Search",
+    "search_result": "Search result:"
   }
 }

@@ -2,7 +2,7 @@
   <IBackground>
     <div class="search-results">
       <SearchBar />
-      <h1 v-if="query">Результати пошуку: "{{ query }}"</h1>
+      <h1 v-if="query">{{ $t('search_multi_page.search_result') }} "{{ query }}"</h1>
 
       <MediaList :items="results" :loading="loading" :routePath="route.path" />
 

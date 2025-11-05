@@ -39,6 +39,7 @@
   },
   "search_multi_page": {
     "placeholder": "Поиск фильмов, сериалов...",
-    "button": "Поиск"
+    "button": "Поиск",
+    "search_result": "Результат поиска:"
   }
 }

@@ -37,9 +37,9 @@
     "biography": "Біографія:",
     "movies_series_title": "Фільми та серіали"
   },
-
   "search_multi_page": {
     "placeholder": "Пошук фільмів, серіалів...",
-    "button": "Пошук"
+    "button": "Пошук",
+    "search_result": "Результат пошуку:"
   }
 }
