@@ -41,5 +41,9 @@
     "placeholder": "Пошук фільмів, серіалів...",
     "button": "Пошук",
     "search_result": "Результат пошуку:"
+  },
+  "pagination": {
+    "previous": "Попередня",
+    "next": "Наступна"
   }
 }

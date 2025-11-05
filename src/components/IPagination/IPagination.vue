@@ -1,8 +1,12 @@
 <template>
   <div class="pagination" v-if="totalPages > 1">
-    <button type="button" @click="prev" :disabled="currentPage === 1">Попередня</button>
+    <button type="button" @click="prev" :disabled="currentPage === 1">
+      {{ $t('pagination.previous') }}
+    </button>
     <span>{{ currentPage }} / {{ totalPages }}</span>
-    <button type="button" @click="next" :disabled="currentPage === totalPages">Наступна</button>
+    <button type="button" @click="next" :disabled="currentPage === totalPages">
+      {{ $t('pagination.next') }}
+    </button>
   </div>
 </template>
 

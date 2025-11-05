@@ -41,5 +41,9 @@
     "placeholder": "Search movies, series...",
     "button": "Search",
     "search_result": "Search result:"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
   }
 }
