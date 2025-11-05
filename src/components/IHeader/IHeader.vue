@@ -3,6 +3,9 @@
     <BaseButton to="/"> <HeaderLogo /> </BaseButton>
 
     <nav class="nav">
+      <BaseButton to="/search/multi" variant="header-link">
+        <SearchIcon />
+      </BaseButton>
       <BaseButton to="/movies" variant="header-link"> Movies </BaseButton>
       <BaseButton to="/series" variant="header-link"> Series </BaseButton>
       <BaseButton to="/collection" variant="header-link"> Collection </BaseButton>
@@ -18,6 +21,7 @@
 import HeaderLogo from '@/components/IHeader/HeaderLogo.vue'
 import BaseButton from '../BaseButton/BaseButton.vue'
 import LanguageSwitcher from './LanguageSwitcher.vue'
+import SearchIcon from '../icons/SearchIcon.vue'
 </script>
 
 <style scoped>
@@ -41,6 +45,15 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
   top: 10px;
 }
 
+.icon {
+  width: 25px;
+  height: 25px;
+}
+
+.icon:hover {
+  fill: var(--color-hover);
+}
+
 @media (min-width: 768px) {
   .container {
     flex-direction: row;
@@ -56,6 +69,10 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
 @media (min-width: 1024px) {
   .language-div {
     width: 250px;
+  }
+  .icon {
+    width: 35px;
+    height: 35px;
   }
 }
 </style>

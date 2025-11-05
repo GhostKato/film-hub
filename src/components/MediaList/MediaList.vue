@@ -1,6 +1,6 @@
 <template>
   <div class="media-list">
-    <div v-if="!itemsWithPoster.length && !loading" class="empty">
+    <div v-if="!itemsWithPoster.length && !loading && routePath !== '/search/multi'" class="empty">
       <p>Нічого не знайдено 😢</p>
     </div>
 
@@ -16,12 +16,15 @@
         @click="goToMedia(item)"
       >
         <p
-          v-if="item.release_date"
+          v-if="item.release_date || item.first_air_date"
           class="release"
-          :style="{ backgroundColor: getReleaseColor(item.release_date) }"
+          :style="{
+            backgroundColor: getReleaseColor((item.release_date ?? item.first_air_date) || ''),
+          }"
         >
-          {{ item.release_date }}
+          {{ item.release_date || item.first_air_date }}
         </p>
+
         <p
           v-if="item.vote_average"
           class="rating"
@@ -29,10 +32,12 @@
         >
           {{ item.vote_average }}
         </p>
+
         <img
           :src="getImageUrl(item.poster_path, 'poster', 'w500')"
           :alt="item.title || item.name"
         />
+
         <div class="info">
           <h3>{{ item.title || item.name }}</h3>
           <p class="type">{{ item.media_type === 'tv' ? 'Серіал' : 'Фільм' }}</p>
@@ -62,6 +67,7 @@ interface MediaItem {
 const props = defineProps<{
   items: MediaItem[]
   loading?: boolean
+  routePath?: string
 }>()
 
 const router = useRouter()

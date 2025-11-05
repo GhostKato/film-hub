@@ -3,7 +3,13 @@
     <div v-if="media" class="media-page">
       <div class="poster-inf-container">
         <div class="poster-container">
-          <p class="rating" v-if="media.vote_average">{{ media.vote_average }}/10</p>
+          <p
+            v-if="media.vote_average"
+            class="rating"
+            :style="{ backgroundColor: getRatingColor(Number(media.vote_average)) }"
+          >
+            {{ media.vote_average }}/10
+          </p>
           <img
             class="poster"
             v-if="media.poster_path"
@@ -62,6 +68,7 @@ import { useRoute } from 'vue-router'
 import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language.'
+import { getRatingColor } from '@/utils/getColors'
 
 interface Genre {
   id: number
