@@ -1,27 +1,46 @@
 <template>
   <div class="search-bar">
-    <input
-      class="input"
-      v-model="query"
-      @keyup.enter="search"
-      type="text"
-      placeholder="Search movies, series..."
-    />
-    <BaseButton variant="search" @click="search"> Search </BaseButton>
+    <div class="position">
+      <input
+        class="input"
+        v-model="query"
+        @keyup.enter="search"
+        type="text"
+        placeholder="Search movies, series..."
+      />
+      <BaseButton v-if="query" variant="clear" @click="clearQuery">✖</BaseButton>
+    </div>
+    <BaseButton variant="search" @click="search">Search</BaseButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import BaseButton from '../BaseButton/BaseButton.vue'
 
 const query = ref('')
 const router = useRouter()
+const route = useRoute()
+
+watch(
+  () => route.query.query,
+  (newQuery) => {
+    query.value = (newQuery as string) || ''
+  },
+  { immediate: true },
+)
 
 const search = () => {
   if (!query.value.trim()) return
   router.push({ path: '/search/multi', query: { query: query.value } })
+}
+
+const clearQuery = () => {
+  query.value = ''
+  if (route.path === '/search/multi') {
+    router.push({ path: '/search/multi' })
+  }
 }
 </script>
 
@@ -29,13 +48,19 @@ const search = () => {
 .search-bar {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 10px;
 }
+
+.position {
+  position: relative;
+}
+
 .input {
-  padding: 8px;
+  padding: 10px 35px 10px 10px;
   border-radius: 8px;
   border: none;
-  width: 250px;
+  width: 230px;
   color: var(--color-white);
   background-color: var(--color-dark-grey);
 }
@@ -43,10 +68,16 @@ const search = () => {
 .input:focus {
   outline: 1px solid var(--color-red);
 }
+
+.clear-btn:hover {
+  opacity: 1;
+}
+
 button {
   padding: 8px 12px;
   cursor: pointer;
 }
+
 @media (min-width: 768px) {
   .input {
     width: 340px;

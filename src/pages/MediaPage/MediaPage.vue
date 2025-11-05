@@ -150,7 +150,7 @@ watch(
   position: absolute;
   top: 15px;
   left: 15px;
-  padding: 5px;
+  padding: 1px;
   border-radius: 8px;
   background-color: var(--color-red);
   font-size: 20px;

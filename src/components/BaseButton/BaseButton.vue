@@ -70,15 +70,35 @@ const handleClick = (e: Event) => {
 .search:hover {
   background-color: var(--color-hover);
 }
+.clear {
+  position: absolute;
+  right: 0;
+  top: 2px;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 18px;
+}
+.clear:hover {
+  color: var(--color-hover);
+}
 @media (min-width: 768px) {
   .search {
     width: 90px;
     height: 50px;
   }
+  .clear {
+    right: 1px;
+    top: 6px;
+  }
 }
 @media (min-width: 1024px) {
   .header-link {
     font-size: 30px;
+  }
+  .clear {
+    top: 8px;
   }
 }
 </style>
