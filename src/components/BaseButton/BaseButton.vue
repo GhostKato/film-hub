@@ -42,7 +42,7 @@ const handleClick = (e: Event) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--color-white);
   transition: color 0.2s;
   cursor: pointer;
 }
@@ -53,22 +53,22 @@ const handleClick = (e: Event) => {
 }
 
 .header-link:hover {
-  color: #ff3d00;
+  color: var(--color-hover);
 }
 
 .router-link-active {
-  color: #9f1b19;
+  color: var(--color-red);
 }
 
 .search {
-  background-color: #9f1b19;
+  background-color: var(--color-red);
   border-radius: 8px;
   width: 60px;
   height: 40px;
   border: none;
 }
 .search:hover {
-  background-color: #ff3d00;
+  background-color: var(--color-hover);
 }
 @media (min-width: 768px) {
   .search {

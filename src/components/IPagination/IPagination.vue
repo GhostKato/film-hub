@@ -38,14 +38,14 @@ const next = () => {
   padding: 8px 12px;
   border: none;
   border-radius: 6px;
-  background: #1a1a1a;
-  color: white;
+  background: var(--color-dark-grey);
+  color: var(--color-white);
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .pagination button:not(:disabled):hover {
-  background-color: #ff3d00;
+  background-color: var(--color-hover);
 }
 
 .pagination button:disabled {

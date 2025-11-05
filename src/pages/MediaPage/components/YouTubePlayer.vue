@@ -28,6 +28,6 @@ const { videoId } = defineProps<{
 }
 .error {
   text-align: center;
-  color: #ff5555;
+  color: var(--color-red);
 }
 </style>

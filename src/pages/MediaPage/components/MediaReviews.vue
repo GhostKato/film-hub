@@ -52,10 +52,10 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
 }
 
 .review-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--background-card);
   padding: 15px;
   border-radius: 10px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .review-card h3 {
@@ -72,13 +72,7 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
   opacity: 0.7;
 }
 
-.review-card a {
-  color: #4fc3f7;
-  text-decoration: underline;
-}
-
 .loading {
   text-align: center;
-  color: #fff;
 }
 </style>

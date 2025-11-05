@@ -36,12 +36,12 @@ const search = () => {
   border-radius: 8px;
   border: none;
   width: 250px;
-  color: white;
-  background-color: #1a1a1a;
+  color: var(--color-white);
+  background-color: var(--color-dark-grey);
 }
 
 .input:focus {
-  outline: 1px solid #9f1b19;
+  outline: 1px solid var(--color-red);
 }
 button {
   padding: 8px 12px;

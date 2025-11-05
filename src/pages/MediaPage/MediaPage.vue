@@ -145,7 +145,7 @@ watch(
   left: 15px;
   padding: 5px;
   border-radius: 8px;
-  background-color: #9f1b19;
+  background-color: var(--color-red);
   font-size: 20px;
   font-weight: bold;
 }
@@ -173,7 +173,7 @@ watch(
   font-size: 1.1rem;
 }
 .genres span {
-  background: #1a1a1a;
+  background: var(--color-grey);
   padding: 4px 10px;
   margin-right: 5px;
   border-radius: 5px;

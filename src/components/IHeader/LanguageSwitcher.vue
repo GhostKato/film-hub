@@ -60,8 +60,8 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 }
 .switcher-button {
   background: transparent;
-  border: 1px solid #fff;
-  color: #fff;
+  border: 1px solid var(--color-white);
+  color: var(--color-white);
   padding: 5px 12px;
   border-radius: 5px;
   cursor: pointer;
@@ -78,8 +78,8 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
   position: absolute;
   top: 110%;
   left: 0;
-  background: black;
-  border: 1px solid #444;
+  background: var(--color-black);
+  border: 1px solid var(--color-grey);
   border-radius: 5px;
   list-style: none;
   padding: 5px 0;
@@ -93,10 +93,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
   transition: all 0.2s;
 }
 .dropdown li:hover {
-  background: #ff3d00;
+  background: var(--color-hover);
 }
 .dropdown li.active {
-  background: #9f1b19;
+  background: var(--color-red);
   font-weight: bold;
 }
 </style>

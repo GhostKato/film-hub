@@ -43,7 +43,7 @@ onMounted(() => {
 .container {
   position: relative;
   height: calc(100vh - 100px);
-  background-color: black;
+  background-color: var(--color-black);
   overflow: hidden;
 }
 
@@ -72,7 +72,6 @@ onMounted(() => {
 .main-title {
   font-size: 30px;
   font-weight: bold;
-  color: white;
 }
 @media (min-width: 768px) {
   .main-title {

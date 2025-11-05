@@ -22,7 +22,6 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
 
 <style scoped>
 .container {
-  background-color: black;
   display: flex;
   gap: 10px;
   flex-direction: column;

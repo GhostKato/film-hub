@@ -120,7 +120,7 @@ watch(
 
 .title {
   font-weight: bold;
-  text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 0 15px var(--color-shadow);
   margin: 0;
   margin-bottom: 20px;
 }
@@ -135,19 +135,19 @@ watch(
   padding: 5px 5px;
   border: none;
   border-radius: 8px;
-  background: #1a1a1a;
-  color: white;
+  background: var(--color-dark-grey);
+  color: var(--color-white);
   cursor: pointer;
   transition: 0.3s;
 }
 
 .categories button.active {
-  background: #9f1b19;
-  color: white;
+  background: var(--color-red);
+  color: var(--color-white);
 }
 
 .categories button:hover {
-  background: #ff3d00;
+  background: var(--color-hover);
 }
 
 .loading-more {

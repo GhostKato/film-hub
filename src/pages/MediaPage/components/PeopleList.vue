@@ -64,7 +64,6 @@ const crew = computed(() => peopleWithPhoto.value.filter((p) => p.job && !p.char
 }
 
 h2 {
-  color: white;
   text-align: center;
   margin-bottom: 15px;
 }
@@ -79,7 +78,7 @@ h2 {
 .person-card {
   width: 130px;
   text-align: center;
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
   transition: transform 0.2s;
 }
@@ -102,6 +101,6 @@ h2 {
 
 .character {
   font-size: 0.9rem;
-  color: #ccc;
+  color: var(--color-light-grey);
 }
 </style>

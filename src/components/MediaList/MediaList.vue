@@ -15,6 +15,20 @@
         class="media-card"
         @click="goToMedia(item)"
       >
+        <p
+          v-if="item.release_date"
+          class="release"
+          :style="{ backgroundColor: getReleaseColor(item.release_date) }"
+        >
+          {{ item.release_date }}
+        </p>
+        <p
+          v-if="item.vote_average"
+          class="rating"
+          :style="{ backgroundColor: getRatingColor(Number(item.vote_average)) }"
+        >
+          {{ item.vote_average }}
+        </p>
         <img
           :src="getImageUrl(item.poster_path, 'poster', 'w500')"
           :alt="item.title || item.name"
@@ -32,6 +46,7 @@
 import { useRouter } from 'vue-router'
 import { defineProps, computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
+import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 
 interface MediaItem {
   id: number
@@ -40,6 +55,8 @@ interface MediaItem {
   poster_path?: string
   media_type?: 'movie' | 'tv' | 'person'
   first_air_date?: string
+  vote_average?: string
+  release_date?: string
 }
 
 const props = defineProps<{
@@ -72,11 +89,30 @@ const goToMedia = (item: MediaItem) => {
 }
 
 .media-card {
-  background: rgba(53, 50, 50, 0.5);
+  position: relative;
+  background: var(--background-card);
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease;
+}
+
+.release {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.rating {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px;
+  border-radius: 8px;
+  font-size: 15px;
 }
 
 .media-card:hover {
@@ -93,7 +129,7 @@ const goToMedia = (item: MediaItem) => {
 .info {
   padding: 10px;
   text-align: center;
-  color: white;
+  color: var(--color-white);
 }
 
 h3 {
@@ -109,7 +145,7 @@ h3 {
 .empty,
 .loading {
   text-align: center;
-  color: white;
+  color: var(--color-white);
   margin-top: 40px;
 }
 </style>
