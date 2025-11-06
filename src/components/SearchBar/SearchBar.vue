@@ -10,7 +10,9 @@
       />
       <BaseButton v-if="query" variant="clear" @click="clearQuery">✖</BaseButton>
     </div>
-    <BaseButton variant="search" @click="search">{{ $t('search_multi_page.button') }}</BaseButton>
+    <BaseButton variant="search" :disabled="!query.trim()" @click="search">{{
+      $t('search_multi_page.button')
+    }}</BaseButton>
   </div>
 </template>
 
@@ -72,13 +74,8 @@ const clearQuery = () => {
   outline: 1px solid var(--color-red);
 }
 
-.clear-btn:hover {
-  opacity: 1;
-}
-
-button {
-  padding: 8px 12px;
-  cursor: pointer;
+.input:hover {
+  outline: 1px solid var(--color-hover);
 }
 
 @media (min-width: 768px) {

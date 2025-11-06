@@ -6,6 +6,7 @@
     :type="buttonType"
     :class="['base-button', variant]"
     @click="handleClick"
+    :disabled="disabled"
   >
     <slot />
   </component>
@@ -19,6 +20,7 @@ interface Props {
   href?: string
   type?: string
   variant?: string
+  disabled?: boolean
 }
 
 const props = defineProps<Props>()
@@ -33,6 +35,7 @@ const componentType = computed(() => {
 const buttonType = computed(() => props.type || 'button')
 
 const handleClick = (e: Event) => {
+  if (props.disabled) return
   if (!props.to && !props.href) emit('click', e)
 }
 </script>
@@ -43,7 +46,7 @@ const handleClick = (e: Event) => {
   justify-content: center;
   align-items: center;
   color: var(--color-white);
-  transition: color 0.2s;
+  transition: background-color 0.5s ease;
   cursor: pointer;
 }
 
@@ -64,11 +67,17 @@ const handleClick = (e: Event) => {
   background-color: var(--color-red);
   border-radius: 8px;
   width: 60px;
-  height: 40px;
+  height: 39px;
   border: none;
 }
 .search:hover {
   background-color: var(--color-hover);
+}
+.search:disabled {
+  background-color: var(--color-grey);
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 .clear {
   position: absolute;
@@ -79,6 +88,8 @@ const handleClick = (e: Event) => {
   color: var(--color-white);
   cursor: pointer;
   font-size: 18px;
+  padding: 8px 12px;
+  cursor: pointer;
 }
 .clear:hover {
   color: var(--color-hover);
@@ -86,7 +97,8 @@ const handleClick = (e: Event) => {
 @media (min-width: 768px) {
   .search {
     width: 90px;
-    height: 50px;
+    height: 48px;
+    font-size: 24px;
   }
   .clear {
     right: 1px;
@@ -98,7 +110,7 @@ const handleClick = (e: Event) => {
     font-size: 30px;
   }
   .clear {
-    top: 8px;
+    top: 7px;
   }
 }
 </style>

@@ -38,7 +38,7 @@ import SearchIcon from '../icons/SearchIcon.vue'
 
 .nav {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .language-div {
