@@ -45,5 +45,10 @@
   "pagination": {
     "previous": "Попередня",
     "next": "Наступна"
+  },
+  "media_list": {
+    "not_found": "Нічого не знайдено!",
+    "type_movie": "Фільм",
+    "type_series": "Серіал"
   }
 }

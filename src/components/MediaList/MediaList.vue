@@ -1,7 +1,7 @@
 <template>
   <div class="media-list">
     <div v-if="!itemsWithPoster.length && !loading && routePath !== '/search/multi'" class="empty">
-      <p>Нічого не знайдено 😢</p>
+      <p>{{ $t('media_list.not_found') }}</p>
     </div>
 
     <div v-else-if="loading" class="loading">
@@ -40,7 +40,13 @@
 
         <div class="info">
           <h3>{{ item.title || item.name }}</h3>
-          <p class="type">{{ item.media_type === 'tv' ? 'Серіал' : 'Фільм' }}</p>
+          <p class="type">
+            {{
+              item.media_type === 'tv' || (!item.media_type && isSeriesRoute)
+                ? $t('media_list.type_series')
+                : $t('media_list.type_movie')
+            }}
+          </p>
         </div>
       </div>
     </div>
@@ -48,8 +54,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { defineProps, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 
@@ -71,8 +77,10 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
+const routeSeries = useRoute()
 
 const itemsWithPoster = computed(() => props.items.filter((item) => item.poster_path))
+const isSeriesRoute = routeSeries.path.includes('/series') || routeSeries.name === 'series'
 
 const goToMedia = (item: MediaItem) => {
   const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')

@@ -45,5 +45,10 @@
   "pagination": {
     "previous": "Previous",
     "next": "Next"
+  },
+  "media_list": {
+    "not_found": "Nothing found!",
+    "type_movie": "Movie",
+    "type_series": "Series"
   }
 }
