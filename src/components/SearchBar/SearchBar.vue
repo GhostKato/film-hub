@@ -8,19 +8,19 @@
         type="text"
         :placeholder="t('search_multi_page.placeholder')"
       />
-      <BaseButton v-if="query" variant="clear" @click="clearQuery">✖</BaseButton>
+      <IButton v-if="query" variant="clear" @click="clearQuery">✖</IButton>
     </div>
-    <BaseButton variant="search" :disabled="!query.trim()" @click="search">{{
+    <IButton variant="search" :disabled="!query.trim()" @click="search">{{
       $t('search_multi_page.button')
-    }}</BaseButton>
+    }}</IButton>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import BaseButton from '../BaseButton/BaseButton.vue'
 import { useI18n } from 'vue-i18n'
+import IButton from '../IButton/IButton.vue'
 
 const { t } = useI18n()
 

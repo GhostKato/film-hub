@@ -1,0 +1,63 @@
+<template>
+  <div class="top-actions">
+    <IButton variant="collection-actions" @click="toggleCollection(media, 'myCollection')">
+      {{
+        isInCollection(media.id, 'myCollection')
+          ? $t('collection-actions.remove_collection')
+          : $t('collection-actions.add_collection')
+      }}
+    </IButton>
+
+    <IButton variant="collection-actions" @click="toggleCollection(media, 'watchLater')">
+      {{
+        isInCollection(media.id, 'watchLater')
+          ? $t('collection-actions.remove_watch_later')
+          : $t('collection-actions.add_watch_later')
+      }}
+    </IButton>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useMediaStore } from '@/stores/media'
+import IButton from '../IButton/IButton.vue'
+
+interface MediaData {
+  id: number
+  type?: 'movie' | 'tv'
+}
+
+const { media } = defineProps<{
+  media: MediaData
+}>()
+
+const route = useRoute()
+const mediaStore = useMediaStore()
+
+const currentType = computed<'movie' | 'tv'>(() => {
+  const type = route.params.type
+  return type === 'tv' ? 'tv' : 'movie'
+})
+
+const isInCollection = (id: number, listName: 'myCollection' | 'watchLater') => {
+  return mediaStore[listName].some((item) => item.id === id)
+}
+
+const toggleCollection = (item: MediaData, listName: 'myCollection' | 'watchLater') => {
+  if (isInCollection(item.id, listName)) {
+    mediaStore.removeItem(listName, item.id)
+  } else {
+    mediaStore.addItem(listName, { ...item, type: currentType.value })
+  }
+}
+</script>
+
+<style scoped>
+.top-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+</style>

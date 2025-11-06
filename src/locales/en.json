@@ -21,6 +21,11 @@
     "on_the_air": "On the Air",
     "airing_today": "Airing Today"
   },
+  "collection_page": {
+    "title": "Collection",
+    "my_collection": "My collection",
+    "watch_later": "Watch later"
+  },
   "media_page": {
     "release": "Release:",
     "duration": "Duration:",
@@ -50,5 +55,11 @@
     "not_found": "Nothing found!",
     "type_movie": "Movie",
     "type_series": "Series"
+  },
+  "collection-actions": {
+    "add_collection": "Add to Collection",
+    "remove_collection": "Remove from Collection",
+    "add_watch_later": "Watch later",
+    "remove_watch_later": "Don't watch"
   }
 }

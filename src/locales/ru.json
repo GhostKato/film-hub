@@ -21,6 +21,11 @@
     "on_the_air": "В эфире",
     "airing_today": "Сегодня в эфире"
   },
+  "collection_page": {
+    "title": "Коллекция",
+    "my_collection": "Моя коллекция",
+    "watch_later": "Посмотреть позже"
+  },
   "media_page": {
     "release": "Дата выхода:",
     "duration": "Продолжительность:",
@@ -50,5 +55,11 @@
     "not_found": "Ничего не найдено!",
     "type_movie": "Фильм",
     "type_series": "Сериал"
+  },
+  "collection-actions": {
+    "add_collection": "Добавить к Коллекции",
+    "remove_collection": "Удалить с Коллекции",
+    "add_watch_later": "Посмотреть позже",
+    "remove_watch_later": "Не смотреть"
   }
 }

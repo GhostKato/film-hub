@@ -1,16 +1,15 @@
 <template>
   <header class="container">
-    <BaseButton to="/"> <HeaderLogo /> </BaseButton>
-
+    <IButton to="/"> <HeaderLogo /> </IButton>
     <nav class="nav">
-      <BaseButton to="/search/multi" variant="header-link">
+      <IButton to="/search/multi" variant="header-link">
         <SearchIcon />
-      </BaseButton>
-      <BaseButton to="/movies" variant="header-link"> {{ $t('header.movies') }} </BaseButton>
-      <BaseButton to="/series" variant="header-link"> {{ $t('header.series') }} </BaseButton>
-      <BaseButton to="/collection" variant="header-link">
+      </IButton>
+      <IButton to="/movies" variant="header-link"> {{ $t('header.movies') }} </IButton>
+      <IButton to="/series" variant="header-link"> {{ $t('header.series') }} </IButton>
+      <IButton to="/collection" variant="header-link">
         {{ $t('header.collection') }}
-      </BaseButton>
+      </IButton>
     </nav>
 
     <div class="language-div">
@@ -21,7 +20,7 @@
 
 <script setup lang="ts">
 import HeaderLogo from '@/components/IHeader/HeaderLogo.vue'
-import BaseButton from '../BaseButton/BaseButton.vue'
+import IButton from '../IButton/IButton.vue'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 </script>

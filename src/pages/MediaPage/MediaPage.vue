@@ -40,6 +40,7 @@
             <strong>{{ $t('media_page.genres') }} </strong>
             <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
           </div>
+          <CollectionActions :media="media" />
         </div>
       </div>
 
@@ -73,6 +74,7 @@ import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { getRatingColor } from '@/utils/getColors'
+import CollectionActions from '@/components/CollectionActions/CollectionActions.vue'
 
 interface Genre {
   id: number

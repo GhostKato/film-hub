@@ -21,6 +21,11 @@
     "on_the_air": "На ефірі",
     "airing_today": "Сьогодні на ефірі"
   },
+  "collection_page": {
+    "title": "Колекція",
+    "my_collection": "Моя колекція",
+    "watch_later": "Подивитись пізніше"
+  },
   "media_page": {
     "release": "Дата вихіду:",
     "duration": "Тривалість:",
@@ -50,5 +55,11 @@
     "not_found": "Нічого не знайдено!",
     "type_movie": "Фільм",
     "type_series": "Серіал"
+  },
+  "collection-actions": {
+    "add_collection": "Додати до Колекції",
+    "remove_collection": "Видалити з Колекції",
+    "add_watch_later": "Дивитись пізніше",
+    "remove_watch_later": "Не дивитись"
   }
 }

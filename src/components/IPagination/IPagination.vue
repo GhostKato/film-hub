@@ -1,16 +1,18 @@
 <template>
   <div class="pagination" v-if="totalPages > 1">
-    <button type="button" @click="prev" :disabled="currentPage === 1">
+    <IButton @click="prev" :disabled="currentPage === 1">
       {{ $t('pagination.previous') }}
-    </button>
+    </IButton>
     <span>{{ currentPage }} / {{ totalPages }}</span>
-    <button type="button" @click="next" :disabled="currentPage === totalPages">
+    <IButton @click="next" :disabled="currentPage === totalPages">
       {{ $t('pagination.next') }}
-    </button>
+    </IButton>
   </div>
 </template>
 
 <script setup lang="ts">
+import IButton from '../IButton/IButton.vue'
+
 const props = defineProps<{
   currentPage: number
   totalPages: number

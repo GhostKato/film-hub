@@ -49,20 +49,16 @@ const handleClick = (e: Event) => {
   transition: background-color 0.5s ease;
   cursor: pointer;
 }
-
 .header-link {
   text-decoration: none;
   font-size: 24px;
 }
-
 .header-link:hover {
   color: var(--color-hover);
 }
-
 .router-link-active {
   color: var(--color-red);
 }
-
 .search {
   background-color: var(--color-red);
   border-radius: 8px;
@@ -93,6 +89,25 @@ const handleClick = (e: Event) => {
 }
 .clear:hover {
   color: var(--color-hover);
+}
+.language-switcher {
+  background: transparent;
+  border: 1px solid var(--color-white);
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  gap: 5px;
+  transition: all 0.3s;
+}
+.collection-actions {
+  background-color: var(--color-red);
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+}
+.collection-actions:hover {
+  background-color: var(--color-hover);
 }
 @media (min-width: 768px) {
   .search {

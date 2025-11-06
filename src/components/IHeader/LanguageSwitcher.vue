@@ -1,9 +1,9 @@
 <template>
   <div class="language-switcher">
-    <button class="switcher-button" @click="toggleDropdown">
+    <IButton variant="language-switcher" @click="toggleDropdown">
       {{ currentLabel }}
       <span class="arrow">{{ isOpen ? '▲' : '▼' }}</span>
-    </button>
+    </IButton>
 
     <ul v-if="isOpen" class="dropdown">
       <li
@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useLanguageStore } from '@/stores/language'
+import IButton from '../IButton/IButton.vue'
 
 const languageStore = useLanguageStore()
 const isOpen = ref(false)
@@ -58,19 +59,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
   position: relative;
   display: inline-block;
 }
-.switcher-button {
-  background: transparent;
-  border: 1px solid var(--color-white);
-  color: var(--color-white);
-  padding: 5px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.3s;
-}
+
 .arrow {
   font-size: 0.7em;
 }
