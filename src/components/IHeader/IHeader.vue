@@ -2,7 +2,7 @@
   <header class="container">
     <IButton to="/"> <HeaderLogo /> </IButton>
     <nav class="nav">
-      <IButton to="/search/multi" variant="header-link">
+      <IButton to="/search" variant="header-link">
         <SearchIcon />
       </IButton>
       <IButton to="/movies" variant="header-link"> {{ $t('header.movies') }} </IButton>

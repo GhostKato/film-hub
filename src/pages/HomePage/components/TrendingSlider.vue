@@ -40,7 +40,7 @@ interface Props {
 
 const { visibilityTrendingSlider } = defineProps<Props>()
 
-interface Movie {
+interface MediaSlider {
   id: number
   title?: string
   name?: string
@@ -48,7 +48,7 @@ interface Movie {
   media_type: 'movie' | 'tv'
 }
 
-const movies = ref<Movie[]>([])
+const movies = ref<MediaSlider[]>([])
 const moviesWithPoster = computed(() => movies.value.filter((m) => m.poster_path))
 
 const breakpoints = {
@@ -60,7 +60,7 @@ const breakpoints = {
 
 const fetchTrending = async () => {
   try {
-    const allResults: Movie[] = []
+    const allResults: MediaSlider[] = []
     for (let page = 1; page <= 3; page++) {
       const data = await getTrendingAllDay(page)
       allResults.push(...data.results)

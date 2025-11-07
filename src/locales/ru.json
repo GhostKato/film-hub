@@ -42,7 +42,7 @@
     "biography": "Биография:",
     "movies_series_title": "Фильмы и сериалы"
   },
-  "search_multi_page": {
+  "search_page": {
     "placeholder": "Поиск фильмов, сериалов...",
     "button": "Поиск",
     "search_result": "Результат поиска:"

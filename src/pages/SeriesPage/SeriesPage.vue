@@ -39,7 +39,7 @@ import { useI18n } from 'vue-i18n'
 
 const { t, locale } = useI18n()
 
-interface Category {
+interface CategoryMedia {
   key: string
   label: string
 }
@@ -47,12 +47,12 @@ interface Category {
 interface SeriesItem {
   id: number
   name: string
-  first_air_date?: string
   poster_path?: string
-  overview?: string
+  first_air_date?: string
+  vote_average?: number
 }
 
-const categories = ref<Category[]>([])
+const categories = ref<CategoryMedia[]>([])
 
 watch(
   () => locale.value,

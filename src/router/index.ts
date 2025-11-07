@@ -6,7 +6,7 @@ import SeriesPage from '../pages/SeriesPage/SeriesPage.vue'
 import CollectionPage from '../pages/CollectionPage/CollectionPage.vue'
 import MediaPage from '../pages/MediaPage/MediaPage.vue'
 import NotFoundPage from '../pages/NotFoundPage/NotFoundPage.vue'
-import SearchMultiPage from '@/pages/SearchMultiPage/SearchMultiPage.vue'
+import SearchPage from '@/pages/SearchPage/SearchPage.vue'
 import PersonPage from '@/pages/PersonPage/PersonPage.vue'
 
 const routes = [
@@ -16,7 +16,7 @@ const routes = [
   { path: '/collection', name: 'collection', component: CollectionPage },
   { path: '/media/:type/:id', name: 'media', component: MediaPage, props: true },
   { path: '/person/:id', name: 'person', component: PersonPage, props: true },
-  { path: '/search/multi', name: 'search-multi', component: SearchMultiPage },
+  { path: '/search', name: 'search', component: SearchPage },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
 ]
 

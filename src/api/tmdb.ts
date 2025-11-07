@@ -11,6 +11,7 @@ export const api = axios.create({
   },
 })
 
+// Adds the language option before each request to receive data in the user's language.
 api.interceptors.request.use((config) => {
   const languageStore = useLanguageStore()
   if (!config.params) config.params = {}
@@ -18,21 +19,22 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// Returns trending movies and series in a day.
 export async function getTrendingAllDay(page = 1) {
   const { data } = await api.get('/trending/all/day', { params: { page } })
   return data
 }
-
+// Returns full movie or series data for its id.
 export async function getMediaById(id: number | string, type: 'movie' | 'tv') {
   const { data } = await api.get(`/${type}/${id}`)
   return data
 }
-
+// Returns the actors (cast) and crew (crew) for the movie/series.
 export async function getMediaCredits(id: number | string, type: 'movie' | 'tv') {
   const { data } = await api.get(`/${type}/${id}/credits`)
   return data
 }
-
+// Searches for movies, series, people by query line.
 export async function searchMulti(query: string, page = 1) {
   if (!query.trim()) return { results: [] }
 
@@ -45,51 +47,52 @@ export async function searchMulti(query: string, page = 1) {
   })
   return data
 }
-
+// Popular movies
 export async function getPopularMovies(page = 1) {
   const { data } = await api.get('/movie/popular', { params: { page } })
   return data
 }
-
+// Highest rating
 export async function getTopRatedMovies(page = 1) {
   const { data } = await api.get('/movie/top_rated', { params: { page } })
   return data
 }
-
+// In cinemas now
 export async function getNowPlayingMovies(page = 1) {
   const { data } = await api.get('/movie/now_playing', { params: { page } })
   return data
 }
-
+// Upcoming premieres
 export async function getUpcomingMovies(page = 1) {
   const { data } = await api.get('/movie/upcoming', { params: { page } })
   return data
 }
-
+// Popular series
 export async function getPopularTV(page = 1) {
   const { data } = await api.get('/tv/popular', { params: { page } })
   return data
 }
-
+// highest rating
 export async function getTopRatedTV(page = 1) {
   const { data } = await api.get('/tv/top_rated', { params: { page } })
   return data
 }
-
+// series currently being released
 export async function getOnTheAirTV(page = 1) {
   const { data } = await api.get('/tv/on_the_air', { params: { page } })
   return data
 }
-
+// Series released today
 export async function getAiringTodayTV(page = 1) {
   const { data } = await api.get('/tv/airing_today', { params: { page } })
   return data
 }
-
+// Data of a specific person (actor, director)
 export async function getPersonById(id: number | string) {
   const { data } = await api.get(`/person/${id}`)
   return data
 }
+// All films/series where he/she acted or worked
 export async function getPersonCombinedCredits(id: number | string) {
   const { data } = await api.get(`/person/${id}/combined_credits`)
   return data
@@ -108,7 +111,7 @@ export interface Trailer {
 interface VideosResponse {
   results?: Trailer[]
 }
-
+// Returns the YouTube trailer for the movie/series.
 export async function getMediaVideos(id: number | string, type: MediaType): Promise<string | null> {
   try {
     const languageStore = useLanguageStore()
@@ -129,7 +132,7 @@ export async function getMediaVideos(id: number | string, type: MediaType): Prom
 
     return null
   } catch (error) {
-    console.error('Помилка при завантаженні відео:', error)
+    console.error('Error downloading video:', error)
     return null
   }
 }
@@ -145,13 +148,13 @@ export interface Review {
 interface ReviewsResponse {
   results?: Review[]
 }
-
+// Returns user reviews to a movie or series.
 export async function getMediaReviews(id: number | string, type: MediaType): Promise<Review[]> {
   try {
     const { data } = await api.get<ReviewsResponse>(`/${type}/${id}/reviews`)
     return data.results ?? []
   } catch (error) {
-    console.error('Помилка при завантаженні відгуків:', error)
+    console.error('Error loading reviews:', error)
     return []
   }
 }

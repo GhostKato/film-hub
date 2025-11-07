@@ -6,12 +6,12 @@
         v-model="query"
         @keyup.enter="search"
         type="text"
-        :placeholder="t('search_multi_page.placeholder')"
+        :placeholder="t('search_page.placeholder')"
       />
       <IButton v-if="query" variant="clear" @click="clearQuery">✖</IButton>
     </div>
     <IButton variant="search" :disabled="!query.trim()" @click="search">{{
-      $t('search_multi_page.button')
+      $t('search_page.button')
     }}</IButton>
   </div>
 </template>
@@ -38,13 +38,13 @@ watch(
 
 const search = () => {
   if (!query.value.trim()) return
-  router.push({ path: '/search/multi', query: { query: query.value } })
+  router.push({ path: '/search', query: { query: query.value } })
 }
 
 const clearQuery = () => {
   query.value = ''
-  if (route.path === '/search/multi') {
-    router.push({ path: '/search/multi' })
+  if (route.path === '/search') {
+    router.push({ path: '/search' })
   }
 }
 </script>

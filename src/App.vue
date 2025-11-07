@@ -16,8 +16,8 @@ body {
   padding: 0;
   box-sizing: border-box;
   height: 100%;
-  color: white;
-  background-color: #000;
+  color: var(--color-white);
+  background-color: var(--color-black);
 }
 body {
   overflow-y: scroll;
@@ -30,19 +30,19 @@ body::-webkit-scrollbar {
   width: 8px;
 }
 body::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--color-dark-grey);
 }
 body::-webkit-scrollbar-thumb {
-  background-color: #000;
+  background-color: var(color-black);
   border-radius: 4px;
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--color-dark-grey);
 }
 body::-webkit-scrollbar-thumb:hover {
-  background-color: #4d4d4d;
+  background-color: var(--color-grey);
 }
 body {
   scrollbar-width: thin;
-  scrollbar-color: #333 #1a1a1a;
+  scrollbar-color: var(--color-grey) var(--color-dark-grey);
 }
 h1,
 h2,

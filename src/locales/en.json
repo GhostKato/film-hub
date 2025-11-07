@@ -42,7 +42,7 @@
     "biography": "Biography:",
     "movies_series_title": "Movies and series"
   },
-  "search_multi_page": {
+  "search_page": {
     "placeholder": "Search movies, series...",
     "button": "Search",
     "search_result": "Search result:"

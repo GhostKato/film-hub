@@ -1,6 +1,6 @@
 <template>
   <div class="media-list">
-    <div v-if="!itemsWithPoster.length && !loading && routePath !== '/search/multi'" class="empty">
+    <div v-if="!itemsWithPoster.length && !loading && routePath !== '/search'" class="empty">
       <p>{{ $t('media_list.not_found') }}</p>
     </div>
 
@@ -66,7 +66,7 @@ interface MediaItem {
   poster_path?: string
   media_type?: 'movie' | 'tv' | 'person'
   first_air_date?: string
-  vote_average?: string
+  vote_average?: number
   release_date?: string
 }
 

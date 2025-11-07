@@ -1,7 +1,7 @@
 <template>
   <div class="youtube-player">
     <YouTube v-if="videoId" :src="videoId" />
-    <p v-else class="error">Відео не знайдено</p>
+    <p v-else class="error">Video not found</p>
   </div>
 </template>
 

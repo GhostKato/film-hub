@@ -30,7 +30,7 @@ const fetchReviews = async () => {
   try {
     reviews.value = await getMediaReviews(props.mediaId, props.type)
   } catch (error) {
-    console.error('Помилка при завантаженні відгуків:', error)
+    console.error('Error loading reviews:', error)
   } finally {
     loading.value = false
   }

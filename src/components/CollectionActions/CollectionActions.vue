@@ -26,12 +26,15 @@ import IButton from '../IButton/IButton.vue'
 
 interface MediaData {
   id: number
-  type?: 'movie' | 'tv'
+  title?: string
+  name?: string
+  poster_path?: string
+  release_date?: string
+  first_air_date?: string
+  vote_average?: number
 }
 
-const { media } = defineProps<{
-  media: MediaData
-}>()
+const { media } = defineProps<{ media: MediaData }>()
 
 const route = useRoute()
 const mediaStore = useMediaStore()
@@ -49,7 +52,16 @@ const toggleCollection = (item: MediaData, listName: 'myCollection' | 'watchLate
   if (isInCollection(item.id, listName)) {
     mediaStore.removeItem(listName, item.id)
   } else {
-    mediaStore.addItem(listName, { ...item, type: currentType.value })
+    mediaStore.addItem(listName, {
+      id: item.id,
+      title: item.title,
+      name: item.name,
+      poster_path: item.poster_path,
+      release_date: item.release_date,
+      first_air_date: item.first_air_date,
+      vote_average: item.vote_average,
+      media_type: currentType.value,
+    })
   }
 }
 </script>
