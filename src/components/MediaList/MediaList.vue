@@ -1,11 +1,7 @@
 <template>
   <div class="media-list">
-    <div v-if="!itemsWithPoster.length && !loading && routePath !== '/search'" class="empty">
+    <div v-if="!itemsWithPoster.length && !loader.loading && routePath !== '/search'" class="empty">
       <p>{{ $t('media_list.not_found') }}</p>
-    </div>
-
-    <div v-else-if="loading" class="loading">
-      <p>Завантаження...</p>
     </div>
 
     <div v-else class="media-grid">
@@ -58,6 +54,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
+import { useLoaderStore } from '@/stores/loader'
+
+const loader = useLoaderStore()
 
 interface MediaItem {
   id: number
@@ -72,7 +71,6 @@ interface MediaItem {
 
 const props = defineProps<{
   items: MediaItem[]
-  loading?: boolean
   routePath?: string
 }>()
 
@@ -104,7 +102,7 @@ const goToMedia = (item: MediaItem) => {
 
 .media-card {
   position: relative;
-  background: var(--background-card);
+  background: var(--color-transparent);
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;

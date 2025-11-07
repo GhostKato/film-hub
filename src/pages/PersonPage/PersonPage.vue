@@ -40,6 +40,9 @@ import { useLanguageStore } from '@/stores/language'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import { getImageUrl } from '@/utils/getImageUrl'
+import { useLoaderStore } from '@/stores/loader'
+
+const loader = useLoaderStore()
 
 interface Person {
   id: number
@@ -78,6 +81,7 @@ const person = ref<Person | null>(null)
 const credits = ref<Credit[]>([])
 
 const fetchPersonData = async () => {
+  loader.showLoader()
   const id = route.params.id as string
   person.value = await getPersonById(id)
   const creditsData: CreditsData = await getPersonCombinedCredits(id)
@@ -88,6 +92,7 @@ const fetchPersonData = async () => {
     poster_path: c.poster_path,
     media_type: c.media_type,
   }))
+  loader.hideLoader()
 }
 
 onMounted(fetchPersonData)

@@ -58,8 +58,6 @@
         <MediaReviews :mediaId="media.id" :type="type" />
       </div>
     </div>
-
-    <div v-else>Loading...</div>
   </IBackground>
 </template>
 
@@ -75,6 +73,9 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { getRatingColor } from '@/utils/getColors'
 import CollectionActions from '@/components/CollectionActions/CollectionActions.vue'
+import { useLoaderStore } from '@/stores/loader'
+
+const loader = useLoaderStore()
 
 interface Genre {
   id: number
@@ -118,15 +119,15 @@ const languageStore = useLanguageStore()
 
 const fetchMedia = async () => {
   try {
+    loader.showLoader()
     media.value = await getMediaById(id, type)
-
     const credits = await getMediaCredits(id, type)
     cast.value = credits.cast.filter((p: Person) => p.profile_path).slice(0, 15)
     crew.value = credits.crew
       .filter((p: Person) => ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''))
       .filter((p: Person) => p.profile_path)
-
     trailerId.value = await getMediaVideos(id, type)
+    loader.hideLoader()
   } catch (err) {
     console.error('Error fetching media:', err)
   }

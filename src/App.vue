@@ -2,11 +2,13 @@
   <IHeader />
   <main>
     <router-view />
+    <ILoader />
   </main>
 </template>
 
 <script setup lang="ts">
 import IHeader from '@/components/IHeader/IHeader.vue'
+import ILoader from './components/ILoader/ILoader.vue'
 </script>
 
 <style>

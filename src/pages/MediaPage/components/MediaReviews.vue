@@ -6,7 +6,6 @@
       <p>{{ review.content }}</p>
       <small>{{ formatDate(review.created_at) }}</small>
     </div>
-    <div v-if="loading" class="loading">Завантаження відгуків...</div>
   </div>
 </template>
 
@@ -22,17 +21,14 @@ const props = defineProps<{
 }>()
 
 const reviews = ref<Review[]>([])
-const loading = ref(false)
 const languageStore = useLanguageStore()
 
 const fetchReviews = async () => {
-  loading.value = true
   try {
     reviews.value = await getMediaReviews(props.mediaId, props.type)
   } catch (error) {
     console.error('Error loading reviews:', error)
   } finally {
-    loading.value = false
   }
 }
 

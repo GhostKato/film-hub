@@ -15,15 +15,13 @@
         </button>
       </div>
 
-      <MediaList :items="series" :loading="loading" />
+      <MediaList :items="series" />
 
       <IPagination
         :currentPage="currentPage"
         :totalPages="totalPages"
         @update:page="fetchSeries(activeCategory, $event)"
       />
-
-      <div v-if="loading && currentPage > 1" class="loading-more">Завантаження...</div>
     </div>
   </IBackground>
 </template>
@@ -36,6 +34,7 @@ import IPagination from '@/components/IPagination/IPagination.vue'
 import { getPopularTV, getTopRatedTV, getOnTheAirTV, getAiringTodayTV } from '@/api/tmdb'
 import { useLanguageStore } from '@/stores/language'
 import { useI18n } from 'vue-i18n'
+import { useLoaderStore } from '@/stores/loader'
 
 const { t, locale } = useI18n()
 
@@ -69,14 +68,14 @@ watch(
 
 const activeCategory = ref('popular')
 const series = ref<SeriesItem[]>([])
-const loading = ref(false)
 const currentPage = ref(1)
 const totalPages = ref(1)
 
+const loader = useLoaderStore()
 const languageStore = useLanguageStore()
 
 const fetchSeries = async (category: string, page = 1) => {
-  loading.value = true
+  loader.showLoader()
   try {
     let data
     switch (category) {
@@ -98,7 +97,7 @@ const fetchSeries = async (category: string, page = 1) => {
     currentPage.value = data.page
     totalPages.value = data.total_pages
   } finally {
-    loading.value = false
+    loader.hideLoader()
   }
 }
 

@@ -6,6 +6,7 @@
   --color-dark-grey: #1a1a1a;
   --color-red: #9f1b19;
   --color-hover: #ff3d00;
-  --background-card: rgba(53, 50, 50, 0.5);
+  --color-transparent-black: rgba(0, 0, 0, 0.5);
+  --color-transparent: rgba(53, 50, 50, 0.5);
   --color-shadow: rgba(0, 0, 0, 0.7);
 }

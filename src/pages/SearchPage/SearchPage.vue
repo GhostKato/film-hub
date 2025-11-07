@@ -24,6 +24,9 @@ import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
 import { searchMulti } from '@/api/tmdb'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
+import { useLoaderStore } from '@/stores/loader'
+
+const loader = useLoaderStore()
 
 const route = useRoute()
 
@@ -39,7 +42,7 @@ interface MediaItem {
 }
 
 const results = ref<MediaItem[]>([])
-const loading = ref(false)
+
 const currentPage = ref(1)
 const totalPages = ref(1)
 
@@ -47,14 +50,14 @@ const query = computed(() => (route.query.query as string) || '')
 
 const fetchSearchResults = async (q: string, page = 1) => {
   if (!q) return
-  loading.value = true
+  loader.showLoader()
   try {
     const data = await searchMulti(q, page)
     results.value = data.results.filter((item: MediaItem) => item.poster_path || item.profile_path)
     currentPage.value = data.page
     totalPages.value = data.total_pages
   } finally {
-    loading.value = false
+    loader.hideLoader()
   }
 }
 
