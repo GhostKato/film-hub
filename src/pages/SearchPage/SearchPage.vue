@@ -4,7 +4,7 @@
       <SearchBar />
       <h1 v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h1>
 
-      <MediaList :items="results" :loading="loading" :routePath="route.path" />
+      <MediaList :items="results" :routePath="route.path" />
 
       <IPagination
         v-if="query"
