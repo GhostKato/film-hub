@@ -4,12 +4,12 @@
       <div class="modal-menu">
         <div class="auth-container">
           <h3 class="user-name">{{ $t('modal-menu.title_welcome') }}</h3>
-          <h3 class="user-name">GGGGGGGGGGGGGGG</h3>
+          <h3 class="user-name">Guest</h3>
           <IButton @click="close" variant="auth-menu-btn">{{ $t('modal-menu.login') }}</IButton>
         </div>
 
         <div class="language-container">
-          <h3 class="user-name">Вибір мови</h3>
+          <h3 class="user-name">{{ $t('modal-menu.title_language_selection') }}</h3>
           <LanguageSwitcher />
         </div>
       </div>
@@ -59,15 +59,12 @@ const transitionName = computed(() => (width.value > 1023 ? 'slide-top' : 'slide
 }
 
 .modal-menu {
-  /* background: var(--color-black); */
   padding: 10px;
-  /* box-shadow: 0 8px 24px var(--color-shadow); */
   border-radius: 8px;
   pointer-events: all;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  /* border: 2px solid var(--color-dark-grey); */
 }
 
 .auth-container,
@@ -121,7 +118,8 @@ const transitionName = computed(() => (width.value > 1023 ? 'slide-top' : 'slide
   }
   .modal-menu {
     flex-direction: row;
-    gap: 180px;
+    justify-content: space-between;
+    width: 90%;
   }
   .auth-container,
   .language-container {
