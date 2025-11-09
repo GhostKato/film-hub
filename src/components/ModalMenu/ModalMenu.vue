@@ -3,9 +3,9 @@
     <div v-if="modal.modals.menu" class="modal-menu-wrapper" @click.self="close">
       <div class="modal-menu">
         <div class="auth-container">
-          <h3 class="user-name">Добропожаловать</h3>
+          <h3 class="user-name">{{ $t('modal-menu.title_welcome') }}</h3>
           <h3 class="user-name">GGGGGGGGGGGGGGG</h3>
-          <IButton @click="close" variant="auth-menu-btn">Log In</IButton>
+          <IButton @click="close" variant="auth-menu-btn">{{ $t('modal-menu.login') }}</IButton>
         </div>
 
         <div class="language-container">
