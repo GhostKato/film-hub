@@ -4,7 +4,7 @@
     :to="to"
     :href="href"
     :type="buttonType"
-    :class="['base-button', variant]"
+    :class="['base', variant]"
     @click="handleClick"
     :disabled="disabled"
   >
@@ -41,7 +41,7 @@ const handleClick = (e: Event) => {
 </script>
 
 <style scoped>
-.base-button {
+.base {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,14 +91,19 @@ const handleClick = (e: Event) => {
   color: var(--color-hover);
 }
 .language-switcher {
+  width: 50px;
+  height: 30px;
   background: transparent;
-  border: 1px solid var(--color-white);
-  padding: 5px 12px;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
   gap: 5px;
   transition: all 0.3s;
+  background-color: var(--color-black);
+}
+.language-switcher:hover {
+  background-color: var(--color-hover);
 }
 .collection-actions {
   background-color: var(--color-red);
@@ -107,6 +112,17 @@ const handleClick = (e: Event) => {
   padding: 5px;
 }
 .collection-actions:hover {
+  background-color: var(--color-hover);
+}
+
+.auth-menu-btn {
+  height: 40px;
+  width: 90px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--color-red);
+}
+.auth-menu-btn:hover {
   background-color: var(--color-hover);
 }
 @media (min-width: 768px) {

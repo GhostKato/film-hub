@@ -1,13 +1,16 @@
 <template>
   <Transition :name="transitionName">
-    <div v-if="modal.modals.menu" class="modal-panel-wrapper" @click.self="close">
-      <div class="modal-panel">
-        <header class="modal-header">
-          <h2>Guest</h2>
-          <button class="close-btn" @click="close">✕</button>
-        </header>
-        <div class="modal-body">
-          <button>Log In</button>
+    <div v-if="modal.modals.menu" class="modal-menu-wrapper" @click.self="close">
+      <div class="modal-menu">
+        <div class="auth-container">
+          <h3 class="user-name">Добропожаловать</h3>
+          <h3 class="user-name">GGGGGGGGGGGGGGG</h3>
+          <IButton @click="close" variant="auth-menu-btn">Log In</IButton>
+        </div>
+
+        <div class="language-container">
+          <h3 class="user-name">Вибір мови</h3>
+          <LanguageSwitcher />
         </div>
       </div>
     </div>
@@ -15,63 +18,71 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useModalStore } from '@/stores/modal'
+import LanguageSwitcher from '../IHeader/LanguageSwitcher.vue'
+import IButton from '../IButton/IButton.vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const modal = useModalStore()
-const windowWidth = ref(window.innerWidth)
-
-function handleResize() {
-  windowWidth.value = window.innerWidth
-}
-
-onMounted(() => window.addEventListener('resize', handleResize))
-onUnmounted(() => window.removeEventListener('resize', handleResize))
-
-const transitionName = computed(() => (windowWidth.value < 768 ? 'slide-top' : 'slide-right'))
+const width = ref(window.innerWidth)
 
 function close() {
   modal.close('menu')
 }
+
+const handleResize = () => {
+  width.value = window.innerWidth
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+const transitionName = computed(() => (width.value > 1023 ? 'slide-top' : 'slide-right'))
 </script>
 
 <style scoped>
-.modal-panel-wrapper {
+.modal-menu-wrapper {
   position: fixed;
   inset: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: flex-start;
-  padding-top: 60px;
-  z-index: 1000;
+  padding-top: 55px;
+  padding-right: 5px;
+  z-index: 50;
   pointer-events: all;
 }
 
-.modal-panel {
-  background: var(--color-dark-grey);
-  width: 90%;
-  min-width: 320px;
-  padding: 20px;
-  box-shadow: 0 8px 24px var(--color-shadow);
+.modal-menu {
+  /* background: var(--color-black); */
+  padding: 10px;
+  /* box-shadow: 0 8px 24px var(--color-shadow); */
   border-radius: 8px;
   pointer-events: all;
-}
-
-.modal-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 15px;
+  /* border: 2px solid var(--color-dark-grey); */
+}
+
+.auth-container,
+.language-container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 10px;
+  background-color: var(--color-dark-grey);
+  padding: 10px;
+  border-radius: 8px;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.modal-body {
-  margin-top: 15px;
+.user-name {
+  text-align: center;
 }
 
 .slide-top-enter-active,
@@ -97,16 +108,24 @@ function close() {
   transform: translateX(100%);
   opacity: 0;
 }
-
 @media (min-width: 768px) {
-  .modal-panel-wrapper {
-    justify-content: flex-end;
-    align-items: flex-start;
-    padding-right: 20px;
+  .modal-menu-wrapper {
     padding-top: 70px;
   }
-  .modal-panel {
-    width: 350px;
+}
+@media (min-width: 1024px) {
+  .modal-menu-wrapper {
+    justify-content: center;
+
+    padding-top: 100px;
+  }
+  .modal-menu {
+    flex-direction: row;
+    gap: 180px;
+  }
+  .auth-container,
+  .language-container {
+    flex-direction: row;
   }
 }
 </style>
