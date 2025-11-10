@@ -61,5 +61,11 @@
     "remove_collection": "Remove from Collection",
     "add_watch_later": "Watch later",
     "remove_watch_later": "Don't watch"
+  },
+  "modal-menu": {
+    "title_welcome": "Welcome",
+    "login": "Log in",
+    "logout": "Log out",
+    "title_language_selection": "Language selection"
   }
 }

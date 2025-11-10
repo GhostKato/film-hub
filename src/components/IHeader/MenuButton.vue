@@ -1,0 +1,40 @@
+<template>
+  <button @click="toggleMenu" class="menu-btn">
+    <MenuIcon v-if="!modal.modals.menu" :color="'var(--color-white)'" />
+    <span v-else class="close-icon">✕</span>
+  </button>
+</template>
+
+<script setup lang="ts">
+import { useModalStore } from '@/stores/modal'
+import MenuIcon from '@/components/icons/MenuIcon.vue'
+
+const modal = useModalStore()
+
+function toggleMenu() {
+  modal.toggle('menu')
+}
+</script>
+
+<style scoped>
+.menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.menu-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.close-icon {
+  font-size: 28px;
+  line-height: 1;
+  color: var(--color-white);
+}
+</style>

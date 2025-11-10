@@ -13,7 +13,7 @@
     </nav>
 
     <div class="language-div">
-      <LanguageSwitcher />
+      <MenuButton />
     </div>
   </header>
 </template>
@@ -21,8 +21,8 @@
 <script setup lang="ts">
 import HeaderLogo from '@/components/IHeader/HeaderLogo.vue'
 import IButton from '../IButton/IButton.vue'
-import LanguageSwitcher from './LanguageSwitcher.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
+import MenuButton from './MenuButton.vue'
 </script>
 
 <style scoped>

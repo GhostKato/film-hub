@@ -61,5 +61,11 @@
     "remove_collection": "Удалить с Коллекции",
     "add_watch_later": "Посмотреть позже",
     "remove_watch_later": "Не смотреть"
+  },
+  "modal-menu": {
+    "title_welcome": "Добро пожаловать",
+    "login": "Войти",
+    "logout": "Выйти",
+    "title_language_selection": "Выбор языка"
   }
 }

@@ -2,6 +2,7 @@
   <IHeader />
   <main>
     <router-view />
+    <ModalMenu />
     <ILoader />
   </main>
 </template>
@@ -9,6 +10,7 @@
 <script setup lang="ts">
 import IHeader from '@/components/IHeader/IHeader.vue'
 import ILoader from './components/ILoader/ILoader.vue'
+import ModalMenu from './components/ModalMenu/ModalMenu.vue'
 </script>
 
 <style>
