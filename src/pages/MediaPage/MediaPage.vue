@@ -40,22 +40,22 @@
             <strong>{{ $t('media_page.genres') }} </strong>
             <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
           </div>
-          <CollectionActions :media="media" />
+          <CollectionButtons :media="media" />
         </div>
       </div>
 
       <YouTubePlayer v-if="trailerId" :videoId="trailerId" />
 
       <div class="section" v-if="cast.length">
-        <PeopleList :people="cast" />
+        <PersonList :people="cast" />
       </div>
 
       <div class="section" v-if="crew.length">
-        <PeopleList :people="crew" />
+        <PersonList :people="crew" />
       </div>
 
       <div class="section" v-if="media.id">
-        <MediaReviews :mediaId="media.id" :type="type" />
+        <ReviewsList :mediaId="media.id" :type="type" />
       </div>
     </div>
   </IBackground>
@@ -63,16 +63,16 @@
 
 <script setup lang="ts">
 import IBackground from '@/components/IBackground/IBackground.vue'
-import PeopleList from './components/PeopleList.vue'
+import PersonList from './components/PersonList.vue'
 import YouTubePlayer from './components/YouTubePlayer.vue'
-import MediaReviews from './components/MediaReviews.vue'
+import ReviewsList from './components/ReviewsList.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { getRatingColor } from '@/utils/getColors'
-import CollectionActions from '@/components/CollectionActions/CollectionActions.vue'
+import CollectionButtons from './components/CollectionButtons.vue'
 import { useLoaderStore } from '@/stores/loader'
 
 const loader = useLoaderStore()

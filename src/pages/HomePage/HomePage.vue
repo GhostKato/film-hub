@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <HomeCurtains :isOpen="isOpen" />
-    <HomeProjector :hideProjector="hideProjector" />
-    <HomeVideo />
+    <ICurtains :isOpen="isOpen" />
+    <IProjector :hideProjector="hideProjector" />
+    <IVideo />
     <div class="background-image">
-      <TrendingSlider :visibilityTrendingSlider="visibilityTrendingSlider" />
+      <ISlider :visibilityTrendingSlider="visibilityTrendingSlider" />
       <div class="main-hello" :class="{ visible: visibilityMainHello }">
         <h1 class="main-title">{{ $t('home_page.title') }}</h1>
         <SearchBar />
@@ -15,10 +15,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import HomeCurtains from './components/HomeCurtains.vue'
-import HomeProjector from './components/HomeProjector.vue'
-import HomeVideo from './components/HomeVideo.vue'
-import TrendingSlider from './components/TrendingSlider.vue'
+import ICurtains from './components/ICurtains.vue'
+import IProjector from './components/IProjector.vue'
+import IVideo from './components/IVideo.vue'
+import ISlider from './components/ISlider.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
 const isOpen = ref(false)

@@ -22,7 +22,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMediaStore } from '@/stores/media'
-import IButton from '../IButton/IButton.vue'
+import IButton from '@/components/IButton/IButton.vue'
 
 interface MediaData {
   id: number
