@@ -1,5 +1,5 @@
 <template>
-  <div class="cinema-background">
+  <div class="background">
     <div class="content">
       <slot />
     </div>
@@ -7,7 +7,7 @@
 </template>
 
 <style scoped>
-.cinema-background {
+.background {
   width: 100%;
   overflow-y: auto;
   min-height: 100vh;
@@ -22,7 +22,7 @@
   position: relative;
 }
 
-.cinema-background::before {
+.background::before {
   content: '';
   position: absolute;
   top: -100%;

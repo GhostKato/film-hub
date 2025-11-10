@@ -9,8 +9,8 @@
 
 <script setup lang="ts">
 import IHeader from '@/components/IHeader/IHeader.vue'
-import ILoader from './components/ILoader/ILoader.vue'
-import ModalMenu from './components/ModalMenu/ModalMenu.vue'
+import ILoader from '@/components/ILoader/ILoader.vue'
+import ModalMenu from '@/components/ModalMenu/ModalMenu.vue'
 </script>
 
 <style>

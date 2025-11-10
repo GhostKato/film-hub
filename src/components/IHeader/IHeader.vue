@@ -1,6 +1,6 @@
 <template>
   <header class="container">
-    <IButton to="/"> <HeaderLogo /> </IButton>
+    <IButton to="/"> <ILogo /> </IButton>
     <nav class="nav">
       <IButton to="/search" variant="header-link">
         <SearchIcon />
@@ -12,14 +12,14 @@
       </IButton>
     </nav>
 
-    <div class="language-div">
+    <div class="language-container">
       <MenuButton />
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import HeaderLogo from '@/components/IHeader/HeaderLogo.vue'
+import ILogo from './ILogo.vue'
 import IButton from '../IButton/IButton.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 import MenuButton from './MenuButton.vue'
@@ -40,7 +40,7 @@ import MenuButton from './MenuButton.vue'
   gap: 10px;
 }
 
-.language-div {
+.language-container {
   position: absolute;
   right: 10px;
   top: 10px;
@@ -60,7 +60,7 @@ import MenuButton from './MenuButton.vue'
     flex-direction: row;
     justify-content: space-around;
   }
-  .language-div {
+  .language-container {
     position: static;
     display: flex;
     justify-content: flex-end;
@@ -68,7 +68,7 @@ import MenuButton from './MenuButton.vue'
   }
 }
 @media (min-width: 1024px) {
-  .language-div {
+  .language-container {
     width: 250px;
   }
   .icon {

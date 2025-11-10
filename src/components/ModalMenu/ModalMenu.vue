@@ -5,7 +5,7 @@
         <div class="auth-container">
           <h3 class="user-name">{{ $t('modal-menu.title_welcome') }}</h3>
           <h3 class="user-name">Guest</h3>
-          <IButton @click="close" variant="auth-menu-btn">{{ $t('modal-menu.login') }}</IButton>
+          <IButton @click="close" variant="auth-btn">{{ $t('modal-menu.login') }}</IButton>
         </div>
 
         <div class="language-container">
@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { useModalStore } from '@/stores/modal'
-import LanguageSwitcher from '../IHeader/LanguageSwitcher.vue'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 import IButton from '../IButton/IButton.vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 

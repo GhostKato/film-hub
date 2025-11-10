@@ -8,9 +8,9 @@
         type="text"
         :placeholder="t('search_page.placeholder')"
       />
-      <IButton v-if="query" variant="clear" @click="clearQuery">✖</IButton>
+      <IButton v-if="query" variant="clear-btn" @click="clearQuery">✖</IButton>
     </div>
-    <IButton variant="search" :disabled="!query.trim()" @click="search">{{
+    <IButton variant="search-btn" :disabled="!query.trim()" @click="search">{{
       $t('search_page.button')
     }}</IButton>
   </div>
@@ -20,7 +20,7 @@
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import IButton from '../IButton/IButton.vue'
+import IButton from '@/components/IButton/IButton.vue'
 
 const { t } = useI18n()
 

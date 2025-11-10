@@ -2,7 +2,7 @@
   "header": {
     "movies": "Фильмы",
     "series": "Сериалы",
-    "collection": "Коллекция"
+    "collection": "Коллекции"
   },
   "home_page": {
     "title": "Что мы смотрим сегодня?"
@@ -22,7 +22,7 @@
     "airing_today": "Сегодня в эфире"
   },
   "collection_page": {
-    "title": "Коллекция",
+    "title": "Коллекции",
     "my_collection": "Моя коллекция",
     "watch_later": "Посмотреть позже"
   },
@@ -33,6 +33,10 @@
     "min": "мин",
     "countries": "Страны:",
     "genres": "Жанры:",
+    "add_collection": "Добавить к Коллекции",
+    "remove_collection": "Удалить с Коллекции",
+    "add_watch_later": "Посмотреть позже",
+    "remove_watch_later": "Не смотреть",
     "actors_title": "Актёры",
     "production_crew_title": "Съемочная группа"
   },
@@ -55,12 +59,6 @@
     "not_found": "Ничего не найдено!",
     "type_movie": "Фильм",
     "type_series": "Сериал"
-  },
-  "collection-actions": {
-    "add_collection": "Добавить к Коллекции",
-    "remove_collection": "Удалить с Коллекции",
-    "add_watch_later": "Посмотреть позже",
-    "remove_watch_later": "Не смотреть"
   },
   "modal-menu": {
     "title_welcome": "Добро пожаловать",

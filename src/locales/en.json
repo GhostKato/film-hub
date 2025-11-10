@@ -33,6 +33,10 @@
     "min": "min:",
     "countries": "Countries:",
     "genres": "Genres:",
+    "add_collection": "Add to Collection",
+    "remove_collection": "Remove from Collection",
+    "add_watch_later": "Watch later",
+    "remove_watch_later": "Don't watch",
     "actors_title": "Actors",
     "production_crew_title": "Production Crew"
   },
@@ -55,12 +59,6 @@
     "not_found": "Nothing found!",
     "type_movie": "Movie",
     "type_series": "Series"
-  },
-  "collection-actions": {
-    "add_collection": "Add to Collection",
-    "remove_collection": "Remove from Collection",
-    "add_watch_later": "Watch later",
-    "remove_watch_later": "Don't watch"
   },
   "modal-menu": {
     "title_welcome": "Welcome",

@@ -1,18 +1,18 @@
 <template>
   <div class="top-actions">
-    <IButton variant="collection-actions" @click="toggleCollection(media, 'myCollection')">
+    <IButton variant="collection-btn" @click="toggleCollection(media, 'myCollection')">
       {{
         isInCollection(media.id, 'myCollection')
-          ? $t('collection-actions.remove_collection')
-          : $t('collection-actions.add_collection')
+          ? $t('media_page.remove_collection')
+          : $t('media_page.add_collection')
       }}
     </IButton>
 
-    <IButton variant="collection-actions" @click="toggleCollection(media, 'watchLater')">
+    <IButton variant="collection-btn" @click="toggleCollection(media, 'watchLater')">
       {{
         isInCollection(media.id, 'watchLater')
-          ? $t('collection-actions.remove_watch_later')
-          : $t('collection-actions.add_watch_later')
+          ? $t('media_page.remove_watch_later')
+          : $t('media_page.add_watch_later')
       }}
     </IButton>
   </div>

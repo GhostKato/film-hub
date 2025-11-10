@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import IButton from '../IButton/IButton.vue'
+import IButton from '@/components/IButton/IButton.vue'
 
 const props = defineProps<{
   currentPage: number

@@ -49,6 +49,7 @@ const handleClick = (e: Event) => {
   transition: background-color 0.5s ease;
   cursor: pointer;
 }
+/* IHeader component, navigation buttons */
 .header-link {
   text-decoration: none;
   font-size: 24px;
@@ -59,23 +60,25 @@ const handleClick = (e: Event) => {
 .router-link-active {
   color: var(--color-red);
 }
-.search {
+/* SearchBar component, search button */
+.search-btn {
   background-color: var(--color-red);
   border-radius: 8px;
   width: 60px;
   height: 39px;
   border: none;
 }
-.search:hover {
+.search-btn:hover {
   background-color: var(--color-hover);
 }
-.search:disabled {
+.search-btn:disabled {
   background-color: var(--color-grey);
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
-.clear {
+/* SearchBar component, clear button */
+.clear-btn {
   position: absolute;
   right: 0;
   top: 2px;
@@ -87,10 +90,11 @@ const handleClick = (e: Event) => {
   padding: 8px 12px;
   cursor: pointer;
 }
-.clear:hover {
+.clear-btn:hover {
   color: var(--color-hover);
 }
-.language-switcher {
+/* LanguageSwitcher component, language buttons */
+.language-btn {
   width: 50px;
   height: 30px;
   background: transparent;
@@ -102,36 +106,37 @@ const handleClick = (e: Event) => {
   transition: all 0.3s;
   background-color: var(--color-black);
 }
-.language-switcher:hover {
+.language-btn:hover {
   background-color: var(--color-hover);
 }
-.collection-actions {
+/* CollectionButtons component, collection button */
+.collection-btn {
   background-color: var(--color-red);
   border: none;
   border-radius: 8px;
   padding: 5px;
 }
-.collection-actions:hover {
+.collection-btn:hover {
   background-color: var(--color-hover);
 }
-
-.auth-menu-btn {
+/* ModalMenu component, auth button */
+.auth-btn {
   height: 40px;
   width: 90px;
   border: none;
   border-radius: 5px;
   background-color: var(--color-red);
 }
-.auth-menu-btn:hover {
+.auth-btn:hover {
   background-color: var(--color-hover);
 }
 @media (min-width: 768px) {
-  .search {
+  .search-btn {
     width: 90px;
     height: 48px;
     font-size: 24px;
   }
-  .clear {
+  .clear-btn {
     right: 1px;
     top: 6px;
   }
@@ -140,7 +145,7 @@ const handleClick = (e: Event) => {
   .header-link {
     font-size: 30px;
   }
-  .clear {
+  .clear-btn {
     top: 7px;
   }
 }

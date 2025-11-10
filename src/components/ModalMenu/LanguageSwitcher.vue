@@ -3,7 +3,7 @@
     <IButton
       v-for="langOption in languages"
       :key="langOption.code"
-      variant="language-switcher"
+      variant="language-btn"
       :class="{ active: currentLang === langOption.code }"
       @click="selectLang(langOption.code)"
     >
@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useLanguageStore } from '@/stores/language'
-import IButton from '../IButton/IButton.vue'
+import IButton from '@/components/IButton/IButton.vue'
 
 const languageStore = useLanguageStore()
 

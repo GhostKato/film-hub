@@ -154,8 +154,7 @@ h3 {
   opacity: 0.8;
 }
 
-.empty,
-.loading {
+.empty {
   text-align: center;
   color: var(--color-white);
   margin-top: 40px;
