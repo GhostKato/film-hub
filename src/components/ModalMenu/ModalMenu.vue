@@ -1,6 +1,6 @@
 <template>
   <Transition :name="transitionName">
-    <div v-if="modal.modals.menu" class="modal-menu-wrapper" @click.self="openAuthModal">
+    <div v-if="modal.modals.menu" class="modal-menu-wrapper" @click.self="modal.close('menu')">
       <div class="modal-menu">
         <div class="auth-container">
           <h3 class="user-name">{{ $t('modal-menu.title_welcome') }}</h3>
@@ -89,6 +89,7 @@ const nickname = computed(() => auth.user?.displayName ?? t('modal-menu.displayN
   background-color: var(--color-dark-grey);
   padding: 10px;
   border-radius: 8px;
+  border: 2px solid var(--color-black);
 }
 
 .user-name {

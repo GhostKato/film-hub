@@ -23,7 +23,7 @@
   },
   "collection_page": {
     "title": "Колекції",
-    "my_collection": "Моя колекція",
+    "favorites": "Вибране",
     "watch_later": "Подивитись пізніше"
   },
   "media_page": {
@@ -33,8 +33,8 @@
     "min": "мін:",
     "countries": "Країни:",
     "genres": "Жанри:",
-    "add_collection": "Додати до Колекції",
-    "remove_collection": "Видалити з Колекції",
+    "add_favorites": "Додати до вибраного",
+    "remove_favorites": "Вилучити з вибраного",
     "add_watch_later": "Дивитись пізніше",
     "remove_watch_later": "Не дивитись",
     "actors_title": "Актори",

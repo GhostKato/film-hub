@@ -23,7 +23,7 @@
   },
   "collection_page": {
     "title": "Коллекции",
-    "my_collection": "Моя коллекция",
+    "favorites": "Избранное",
     "watch_later": "Посмотреть позже"
   },
   "media_page": {
@@ -33,8 +33,8 @@
     "min": "мин",
     "countries": "Страны:",
     "genres": "Жанры:",
-    "add_collection": "Добавить к Коллекции",
-    "remove_collection": "Удалить с Коллекции",
+    "add_favorites": "Добавить в избранное",
+    "remove_favorites": "Удалить из избранных",
     "add_watch_later": "Посмотреть позже",
     "remove_watch_later": "Не смотреть",
     "actors_title": "Актёры",

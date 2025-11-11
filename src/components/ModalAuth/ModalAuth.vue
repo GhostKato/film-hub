@@ -1,5 +1,5 @@
 <template>
-  <div v-if="modal.modals.auth" class="modal-backdrop" @click.self="close">
+  <div v-if="modal.modals.auth" class="modal-backdrop" @click.self="modal.close('auth')">
     <div class="modal-content">
       <div class="switch-buttons">
         <button :class="{ active: mode === 'login' }" @click="mode = 'login'">Login</button>
@@ -20,17 +20,13 @@ import FormAuth from './FormAuth.vue'
 
 const modal = useModalStore()
 const mode = ref<'login' | 'register'>('login')
-
-const close = () => {
-  modal.close('auth')
-}
 </script>
 
 <style scoped>
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,6 +38,7 @@ const close = () => {
   padding: 15px;
   border-radius: 8px;
   width: 320px;
+  border: 2px solid var(--color-black);
 }
 
 .switch-buttons {
@@ -53,7 +50,6 @@ const close = () => {
   flex: 1;
   padding: 10px 10px;
   border-radius: 8px;
-
   cursor: pointer;
   border: none;
   background: var(--color-dark-grey);

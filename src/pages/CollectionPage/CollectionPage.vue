@@ -4,46 +4,62 @@
       <h1 class="title">{{ $t('collection_page.title') }}</h1>
 
       <div class="tabs">
-        <button
-          :class="{ active: activeTab === 'myCollection' }"
-          @click="changeTab('myCollection')"
-        >
-          {{ $t('collection_page.my_collection') }}
+        <button :class="{ active: activeTab === 'favorite' }" @click="changeTab('favorite')">
+          {{ $t('collection_page.favorites') }}
         </button>
-        <button :class="{ active: activeTab === 'watchLater' }" @click="changeTab('watchLater')">
+        <button :class="{ active: activeTab === 'watch_later' }" @click="changeTab('watch_later')">
           {{ $t('collection_page.watch_later') }}
         </button>
       </div>
 
-      <MediaList :items="currentData" :loading="loading" />
+      <MediaList :items="currentData" />
     </div>
   </IBackground>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import { useMediaStore } from '@/stores/media'
+import { useAuthStore } from '@/stores/auth'
+import { useLoaderStore } from '@/stores/loader'
 
 const mediaStore = useMediaStore()
+const auth = useAuthStore()
+const loader = useLoaderStore()
 
-const activeTab = ref<'myCollection' | 'watchLater'>('myCollection')
-const loading = ref(false)
+const activeTab = ref<'favorite' | 'watch_later'>('favorite')
 
-const currentData = computed(() =>
-  activeTab.value === 'myCollection' ? mediaStore.myCollection : mediaStore.watchLater,
+onMounted(async () => {
+  loader.showLoader()
+  await mediaStore.load()
+  loader.hideLoader()
+})
+
+watch(
+  () => auth.user,
+  async () => {
+    loader.showLoader()
+    await mediaStore.load()
+    loader.hideLoader()
+  },
 )
-const changeTab = (tab: 'myCollection' | 'watchLater') => {
+
+const currentData = computed(() => {
+  return activeTab.value === 'favorite' ? mediaStore.favoriteList() : mediaStore.watchLaterList()
+})
+
+const changeTab = (tab: 'favorite' | 'watch_later') => {
   activeTab.value = tab
 }
 
 watch(
-  [() => mediaStore.myCollection, () => mediaStore.watchLater],
+  () => mediaStore.media,
   () => {
-    loading.value = true
+    loader.showLoader()
     setTimeout(() => {
-      loading.value = false
+      loader.hideLoader()
     }, 200)
   },
   { deep: true },
@@ -89,10 +105,12 @@ watch(
 .tabs button:hover {
   background: var(--color-hover);
 }
+
 .loading-more {
   text-align: center;
   margin-top: 20px;
 }
+
 @media (min-width: 768px) {
   .collection-page {
     display: block;

@@ -80,14 +80,15 @@ const onSubmit = async (values: any) => {
   width: 100%;
 }
 .field {
-  background: var(--color-grey);
+  background: var(--color-black);
   border: none;
   width: 100%;
   border-radius: 8px;
   height: 35px;
+  color: var(--color-white);
 }
 .error {
-  color: red;
+  color: var(--color-hover);
   font-size: 0.9rem;
 }
 </style>

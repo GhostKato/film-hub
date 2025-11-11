@@ -6,8 +6,11 @@ import {
   signOut,
 } from 'firebase/auth'
 import type { User } from 'firebase/auth'
+import { db } from '@/firebase'
+import type { MediaItem } from '@/stores/media'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 
-// Реєстрація
+// Registration
 export const register = async (
   nickname: string,
   email: string,
@@ -20,20 +23,55 @@ export const register = async (
   return userCredential.user
 }
 
-// Логін
+// Login
 export const login = async (email: string, password: string): Promise<User> => {
   const userCredential = await signInWithEmailAndPassword(auth, email, password)
   return userCredential.user
 }
 
-// Логаут
+// Logout
 export const logout = async () => {
   await signOut(auth)
 }
 
-// Оновлення профілю
+// Profile update
 export const updateUserProfile = async (updates: { displayName?: string; photoURL?: string }) => {
   if (!auth.currentUser) throw new Error('No user logged in')
   await updateProfile(auth.currentUser, updates)
   return auth.currentUser
+}
+
+// Downloads user media
+export const loadMedia = async (userId: string): Promise<MediaItem[]> => {
+  const ref = doc(db, 'media', userId)
+  const snap = await getDoc(ref)
+  if (snap.exists()) return snap.data()?.media || []
+  return []
+}
+
+// Stores the entire array of user media
+export const saveMedia = async (userId: string, media: MediaItem[]) => {
+  const ref = doc(db, 'media', userId)
+  await setDoc(ref, { media }, { merge: true })
+}
+
+// Updates or adds one media element
+export const updateMediaItem = async (userId: string, item: MediaItem) => {
+  const ref = doc(db, 'media', userId)
+  const snap = await getDoc(ref)
+  const existing: MediaItem[] = snap.exists() ? snap.data()?.media || [] : []
+
+  const filtered = existing.filter((m) => !(m.id === item.id && m.media_type === item.media_type))
+  await setDoc(ref, { media: [...filtered, item] }, { merge: true })
+}
+
+// Removes a specific media element
+export const removeMediaItem = async (userId: string, item: MediaItem) => {
+  const ref = doc(db, 'media', userId)
+  const snap = await getDoc(ref)
+  if (!snap.exists()) return
+
+  const existing: MediaItem[] = snap.data()?.media || []
+  const filtered = existing.filter((m) => !(m.id === item.id && m.media_type === item.media_type))
+  await setDoc(ref, { media: filtered }, { merge: true })
 }
