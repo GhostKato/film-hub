@@ -40,7 +40,7 @@
             <strong>{{ $t('media_page.genres') }} </strong>
             <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
           </div>
-          <CollectionButtons :media="media" />
+          <CollectionButtons :media="{ ...media, media_type: type }" />
         </div>
       </div>
 
