@@ -1,20 +1,20 @@
 <template>
-  <Form :validation-schema="schema" @submit="onSubmit">
-    <div v-if="mode === 'register'" class="field">
+  <Form class="form-container" :validation-schema="schema" @submit="onSubmit">
+    <div class="field-container" v-if="mode === 'register'">
       <label>Nickname</label>
-      <Field name="nickname" type="text" />
+      <Field class="field" name="nickname" type="text" />
       <ErrorMessage name="nickname" class="error" />
     </div>
 
-    <div class="field">
+    <div class="field-container">
       <label>Email</label>
-      <Field name="email" type="email" />
+      <Field class="field" name="email" type="email" />
       <ErrorMessage name="email" class="error" />
     </div>
 
-    <div class="field">
+    <div class="field-container">
       <label>Password</label>
-      <Field name="password" type="password" />
+      <Field class="field" name="password" type="password" />
       <ErrorMessage name="password" class="error" />
     </div>
 
@@ -38,7 +38,6 @@ const props = defineProps<{ mode: 'login' | 'register' }>()
 const auth = useAuthStore()
 const modalStore = useModalStore()
 
-// Схема валідації
 const schema = computed(() => {
   if (props.mode === 'register') {
     return yup.object({
@@ -68,8 +67,24 @@ const onSubmit = async (values: any) => {
 </script>
 
 <style scoped>
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.field-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+  width: 100%;
+}
 .field {
-  margin-bottom: 1rem;
+  background: var(--color-grey);
+  border: none;
+  width: 100%;
+  border-radius: 8px;
+  height: 35px;
 }
 .error {
   color: red;

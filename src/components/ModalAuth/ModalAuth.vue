@@ -34,34 +34,33 @@ const close = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 80;
 }
 
 .modal-content {
-  background: var(--color-grey);
-  padding: 2rem;
+  background: var(--color-dark-grey);
+  padding: 15px;
   border-radius: 8px;
   width: 320px;
 }
 
 .switch-buttons {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
 }
 
 .switch-buttons button {
   flex: 1;
-  padding: 0.5rem 1rem;
-  margin: 0 0.25rem;
+  padding: 10px 10px;
+  border-radius: 8px;
+
   cursor: pointer;
-  border: 1px solid #ccc;
-  background: #f0f0f0;
+  border: none;
+  background: var(--color-dark-grey);
+  color: white;
 }
 
 .switch-buttons button.active {
-  background: #007bff;
-  color: white;
-  border-color: #007bff;
+  background: var(--color-red);
 }
 </style>
