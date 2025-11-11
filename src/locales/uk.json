@@ -62,6 +62,7 @@
   },
   "modal-menu": {
     "title_welcome": "Ласкаво просимо",
+    "displayName": "Гість",
     "login": "Увійти",
     "logout": "Вийти",
     "title_language_selection": "Вибір мови"
