@@ -190,10 +190,10 @@ watch(
   background: var(--color-grey);
   padding: 4px 10px;
   margin-right: 5px;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 .poster {
-  border-radius: 10px;
+  border-radius: 8px;
   object-fit: cover;
 }
 @media (min-width: 1024px) {

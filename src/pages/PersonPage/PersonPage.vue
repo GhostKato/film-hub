@@ -120,7 +120,7 @@ watch(
 
 .person-photo {
   width: 250px;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .person-info {

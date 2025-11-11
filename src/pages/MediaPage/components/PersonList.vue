@@ -90,7 +90,7 @@ h2 {
 .person-card img {
   width: 130px;
   height: 190px;
-  border-radius: 10px;
+  border-radius: 8px;
   object-fit: cover;
 }
 

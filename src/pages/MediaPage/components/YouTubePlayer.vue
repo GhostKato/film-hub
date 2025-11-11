@@ -23,7 +23,7 @@ const { videoId } = defineProps<{
   max-width: 800px;
   margin: 0 auto;
   aspect-ratio: 16 / 9;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
 }
 .error {

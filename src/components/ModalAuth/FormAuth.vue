@@ -18,11 +18,11 @@
       <ErrorMessage name="password" class="error" />
     </div>
 
-    <button type="submit" :disabled="authStore.loading">
+    <IButton variant="auth-btn" type="submit" :disabled="auth.loading">
       {{ mode === 'register' ? 'Register' : 'Login' }}
-    </button>
+    </IButton>
 
-    <p v-if="authStore.error" class="error">{{ authStore.error }}</p>
+    <p v-if="auth.error" class="error">{{ auth.error }}</p>
   </Form>
 </template>
 
@@ -32,9 +32,10 @@ import { Form, Field, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modal'
+import IButton from '../IButton/IButton.vue'
 
 const props = defineProps<{ mode: 'login' | 'register' }>()
-const authStore = useAuthStore()
+const auth = useAuthStore()
 const modalStore = useModalStore()
 
 // Схема валідації
@@ -55,12 +56,12 @@ const schema = computed(() => {
 
 const onSubmit = async (values: any) => {
   if (props.mode === 'register') {
-    await authStore.register(values.nickname, values.email, values.password)
+    await auth.register(values.nickname, values.email, values.password)
   } else {
-    await authStore.login(values.email, values.password)
+    await auth.login(values.email, values.password)
   }
 
-  if (!authStore.error) {
+  if (!auth.error) {
     modalStore.close('auth')
   }
 }

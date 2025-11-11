@@ -43,7 +43,7 @@ const next = () => {
 .pagination button {
   padding: 8px 12px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--color-dark-grey);
   color: var(--color-white);
   cursor: pointer;

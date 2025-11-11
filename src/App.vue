@@ -44,7 +44,7 @@ body::-webkit-scrollbar-track {
 }
 body::-webkit-scrollbar-thumb {
   background-color: var(color-black);
-  border-radius: 4px;
+  border-radius: 8px;
   border: 1px solid var(--color-dark-grey);
 }
 body::-webkit-scrollbar-thumb:hover {

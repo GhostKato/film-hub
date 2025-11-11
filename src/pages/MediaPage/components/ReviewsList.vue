@@ -50,7 +50,7 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
 .review-card {
   background: var(--background-card);
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--color-white);
 }
 

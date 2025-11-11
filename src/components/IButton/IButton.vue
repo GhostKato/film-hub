@@ -99,7 +99,7 @@ const handleClick = (e: Event) => {
   height: 30px;
   background: transparent;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   gap: 5px;
@@ -119,16 +119,22 @@ const handleClick = (e: Event) => {
 .collection-btn:hover {
   background-color: var(--color-hover);
 }
-/* ModalMenu component, auth button */
+/* ModalMenu, FormAuth components, auth button */
 .auth-btn {
   height: 40px;
   width: 90px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   background-color: var(--color-red);
 }
 .auth-btn:hover {
   background-color: var(--color-hover);
+}
+.auth-btn:disabled {
+  background-color: var(--color-grey);
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 @media (min-width: 768px) {
   .search-btn {

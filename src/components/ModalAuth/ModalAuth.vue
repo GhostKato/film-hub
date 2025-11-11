@@ -38,7 +38,7 @@ const close = () => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-grey);
   padding: 2rem;
   border-radius: 8px;
   width: 320px;
