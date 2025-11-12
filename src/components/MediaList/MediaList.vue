@@ -112,7 +112,7 @@ const goToMedia = (item: MediaItem) => {
 .release {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   padding: 3px;
   border-radius: 8px;
   font-size: 15px;
@@ -120,7 +120,7 @@ const goToMedia = (item: MediaItem) => {
 
 .rating {
   position: absolute;
-  top: 10px;
+  top: 40px;
   left: 10px;
   padding: 3px;
   border-radius: 8px;
