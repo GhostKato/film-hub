@@ -35,23 +35,23 @@ import { useLoaderStore } from '@/stores/loader'
 import IButton from '@/components/IButton/IButton.vue'
 
 const mediaStore = useMediaStore()
-const auth = useAuthStore()
-const loader = useLoaderStore()
+const authStore = useAuthStore()
+const loaderStore = useLoaderStore()
 
 const activeTab = ref<'favorite' | 'watch_later'>('favorite')
 
 onMounted(async () => {
-  loader.showLoader()
+  loaderStore.showLoader()
   await mediaStore.load()
-  loader.hideLoader()
+  loaderStore.hideLoader()
 })
 
 watch(
-  () => auth.user,
+  () => authStore.user,
   async () => {
-    loader.showLoader()
+    loaderStore.showLoader()
     await mediaStore.load()
-    loader.hideLoader()
+    loaderStore.hideLoader()
   },
 )
 
@@ -66,9 +66,9 @@ const changeTab = (tab: 'favorite' | 'watch_later') => {
 watch(
   () => mediaStore.media,
   () => {
-    loader.showLoader()
+    loaderStore.showLoader()
     setTimeout(() => {
-      loader.hideLoader()
+      loaderStore.hideLoader()
     }, 200)
   },
   { deep: true },

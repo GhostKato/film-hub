@@ -1,6 +1,9 @@
 <template>
   <div class="media-list">
-    <div v-if="!itemsWithPoster.length && !loader.loading && routePath !== '/search'" class="empty">
+    <div
+      v-if="!itemsWithPoster.length && !loaderStore.loading && routePath !== '/search'"
+      class="empty"
+    >
       <p>{{ $t('media_list.not_found') }}</p>
     </div>
 
@@ -56,7 +59,7 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
 
-const loader = useLoaderStore()
+const loaderStore = useLoaderStore()
 
 interface MediaItem {
   id: number

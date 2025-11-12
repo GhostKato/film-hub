@@ -1,12 +1,16 @@
 <template>
   <Transition :name="transitionName">
-    <div v-if="modal.modals.menu" class="modal-menu-wrapper" @click.self="modal.close('menu')">
+    <div
+      v-if="modalStore.modals.menu"
+      class="modal-menu-wrapper"
+      @click.self="modalStore.close('menu')"
+    >
       <div class="modal-menu">
         <div class="auth-container">
           <h3 class="user-greeting">{{ $t('modal-menu.title_welcome') }}</h3>
           <h3 class="user-name">{{ nickname }}</h3>
-          <IButton @click="auth.user ? handleLogout() : openAuthModal()" variant="auth-btn">
-            {{ auth.user ? $t('modal-menu.logout') : $t('modal-menu.login') }}
+          <IButton @click="authStore.user ? handleLogout() : openAuthModal()" variant="auth-btn">
+            {{ authStore.user ? $t('modal-menu.logout') : $t('modal-menu.login') }}
           </IButton>
         </div>
 
@@ -27,18 +31,18 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 
-const modal = useModalStore()
-const auth = useAuthStore()
+const modalStore = useModalStore()
+const authStore = useAuthStore()
 const width = ref(window.innerWidth)
 const { t } = useI18n()
 
 function openAuthModal() {
-  modal.close('menu')
-  modal.open('auth')
+  modalStore.close('menu')
+  modalStore.open('auth')
 }
 
 const handleLogout = async () => {
-  await auth.logout()
+  await authStore.logout()
 }
 
 const handleResize = () => {
@@ -55,7 +59,7 @@ onUnmounted(() => {
 
 const transitionName = computed(() => (width.value > 1023 ? 'slide-top' : 'slide-right'))
 
-const nickname = computed(() => auth.user?.displayName ?? t('modal-menu.displayName'))
+const nickname = computed(() => authStore.user?.displayName ?? t('modal-menu.displayName'))
 </script>
 
 <style scoped>

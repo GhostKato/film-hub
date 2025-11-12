@@ -35,7 +35,7 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { useLoaderStore } from '@/stores/loader'
 
-const loader = useLoaderStore()
+const loaderStore = useLoaderStore()
 
 interface Props {
   visibilityTrendingSlider: boolean
@@ -65,9 +65,9 @@ const fetchTrending = async () => {
   try {
     const allResults: MediaSlider[] = []
     for (let page = 1; page <= 3; page++) {
-      loader.showLoader()
+      loaderStore.showLoader()
       const data = await getTrendingAllDay(page)
-      loader.hideLoader()
+      loaderStore.hideLoader()
       allResults.push(...data.results)
     }
     movies.value = allResults

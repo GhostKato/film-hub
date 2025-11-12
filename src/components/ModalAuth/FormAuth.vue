@@ -18,13 +18,13 @@
       <ErrorMessage name="password" class="error" />
     </div>
 
-    <IButton variant="auth-btn" type="submit" :disabled="auth.loading">
+    <IButton variant="auth-btn" type="submit" :disabled="authStore.loading">
       {{
         mode === 'register' ? $t('modal-auth.form_btn_register') : $t('modal-auth.form_btn_login')
       }}
     </IButton>
 
-    <p v-if="auth.error" class="error">{{ auth.error }}</p>
+    <p v-if="authStore.error" class="error">{{ authStore.error }}</p>
   </Form>
 </template>
 
@@ -37,7 +37,7 @@ import { useModalStore } from '@/stores/modal'
 import IButton from '../IButton/IButton.vue'
 
 const props = defineProps<{ mode: 'login' | 'register' }>()
-const auth = useAuthStore()
+const authStore = useAuthStore()
 const modalStore = useModalStore()
 
 const schema = computed(() => {
@@ -57,12 +57,12 @@ const schema = computed(() => {
 
 const onSubmit = async (values: any) => {
   if (props.mode === 'register') {
-    await auth.register(values.nickname, values.email, values.password)
+    await authStore.register(values.nickname, values.email, values.password)
   } else {
-    await auth.login(values.email, values.password)
+    await authStore.login(values.email, values.password)
   }
 
-  if (!auth.error) {
+  if (!authStore.error) {
     modalStore.close('auth')
   }
 }

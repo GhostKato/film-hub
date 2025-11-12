@@ -76,11 +76,11 @@ const movies = ref<MovieItem[]>([])
 const currentPage = ref(1)
 const totalPages = ref(1)
 
-const loader = useLoaderStore()
+const loaderStore = useLoaderStore()
 const languageStore = useLanguageStore()
 
 const fetchMovies = async (category: string, page = 1) => {
-  loader.showLoader()
+  loaderStore.showLoader()
   try {
     let data
     switch (category) {
@@ -102,7 +102,7 @@ const fetchMovies = async (category: string, page = 1) => {
     currentPage.value = data.page
     totalPages.value = data.total_pages
   } finally {
-    loader.hideLoader()
+    loaderStore.hideLoader()
   }
 }
 

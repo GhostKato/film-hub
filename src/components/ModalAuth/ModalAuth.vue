@@ -1,5 +1,5 @@
 <template>
-  <div v-if="modal.modals.auth" class="modal-backdrop" @click.self="modal.close('auth')">
+  <div v-if="modalStore.modals.auth" class="modal-backdrop" @click.self="modalStore.close('auth')">
     <div class="modal-content">
       <div class="switch-buttons">
         <IButton
@@ -29,7 +29,7 @@ import { useModalStore } from '@/stores/modal'
 import FormAuth from './FormAuth.vue'
 import IButton from '../IButton/IButton.vue'
 
-const modal = useModalStore()
+const modalStore = useModalStore()
 const mode = ref<'login' | 'register'>('login')
 </script>
 

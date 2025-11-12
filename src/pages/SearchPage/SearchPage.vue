@@ -26,7 +26,7 @@ import { searchMulti } from '@/api/tmdb'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
 
-const loader = useLoaderStore()
+const loaderStore = useLoaderStore()
 
 const route = useRoute()
 
@@ -50,14 +50,14 @@ const query = computed(() => (route.query.query as string) || '')
 
 const fetchSearchResults = async (q: string, page = 1) => {
   if (!q) return
-  loader.showLoader()
+  loaderStore.showLoader()
   try {
     const data = await searchMulti(q, page)
     results.value = data.results.filter((item: MediaItem) => item.poster_path || item.profile_path)
     currentPage.value = data.page
     totalPages.value = data.total_pages
   } finally {
-    loader.hideLoader()
+    loaderStore.hideLoader()
   }
 }
 

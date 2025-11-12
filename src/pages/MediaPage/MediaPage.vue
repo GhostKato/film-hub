@@ -75,7 +75,7 @@ import { useLanguageStore } from '@/stores/language'
 import { getRatingColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
 
-const loader = useLoaderStore()
+const loaderStore = useLoaderStore()
 
 interface Genre {
   id: number
@@ -119,7 +119,7 @@ const languageStore = useLanguageStore()
 
 const fetchMedia = async () => {
   try {
-    loader.showLoader()
+    loaderStore.showLoader()
     media.value = await getMediaById(id, type)
     const credits = await getMediaCredits(id, type)
     cast.value = credits.cast.filter((p: Person) => p.profile_path).slice(0, 15)
@@ -127,7 +127,7 @@ const fetchMedia = async () => {
       .filter((p: Person) => ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''))
       .filter((p: Person) => p.profile_path)
     trailerId.value = await getMediaVideos(id, type)
-    loader.hideLoader()
+    loaderStore.hideLoader()
   } catch (err) {
     console.error('Error fetching media:', err)
   }
