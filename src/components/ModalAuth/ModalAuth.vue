@@ -2,12 +2,20 @@
   <div v-if="modal.modals.auth" class="modal-backdrop" @click.self="modal.close('auth')">
     <div class="modal-content">
       <div class="switch-buttons">
-        <button :class="{ active: mode === 'login' }" @click="mode = 'login'">
+        <IButton
+          variant="modal-auth-nav-btn"
+          :class="{ active: mode === 'login' }"
+          @click="mode = 'login'"
+        >
           {{ $t('modal-auth.nav_btn_login') }}
-        </button>
-        <button :class="{ active: mode === 'register' }" @click="mode = 'register'">
+        </IButton>
+        <IButton
+          variant="modal-auth-nav-btn"
+          :class="{ active: mode === 'register' }"
+          @click="mode = 'register'"
+        >
           {{ $t('modal-auth.nav_btn_register') }}
-        </button>
+        </IButton>
       </div>
 
       <FormAuth :mode="mode" />
@@ -19,6 +27,7 @@
 import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import FormAuth from './FormAuth.vue'
+import IButton from '../IButton/IButton.vue'
 
 const modal = useModalStore()
 const mode = ref<'login' | 'register'>('login')
@@ -48,17 +57,9 @@ const mode = ref<'login' | 'register'>('login')
   margin-bottom: 10px;
 }
 
-.switch-buttons button {
-  flex: 1;
-  padding: 10px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  background: var(--color-dark-grey);
-  color: white;
-}
-
-.switch-buttons button.active {
-  background: var(--color-red);
+@media (min-width: 768px) {
+  .modal-content {
+    width: 420px;
+  }
 }
 </style>

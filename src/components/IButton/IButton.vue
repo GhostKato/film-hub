@@ -48,6 +48,7 @@ const handleClick = (e: Event) => {
   color: var(--color-white);
   transition: background-color 0.5s ease;
   cursor: pointer;
+  font-size: 16px;
 }
 /* IHeader component, navigation buttons */
 .header-link {
@@ -136,6 +137,20 @@ const handleClick = (e: Event) => {
   cursor: not-allowed;
   pointer-events: none;
 }
+.modal-auth-nav-btn {
+  flex: 1;
+  padding: 10px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  background: var(--color-dark-grey);
+}
+.modal-auth-nav-btn:hover {
+  background: var(--color-hover);
+}
+.modal-auth-nav-btn.active {
+  background: var(--color-red);
+}
 @media (min-width: 768px) {
   .search-btn {
     width: 90px;
@@ -145,6 +160,16 @@ const handleClick = (e: Event) => {
   .clear-btn {
     right: 1px;
     top: 6px;
+  }
+  .collection-btn {
+    font-size: 20px;
+  }
+  .auth-btn {
+    font-size: 20px;
+    width: 210px;
+  }
+  .modal-auth-nav-btn {
+    font-size: 20px;
   }
 }
 @media (min-width: 1024px) {

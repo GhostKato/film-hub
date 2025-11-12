@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import 'normalize.css'
 import { i18n } from './i18n'
+import './assets/styles/main.css'
 
 const app = createApp(App)
 const pinia = createPinia()
