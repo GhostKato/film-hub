@@ -4,15 +4,15 @@
       <h1 class="title">{{ $t('series_page.title') }}</h1>
 
       <div class="categories">
-        <button
-          type="button"
+        <IButton
+          variant="categories-btn"
           v-for="cat in categories"
           :key="cat.key"
           :class="{ active: activeCategory === cat.key }"
           @click="changeCategory(cat.key)"
         >
           {{ cat.label }}
-        </button>
+        </IButton>
       </div>
 
       <MediaList :items="series" />
@@ -35,6 +35,7 @@ import { getPopularTV, getTopRatedTV, getOnTheAirTV, getAiringTodayTV } from '@/
 import { useLanguageStore } from '@/stores/language'
 import { useI18n } from 'vue-i18n'
 import { useLoaderStore } from '@/stores/loader'
+import IButton from '@/components/IButton/IButton.vue'
 
 const { t, locale } = useI18n()
 
@@ -137,29 +138,6 @@ watch(
   margin-bottom: 10px;
 }
 
-.categories button {
-  padding: 5px 5px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-dark-grey);
-  color: var(--color-white);
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.categories button.active {
-  background: var(--color-red);
-  color: var(--color-white);
-}
-
-.categories button:hover {
-  background: var(--color-hover);
-}
-
-.loading-more {
-  text-align: center;
-  margin-top: 20px;
-}
 @media (min-width: 768px) {
   .series-page {
     display: block;
@@ -173,10 +151,6 @@ watch(
   }
   .categories {
     gap: 10px;
-  }
-
-  .categories button {
-    padding: 10px 15px;
   }
 }
 </style>

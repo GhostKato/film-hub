@@ -4,12 +4,20 @@
       <h1 class="title">{{ $t('collection_page.title') }}</h1>
 
       <div class="tabs">
-        <button :class="{ active: activeTab === 'favorite' }" @click="changeTab('favorite')">
+        <IButton
+          variant="categories-btn"
+          :class="{ active: activeTab === 'favorite' }"
+          @click="changeTab('favorite')"
+        >
           {{ $t('collection_page.favorites') }}
-        </button>
-        <button :class="{ active: activeTab === 'watch_later' }" @click="changeTab('watch_later')">
+        </IButton>
+        <IButton
+          variant="categories-btn"
+          :class="{ active: activeTab === 'watch_later' }"
+          @click="changeTab('watch_later')"
+        >
           {{ $t('collection_page.watch_later') }}
-        </button>
+        </IButton>
       </div>
 
       <MediaList :items="currentData" />
@@ -24,6 +32,7 @@ import MediaList from '@/components/MediaList/MediaList.vue'
 import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
 import { useLoaderStore } from '@/stores/loader'
+import IButton from '@/components/IButton/IButton.vue'
 
 const mediaStore = useMediaStore()
 const auth = useAuthStore()
@@ -87,30 +96,6 @@ watch(
   margin-bottom: 10px;
 }
 
-.tabs button {
-  padding: 5px 5px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-dark-grey);
-  color: var(--color-white);
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.tabs button.active {
-  background: var(--color-red);
-  color: var(--color-white);
-}
-
-.tabs button:hover {
-  background: var(--color-hover);
-}
-
-.loading-more {
-  text-align: center;
-  margin-top: 20px;
-}
-
 @media (min-width: 768px) {
   .collection-page {
     display: block;
@@ -124,10 +109,6 @@ watch(
   }
   .tabs {
     gap: 10px;
-  }
-
-  .tabs button {
-    padding: 10px 15px;
   }
 }
 </style>

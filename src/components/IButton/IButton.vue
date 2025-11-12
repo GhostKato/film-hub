@@ -137,6 +137,7 @@ const handleClick = (e: Event) => {
   cursor: not-allowed;
   pointer-events: none;
 }
+/* ModalAuth components, auth navigation button */
 .modal-auth-nav-btn {
   flex: 1;
   padding: 10px 10px;
@@ -150,6 +151,23 @@ const handleClick = (e: Event) => {
 }
 .modal-auth-nav-btn.active {
   background: var(--color-red);
+}
+/* MoviesPage, SeriesPage, CollectionPage components, categories button */
+.categories-btn {
+  padding: 5px 5px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-dark-grey);
+  cursor: pointer;
+  transition: 0.3s;
+}
+.categories-btn.active {
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+.categories-btn:hover {
+  background: var(--color-hover);
 }
 @media (min-width: 768px) {
   .search-btn {
@@ -169,6 +187,10 @@ const handleClick = (e: Event) => {
     width: 210px;
   }
   .modal-auth-nav-btn {
+    font-size: 20px;
+  }
+  .categories-btn {
+    padding: 10px 15px;
     font-size: 20px;
   }
 }

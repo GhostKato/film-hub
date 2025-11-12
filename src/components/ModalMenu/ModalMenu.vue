@@ -3,7 +3,7 @@
     <div v-if="modal.modals.menu" class="modal-menu-wrapper" @click.self="modal.close('menu')">
       <div class="modal-menu">
         <div class="auth-container">
-          <h3 class="user-name">{{ $t('modal-menu.title_welcome') }}</h3>
+          <h3 class="user-greeting">{{ $t('modal-menu.title_welcome') }}</h3>
           <h3 class="user-name">{{ nickname }}</h3>
           <IButton @click="auth.user ? handleLogout() : openAuthModal()" variant="auth-btn">
             {{ auth.user ? $t('modal-menu.logout') : $t('modal-menu.login') }}
@@ -11,7 +11,7 @@
         </div>
 
         <div class="language-container">
-          <h3 class="user-name">{{ $t('modal-menu.title_language_selection') }}</h3>
+          <h3 class="language-title">{{ $t('modal-menu.title_language_selection') }}</h3>
           <LanguageSwitcher />
         </div>
       </div>
@@ -92,7 +92,9 @@ const nickname = computed(() => auth.user?.displayName ?? t('modal-menu.displayN
   border: 2px solid var(--color-black);
 }
 
-.user-name {
+.user-name,
+.language-title,
+.user-greeting {
   text-align: center;
 }
 
@@ -123,12 +125,16 @@ const nickname = computed(() => auth.user?.displayName ?? t('modal-menu.displayN
   .modal-menu-wrapper {
     padding-top: 70px;
   }
+  .user-name,
+  .language-title,
+  .user-greeting {
+    font-size: 20px;
+  }
 }
 @media (min-width: 1024px) {
   .modal-menu-wrapper {
     justify-content: center;
-
-    padding-top: 100px;
+    padding-top: 90px;
   }
   .modal-menu {
     flex-direction: row;
