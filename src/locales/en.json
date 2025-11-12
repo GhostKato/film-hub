@@ -66,5 +66,15 @@
     "login": "Log in",
     "logout": "Log out",
     "title_language_selection": "Language selection"
+  },
+  "modal-auth": {
+    "nav_btn_login": "Loginization",
+    "nav_btn_register": "Registration",
+    "label_nickname": "Nickname",
+    "label_email": "Email",
+    "label_password": "Password",
+    "form_btn_register": "Register",
+    "form_btn_login": "Log in",
+    "form_btn_update": "Update"
   }
 }

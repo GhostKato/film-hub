@@ -122,7 +122,7 @@ const handleClick = (e: Event) => {
 /* ModalMenu, FormAuth components, auth button */
 .auth-btn {
   height: 40px;
-  width: 90px;
+  width: 160px;
   border: none;
   border-radius: 8px;
   background-color: var(--color-red);

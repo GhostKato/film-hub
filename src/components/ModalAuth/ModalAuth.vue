@@ -2,9 +2,11 @@
   <div v-if="modal.modals.auth" class="modal-backdrop" @click.self="modal.close('auth')">
     <div class="modal-content">
       <div class="switch-buttons">
-        <button :class="{ active: mode === 'login' }" @click="mode = 'login'">Login</button>
+        <button :class="{ active: mode === 'login' }" @click="mode = 'login'">
+          {{ $t('modal-auth.nav_btn_login') }}
+        </button>
         <button :class="{ active: mode === 'register' }" @click="mode = 'register'">
-          Register
+          {{ $t('modal-auth.nav_btn_register') }}
         </button>
       </div>
 

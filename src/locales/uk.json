@@ -66,5 +66,15 @@
     "login": "Увійти",
     "logout": "Вийти",
     "title_language_selection": "Вибір мови"
+  },
+  "modal-auth": {
+    "nav_btn_login": "Логінізація",
+    "nav_btn_register": "Реєстрація",
+    "label_nickname": "Псевдонім",
+    "label_email": "Пошта",
+    "label_password": "Пароль",
+    "form_btn_register": "Зареєструватися",
+    "form_btn_login": "Увійти",
+    "form_btn_update": "Оновити"
   }
 }

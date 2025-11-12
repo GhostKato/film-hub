@@ -1,25 +1,27 @@
 <template>
   <Form class="form-container" :validation-schema="schema" @submit="onSubmit">
     <div class="field-container" v-if="mode === 'register'">
-      <label>Nickname</label>
+      <label>{{ $t('modal-auth.label_nickname') }}</label>
       <Field class="field" name="nickname" type="text" />
       <ErrorMessage name="nickname" class="error" />
     </div>
 
     <div class="field-container">
-      <label>Email</label>
+      <label>{{ $t('modal-auth.label_email') }}</label>
       <Field class="field" name="email" type="email" />
       <ErrorMessage name="email" class="error" />
     </div>
 
     <div class="field-container">
-      <label>Password</label>
+      <label>{{ $t('modal-auth.label_password') }}</label>
       <Field class="field" name="password" type="password" />
       <ErrorMessage name="password" class="error" />
     </div>
 
     <IButton variant="auth-btn" type="submit" :disabled="auth.loading">
-      {{ mode === 'register' ? 'Register' : 'Login' }}
+      {{
+        mode === 'register' ? $t('modal-auth.form_btn_register') : $t('modal-auth.form_btn_login')
+      }}
     </IButton>
 
     <p v-if="auth.error" class="error">{{ auth.error }}</p>

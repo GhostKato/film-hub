@@ -66,5 +66,15 @@
     "login": "Войти",
     "logout": "Выйти",
     "title_language_selection": "Выбор языка"
+  },
+  "modal-auth": {
+    "nav_btn_login": "Логизация",
+    "nav_btn_register": "Регистрация",
+    "label_nickname": "Прозвище",
+    "label_email": "Почта",
+    "label_password": "Пароль",
+    "form_btn_register": "Зарегистрироваться",
+    "form_btn_login": "Войти",
+    "form_btn_update": "Обновить"
   }
 }
