@@ -2,7 +2,7 @@
   <IBackground>
     <div class="search-results">
       <SearchBar />
-      <h1 v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h1>
+      <h3 class="result" v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h3>
 
       <MediaList :items="results" :routePath="route.path" />
 
@@ -78,16 +78,17 @@ watch(
 .search-results {
   padding: 20px;
 }
-
-h1 {
-  font-size: 25px;
+.result {
   font-weight: bold;
-  margin-bottom: 10px;
+  margin: 10px;
   text-align: center;
+  font-size: 16px;
 }
-
-.loading-more {
-  text-align: center;
-  margin-top: 20px;
+@media (min-width: 768px) {
+  .result {
+    margin: 15px;
+    font-size: 20px;
+    text-align: start;
+  }
 }
 </style>

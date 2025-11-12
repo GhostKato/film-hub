@@ -162,4 +162,9 @@ h3 {
   color: var(--color-white);
   margin-top: 40px;
 }
+@media (min-width: 768px) {
+  .empty {
+    font-size: 20px;
+  }
+}
 </style>
