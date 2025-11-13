@@ -1,12 +1,13 @@
 export const COLORS = {
   rating: {
     low: '#9f1b19',
-    medium: '#9d8127',
+    medium: '#b47022ff',
     high: '#008000',
   },
   release: {
     past: '#008000',
-    upcoming: '#9f1b19',
+    today: '#143e82ff',
+    upcoming: '#7E57C2',
   },
 }
 export const getRatingColor = (rating: number): string => {
@@ -19,5 +20,8 @@ export const getReleaseColor = (releaseDate: string): string => {
   const today = new Date()
   const release = new Date(releaseDate)
 
-  return release <= today ? COLORS.release.past : COLORS.release.upcoming
+  if (release > today) return COLORS.release.upcoming
+  if (today === release) return COLORS.release.today
+
+  return COLORS.release.past
 }

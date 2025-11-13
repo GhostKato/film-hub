@@ -1,17 +1,10 @@
 <template>
-  <div class="top-actions">
-    <IButton variant="collection-btn" @click="toggleFavorite(media)">
-      {{
-        isFavorite(media.id) ? $t('media_page.remove_favorites') : $t('media_page.add_favorites')
-      }}
+  <div class="btn-container">
+    <IButton variant="collection-icon-btn" @click.stop="toggleFavorite(media)">
+      <FavoriteIcon :fill="isFavorite(media.id) ? '#ff0000' : '#ffffff'" />
     </IButton>
-
-    <IButton variant="collection-btn" @click="toggleWatchLater(media)">
-      {{
-        isWatchLater(media.id)
-          ? $t('media_page.remove_watch_later')
-          : $t('media_page.add_watch_later')
-      }}
+    <IButton variant="collection-icon-btn" @click.stop="toggleWatchLater(media)">
+      <WatchLaterIcon :fill="isWatchLater(media.id) ? '#ff0000' : '#ffffff'" />
     </IButton>
   </div>
 </template>
@@ -21,6 +14,8 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMediaStore, type MediaItem } from '@/stores/media'
 import IButton from '@/components/IButton/IButton.vue'
+import FavoriteIcon from '../icons/FavoriteIcon.vue'
+import WatchLaterIcon from '../icons/WatchLaterIcon.vue'
 
 const { media } = defineProps<{ media: MediaItem }>()
 const route = useRoute()
@@ -45,9 +40,12 @@ const toggleWatchLater = (item: MediaItem) => {
 </script>
 
 <style scoped>
-.top-actions {
+.btn-container {
+  position: absolute;
+  top: 3px;
+  right: 3px;
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 3px;
 }
 </style>

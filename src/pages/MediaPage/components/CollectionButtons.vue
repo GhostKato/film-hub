@@ -1,5 +1,5 @@
 <template>
-  <div class="top-actions">
+  <div class="btn-container">
     <IButton variant="collection-btn" @click="toggleFavorite(media)">
       {{
         isFavorite(media.id) ? $t('media_page.remove_favorites') : $t('media_page.add_favorites')
@@ -45,7 +45,7 @@ const toggleWatchLater = (item: MediaItem) => {
 </script>
 
 <style scoped>
-.top-actions {
+.btn-container {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;

@@ -165,10 +165,20 @@ const handleClick = (e: Event) => {
   background: var(--color-red);
   color: var(--color-white);
 }
-
 .categories-btn:hover {
   background: var(--color-hover);
 }
+/* CollectionIconBtn component, collection button */
+.collection-icon-btn {
+  background-color: var(--color-transparent-black);
+  border: none;
+  border-radius: 50%;
+  padding: 5px;
+}
+.collection-icon-btn:hover {
+  background-color: var(--color-black);
+}
+
 @media (min-width: 768px) {
   .search-btn {
     width: 90px;

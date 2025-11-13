@@ -14,23 +14,26 @@
         class="media-card"
         @click="goToMedia(item)"
       >
-        <p
-          v-if="item.release_date || item.first_air_date"
-          class="release"
-          :style="{
-            backgroundColor: getReleaseColor((item.release_date ?? item.first_air_date) || ''),
-          }"
-        >
-          {{ item.release_date || item.first_air_date }}
-        </p>
+        <div class="release-vote-container">
+          <p
+            v-if="item.release_date || item.first_air_date"
+            class="release"
+            :style="{
+              backgroundColor: getReleaseColor((item.release_date ?? item.first_air_date) || ''),
+            }"
+          >
+            {{ item.release_date || item.first_air_date }}
+          </p>
 
-        <p
-          v-if="item.vote_average"
-          class="rating"
-          :style="{ backgroundColor: getRatingColor(Number(item.vote_average)) }"
-        >
-          {{ item.vote_average }}
-        </p>
+          <p
+            v-if="item.vote_average"
+            class="rating"
+            :style="{ backgroundColor: getRatingColor(Number(item.vote_average)) }"
+          >
+            {{ item.vote_average }}
+          </p>
+        </div>
+        <CollectionIconBtn :media="{ ...item, media_type: type }" />
 
         <img
           :src="getImageUrl(item.poster_path, 'poster', 'w500')"
@@ -58,6 +61,7 @@ import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
+import CollectionIconBtn from './CollectionIconBtn.vue'
 
 const loaderStore = useLoaderStore()
 
@@ -82,6 +86,8 @@ const routeSeries = useRoute()
 
 const itemsWithPoster = computed(() => props.items.filter((item) => item.poster_path))
 const isSeriesRoute = routeSeries.path.includes('/series') || routeSeries.name === 'series'
+
+const type = computed(() => (isSeriesRoute ? 'tv' : 'movie'))
 
 const goToMedia = (item: MediaItem) => {
   const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')
@@ -112,22 +118,26 @@ const goToMedia = (item: MediaItem) => {
   transition: transform 0.3s ease;
 }
 
-.release {
+.release-vote-container {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 3px;
+  left: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.release {
   padding: 3px;
   border-radius: 8px;
   font-size: 15px;
 }
 
 .rating {
-  position: absolute;
-  top: 40px;
-  left: 10px;
   padding: 3px;
   border-radius: 8px;
   font-size: 15px;
+  margin-right: auto;
 }
 
 .media-card:hover {
