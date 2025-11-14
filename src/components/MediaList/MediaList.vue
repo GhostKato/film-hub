@@ -146,7 +146,7 @@ const goToMedia = (item: MediaItem) => {
 
 .media-card img {
   width: 100%;
-  height: 240px;
+  height: 350px;
   object-fit: cover;
   display: block;
 }
@@ -173,6 +173,20 @@ h3 {
   margin-top: 40px;
 }
 @media (min-width: 768px) {
+  .media-card img {
+    height: 240px;
+  }
+  .empty {
+    font-size: 20px;
+  }
+}
+@media (min-width: 2560px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .media-card img {
+    height: 400px;
+  }
   .empty {
     font-size: 20px;
   }
