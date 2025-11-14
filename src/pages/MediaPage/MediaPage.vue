@@ -17,28 +17,36 @@
             alt="Poster"
           />
         </div>
-
         <div class="information">
           <h1 class="title">{{ media.title || media.name }}</h1>
           <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
           <p class="overview">{{ media.overview }}</p>
-          <p class="release-date" v-if="media.release_date || media.first_air_date">
-            {{ $t('media_page.release') }} {{ media.release_date || media.first_air_date }}
-          </p>
-          <p v-if="media.runtime">
-            {{ $t('media_page.duration') }} {{ media.runtime }} {{ $t('media_page.min') }}
-          </p>
-          <p v-if="media.episode_run_time?.length">
-            {{ $t('media_page.episode_length') }} {{ media.episode_run_time[0] }}
-            {{ $t('media_page.min') }}
-          </p>
-          <p v-if="media.production_countries?.length">
-            {{ $t('media_page.countries') }}
-            {{ media.production_countries.map((c) => c.name).join(', ') }}
-          </p>
+
+          <div class="release-date" v-if="media.release_date || media.first_air_date">
+            <strong>{{ $t('media_page.release') }}</strong>
+            <p>{{ media.release_date || media.first_air_date }}</p>
+          </div>
+
+          <div class="movie-duration" v-if="media.runtime">
+            <strong>{{ $t('media_page.duration') }}</strong>
+            <p>{{ media.runtime }} {{ $t('media_page.min') }}</p>
+          </div>
+
+          <div class="series-duration" v-if="media.episode_run_time?.length">
+            <strong>{{ $t('media_page.episode_length') }}</strong>
+            <p>{{ media.episode_run_time[0] }} {{ $t('media_page.min') }}</p>
+          </div>
+
+          <div class="countries" v-if="media.production_countries?.length">
+            <strong>{{ $t('media_page.countries') }}</strong>
+            <p>{{ media.production_countries.map((c) => c.name).join(', ') }}</p>
+          </div>
+
           <div v-if="media.genres?.length" class="genres">
             <strong>{{ $t('media_page.genres') }} </strong>
-            <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
+            <div class="genres-container">
+              <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
+            </div>
           </div>
           <CollectionButtons :media="{ ...media, media_type: type }" />
         </div>
@@ -185,6 +193,22 @@ watch(
 .overview {
   margin: 15px 0;
   font-size: 1.1rem;
+}
+.release-date,
+.movie-duration,
+.series-duration,
+.countries {
+  display: flex;
+  gap: 5px;
+}
+.genres {
+  display: flex;
+  gap: 5px;
+}
+.genres-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 .genres span {
   background: var(--color-grey);
