@@ -100,12 +100,12 @@ const goToMedia = (item: MediaItem) => {
 
 <style scoped>
 .media-list {
-  padding: 20px;
+  padding: 10px;
 }
 
 .media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
@@ -146,7 +146,7 @@ const goToMedia = (item: MediaItem) => {
 
 .media-card img {
   width: 100%;
-  height: 350px;
+  height: 460px;
   object-fit: cover;
   display: block;
 }
@@ -173,6 +173,11 @@ h3 {
   margin-top: 40px;
 }
 @media (min-width: 768px) {
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+  }
   .media-card img {
     height: 240px;
   }

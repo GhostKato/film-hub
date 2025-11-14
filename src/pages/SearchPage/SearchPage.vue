@@ -1,6 +1,6 @@
 <template>
   <IBackground>
-    <div class="search-results">
+    <div class="search-page">
       <SearchBar />
       <h3 class="result" v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h3>
 
@@ -75,8 +75,11 @@ watch(
 </script>
 
 <style scoped>
-.search-results {
-  padding: 20px;
+.search-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
 }
 .result {
   font-weight: bold;
@@ -85,6 +88,9 @@ watch(
   font-size: 16px;
 }
 @media (min-width: 768px) {
+  .search-page {
+    display: block;
+  }
   .result {
     margin: 15px;
     font-size: 20px;
