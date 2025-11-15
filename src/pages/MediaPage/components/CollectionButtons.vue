@@ -47,7 +47,13 @@ const toggleWatchLater = (item: MediaItem) => {
 <style scoped>
 .btn-container {
   display: flex;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
+}
+@media (min-width: 768px) {
+  .btn-container {
+    justify-content: flex-start;
+  }
 }
 </style>

@@ -49,6 +49,7 @@
             </div>
           </div>
           <CollectionButtons :media="{ ...media, media_type: type }" />
+          <ShareButton :title="media.title ?? media.name ?? ''" />
         </div>
       </div>
 
@@ -82,6 +83,7 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { getRatingColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
+import ShareButton from './components/ShareButton.vue'
 
 const loaderStore = useLoaderStore()
 

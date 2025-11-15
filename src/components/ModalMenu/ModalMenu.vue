@@ -43,6 +43,7 @@ function openAuthModal() {
 
 const handleLogout = async () => {
   await authStore.logout()
+  modalStore.close('menu')
 }
 
 const handleResize = () => {

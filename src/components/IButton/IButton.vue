@@ -179,6 +179,13 @@ const handleClick = (e: Event) => {
   background-color: var(--color-black);
 }
 
+.share-btn {
+  background-color: var(--color-red);
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+}
+
 @media (min-width: 768px) {
   .search-btn {
     width: 90px;
@@ -191,6 +198,10 @@ const handleClick = (e: Event) => {
   }
   .collection-btn {
     font-size: 20px;
+  }
+  .share-btn {
+    font-size: 20px;
+    align-self: flex-start;
   }
   .auth-btn {
     font-size: 20px;
