@@ -77,5 +77,8 @@
     "form_btn_register": "Register",
     "form_btn_login": "Log in",
     "form_btn_update": "Update"
+  },
+  "share-button": {
+    "message": "Look it!"
   }
 }

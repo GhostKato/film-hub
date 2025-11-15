@@ -77,5 +77,8 @@
     "form_btn_register": "Зарегистрироваться",
     "form_btn_login": "Войти",
     "form_btn_update": "Обновить"
+  },
+  "share-button": {
+    "message": "Посмотри на это!"
   }
 }

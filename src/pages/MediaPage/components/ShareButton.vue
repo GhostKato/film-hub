@@ -1,5 +1,7 @@
 <template>
-  <IButton variant="share-btn" @click="share">{{ $t('media_page.share_btn') }}</IButton>
+  <IButton variant="share-btn" @click="share">
+    {{ $t('media_page.share_btn') }}
+  </IButton>
 </template>
 
 <script setup lang="ts">
@@ -14,21 +16,23 @@ const props = defineProps({
 })
 
 const share = async () => {
-  const data = {
-    title: props.title,
-    text: 'Подивись це!',
-    url: window.location.href,
-  }
+  const shareText = `${props.title}\n{{ $t('share-button.message') }}\n${window.location.href}`
 
   if (navigator.share) {
     try {
-      await navigator.share(data)
+      await navigator.share({ text: shareText })
       return
     } catch (e) {
-      console.log(e)
+      console.log('Share API error:', e)
     }
   }
 
-  await navigator.clipboard.writeText(data.url)
+  try {
+    await navigator.clipboard.writeText(shareText)
+  } catch (e) {
+    console.log('Clipboard error:', e)
+  }
 }
 </script>
+
+<style scoped></style>
