@@ -1,59 +1,73 @@
 <template>
   <IBackground>
     <div v-if="media" class="media-page">
-      <div class="poster-inf-container">
-        <div class="poster-container">
-          <p
-            v-if="media.vote_average"
-            class="rating"
-            :style="{ backgroundColor: getRatingColor(Number(media.vote_average)) }"
-          >
-            {{ media.vote_average }}/10
-          </p>
-          <img
-            class="poster"
-            v-if="media.poster_path"
-            :src="getImageUrl(media.poster_path, 'poster', 'w342')"
-            alt="Poster"
-          />
-        </div>
-        <div class="information">
-          <h1 class="title">{{ media.title || media.name }}</h1>
-          <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
-          <p class="overview">{{ media.overview }}</p>
-
-          <div class="release-date" v-if="media.release_date || media.first_air_date">
-            <strong>{{ $t('media_page.release') }}</strong>
-            <p>{{ media.release_date || media.first_air_date }}</p>
+      <div class="all-info">
+        <div class="info-main">
+          <div class="poster-cont">
+            <img
+              class="poster"
+              v-if="media.poster_path"
+              :src="getImageUrl(media.poster_path, 'poster', 'w342')"
+              alt="Poster"
+            />
           </div>
 
-          <div class="movie-duration" v-if="media.runtime">
-            <strong>{{ $t('media_page.duration') }}</strong>
-            <p>{{ media.runtime }} {{ $t('media_page.min') }}</p>
-          </div>
+          <div class="info-cont">
+            <h1 class="title">{{ media.title || media.name }}</h1>
+            <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
+            <p class="overview">{{ media.overview }}</p>
 
-          <div class="series-duration" v-if="media.episode_run_time?.length">
-            <strong>{{ $t('media_page.episode_length') }}</strong>
-            <p>{{ media.episode_run_time[0] }} {{ $t('media_page.min') }}</p>
-          </div>
-
-          <div class="countries" v-if="media.production_countries?.length">
-            <strong>{{ $t('media_page.countries') }}</strong>
-            <p>{{ media.production_countries.map((c) => c.name).join(', ') }}</p>
-          </div>
-
-          <div v-if="media.genres?.length" class="genres">
-            <strong>{{ $t('media_page.genres') }} </strong>
-            <div class="genres-container">
-              <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
+            <div class="info-item" v-if="media.vote_average">
+              <strong>Rating:</strong>
+              <p
+                class="rating"
+                :style="{ backgroundColor: getRatingColor(Number(media.vote_average)) }"
+              >
+                {{ media.vote_average }}/10
+              </p>
             </div>
-          </div>
-          <CollectionButtons :media="{ ...media, media_type: type }" />
-          <ShareButton :title="media.title ?? media.name ?? ''" />
-        </div>
-      </div>
 
-      <YouTubePlayer v-if="trailerId" :videoId="trailerId" />
+            <div class="info-item" v-if="media.release_date || media.first_air_date">
+              <strong>{{ $t('media_page.release') }}</strong>
+              <p
+                class="release"
+                :style="{
+                  backgroundColor: getReleaseColor(
+                    (media.release_date ?? media.first_air_date) || '',
+                  ),
+                }"
+              >
+                {{ media.release_date || media.first_air_date }}
+              </p>
+            </div>
+
+            <div class="info-item" v-if="media.runtime">
+              <strong>{{ $t('media_page.duration') }}</strong>
+              <p>{{ media.runtime }} {{ $t('media_page.min') }}</p>
+            </div>
+
+            <div class="info-item" v-if="media.episode_run_time?.length">
+              <strong>{{ $t('media_page.episode_length') }}</strong>
+              <p>{{ media.episode_run_time[0] }} {{ $t('media_page.min') }}</p>
+            </div>
+
+            <div class="info-item" v-if="media.production_countries?.length">
+              <strong>{{ $t('media_page.countries') }}</strong>
+              <p>{{ media.production_countries.map((c) => c.name).join(', ') }}</p>
+            </div>
+
+            <div class="info-item" v-if="media.genres?.length">
+              <strong>{{ $t('media_page.genres') }} </strong>
+              <div class="genres">
+                <span v-for="genre in media.genres" :key="genre.id">{{ genre.name }}</span>
+              </div>
+            </div>
+            <CollectionButtons :media="{ ...media, media_type: type }" />
+            <ShareButton :title="media.title ?? media.name ?? ''" />
+          </div>
+        </div>
+        <YouTubePlayer v-if="trailerId" :videoId="trailerId" />
+      </div>
 
       <div class="section" v-if="cast.length">
         <PersonList :people="cast" />
@@ -81,7 +95,7 @@ import { useRoute } from 'vue-router'
 import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
-import { getRatingColor } from '@/utils/getColors'
+import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
 import ShareButton from './components/ShareButton.vue'
 
@@ -153,35 +167,42 @@ watch(
 
 <style scoped>
 .media-page {
-  padding: 20px;
-  margin: 0 auto;
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
 }
-.poster-container {
-  position: relative;
-}
-.rating {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  padding: 1px;
-  border-radius: 8px;
-  background-color: var(--color-red);
-  font-size: 20px;
-  font-weight: bold;
-}
-.information {
+.all-info {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
-.poster-inf-container {
+.info-main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 15px;
+}
+.rating,
+.release {
+  padding: 2px;
+  border-radius: 8px;
+  font-size: 20px;
+}
+.poster-cont {
+  display: flex;
+  justify-content: center;
+}
+.poster {
+  border-radius: 8px;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+}
+.info-cont {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 .title {
   font-size: 2.5rem;
@@ -190,24 +211,18 @@ watch(
 .tagline {
   font-style: italic;
   margin-bottom: 10px;
-  color: #ccc;
+  color: var(--color-light-grey);
 }
 .overview {
   margin: 15px 0;
   font-size: 1.1rem;
 }
-.release-date,
-.movie-duration,
-.series-duration,
-.countries {
+.info-item {
   display: flex;
+  align-items: center;
   gap: 5px;
 }
 .genres {
-  display: flex;
-  gap: 5px;
-}
-.genres-container {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
@@ -218,15 +233,16 @@ watch(
   margin-right: 5px;
   border-radius: 8px;
 }
-.poster {
-  border-radius: 8px;
-  object-fit: cover;
-}
 @media (min-width: 1024px) {
-  .poster-inf-container {
+  .info-main {
     flex-direction: row;
     justify-content: center;
-    gap: 20px;
+  }
+}
+@media (min-width: 1920px) {
+  .all-info {
+    display: flex;
+    flex-direction: row;
   }
 }
 </style>

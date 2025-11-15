@@ -15,7 +15,6 @@ const { videoId } = defineProps<{
 
 <style scoped>
 .youtube-player {
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -16,19 +16,19 @@
       </div>
     </div>
 
-    <div v-if="crew.length" class="section">
+    <div v-if="crewGrouped.length" class="section">
       <h2>{{ $t('media_page.production_crew_title') }}</h2>
       <div class="people-list">
         <router-link
-          v-for="person in crew"
+          v-for="person in crewGrouped"
           :key="person.id"
           :to="`/person/${person.id}`"
           class="person-card"
         >
           <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
           <div class="name">{{ person.name }}</div>
-          <div class="character" v-if="person.job">
-            {{ person.job }}
+          <div class="character">
+            {{ person.jobs.join(', ') }}
           </div>
         </router-link>
       </div>
@@ -55,7 +55,29 @@ const props = defineProps<{
 const peopleWithPhoto = computed(() => props.people.filter((p) => p.profile_path))
 
 const actors = computed(() => peopleWithPhoto.value.filter((p) => p.character))
-const crew = computed(() => peopleWithPhoto.value.filter((p) => p.job && !p.character))
+
+const crewGrouped = computed(() => {
+  const group = new Map<
+    number,
+    { id: number; name: string; profile_path?: string; jobs: string[] }
+  >()
+
+  peopleWithPhoto.value.forEach((p) => {
+    if (p.job && !p.character) {
+      if (!group.has(p.id)) {
+        group.set(p.id, {
+          id: p.id,
+          name: p.name,
+          profile_path: p.profile_path,
+          jobs: [],
+        })
+      }
+      group.get(p.id)!.jobs.push(p.job)
+    }
+  })
+
+  return Array.from(group.values())
+})
 </script>
 
 <style scoped>

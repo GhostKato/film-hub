@@ -185,6 +185,10 @@ const handleClick = (e: Event) => {
   border-radius: 8px;
   padding: 5px;
 }
+/* ShareButton component, share button */
+.share-btn:hover {
+  background-color: var(--color-hover);
+}
 
 @media (min-width: 768px) {
   .search-btn {
