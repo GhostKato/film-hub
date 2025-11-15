@@ -18,6 +18,9 @@ function toggleMenu() {
 
 <style scoped>
 .menu-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background: none;
   border: none;
   cursor: pointer;
@@ -36,5 +39,10 @@ function toggleMenu() {
   font-size: 28px;
   line-height: 1;
   color: var(--color-white);
+}
+@media (min-width: 768px) {
+  .menu-btn {
+    position: static;
+  }
 }
 </style>

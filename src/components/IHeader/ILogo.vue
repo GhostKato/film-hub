@@ -49,7 +49,7 @@ import logo from '@/assets/images/logo.png'
   display: block;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
   .logo {
     width: 250px;
   }

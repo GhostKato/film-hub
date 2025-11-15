@@ -55,10 +55,11 @@ const movies = ref<MediaSlider[]>([])
 const moviesWithPoster = computed(() => movies.value.filter((m) => m.poster_path))
 
 const breakpoints = {
-  320: { slidesPerView: 5 },
+  375: { slidesPerView: 4 },
   768: { slidesPerView: 8 },
-  1024: { slidesPerView: 20 },
-  2160: { slidesPerView: 30 },
+  1024: { slidesPerView: 11 },
+  1920: { slidesPerView: 20 },
+  2560: { slidesPerView: 25 },
 }
 
 const fetchTrending = async () => {

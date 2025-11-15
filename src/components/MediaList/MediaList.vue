@@ -41,7 +41,7 @@
         />
 
         <div class="info">
-          <h3>{{ item.title || item.name }}</h3>
+          <h3>{{ truncateTitle(item.title ?? item.name ?? '') }}</h3>
           <p class="type">
             {{
               item.media_type === 'tv' || (!item.media_type && isSeriesRoute)
@@ -62,6 +62,7 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
 import CollectionIconBtn from './CollectionIconBtn.vue'
+import { truncateTitle } from '@/utils/truncateTitle'
 
 const loaderStore = useLoaderStore()
 
@@ -176,6 +177,7 @@ h3 {
   .media-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-auto-rows: 320px;
     gap: 20px;
   }
   .media-card img {
@@ -188,12 +190,10 @@ h3 {
 @media (min-width: 2560px) {
   .media-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-auto-rows: 480px;
   }
   .media-card img {
     height: 400px;
-  }
-  .empty {
-    font-size: 20px;
   }
 }
 </style>

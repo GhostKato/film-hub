@@ -37,13 +37,13 @@
     font-size: 40px;
   }
 }
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
   .intro-video {
     width: 400px;
     height: 170px;
   }
 }
-@media (min-width: 2160px) {
+@media (min-width: 1920px) {
   .intro-video {
     width: 525px;
     height: 230px;

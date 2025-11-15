@@ -78,8 +78,4 @@ onMounted(() => {
     font-size: 35px;
   }
 }
-@media (min-width: 1280px) {
-  .main-hello {
-  }
-}
 </style>

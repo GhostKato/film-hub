@@ -87,13 +87,13 @@ watch(
   font-weight: bold;
   text-shadow: 0 0 15px var(--color-shadow);
   margin: 0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .tabs {
   display: flex;
   gap: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 @media (min-width: 768px) {

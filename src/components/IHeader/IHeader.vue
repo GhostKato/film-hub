@@ -12,7 +12,7 @@
       </IButton>
     </nav>
 
-    <div class="language-container">
+    <div class="menu-btn-container">
       <MenuButton />
     </div>
   </header>
@@ -33,17 +33,12 @@ import MenuButton from './MenuButton.vue'
   justify-content: center;
   align-items: center;
   height: 100px;
+  position: relative;
 }
 
 .nav {
   display: flex;
   gap: 10px;
-}
-
-.language-container {
-  position: absolute;
-  right: 10px;
-  top: 10px;
 }
 
 .icon {
@@ -60,15 +55,14 @@ import MenuButton from './MenuButton.vue'
     flex-direction: row;
     justify-content: space-around;
   }
-  .language-container {
-    position: static;
+  .menu-btn-container {
     display: flex;
     justify-content: flex-end;
     width: 200px;
   }
 }
 @media (min-width: 1024px) {
-  .language-container {
+  .menu-btn-container {
     width: 250px;
   }
   .icon {
