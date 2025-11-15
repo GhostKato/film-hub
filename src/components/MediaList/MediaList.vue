@@ -33,7 +33,10 @@
             {{ item.vote_average }}
           </p>
         </div>
-        <CollectionIconBtn :media="{ ...item, media_type: type }" />
+        <CollectionIconBtn
+          v-if="!routePerson.path.startsWith('/person')"
+          :media="{ ...item, media_type: type }"
+        />
 
         <img
           :src="getImageUrl(item.poster_path, 'poster', 'w500')"
@@ -84,6 +87,7 @@ const props = defineProps<{
 
 const router = useRouter()
 const routeSeries = useRoute()
+const routePerson = useRoute()
 
 const itemsWithPoster = computed(() => props.items.filter((item) => item.poster_path))
 const isSeriesRoute = routeSeries.path.includes('/series') || routeSeries.name === 'series'
