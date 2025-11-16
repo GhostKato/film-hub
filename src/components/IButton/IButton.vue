@@ -168,24 +168,13 @@ const handleClick = (e: Event) => {
 .categories-btn:hover {
   background: var(--color-hover);
 }
-/* CollectionIconBtn component, collection button */
-.collection-icon-btn {
-  background-color: var(--color-transparent-black);
-  border: none;
-  border-radius: 50%;
-  padding: 5px;
-}
-.collection-icon-btn:hover {
-  background-color: var(--color-black);
-}
-
+/* ShareButton component, share button */
 .share-btn {
   background-color: var(--color-red);
   border: none;
   border-radius: 8px;
   padding: 5px;
 }
-/* ShareButton component, share button */
 .share-btn:hover {
   background-color: var(--color-hover);
 }

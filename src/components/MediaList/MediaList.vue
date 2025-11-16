@@ -33,7 +33,7 @@
             {{ item.vote_average }}
           </p>
         </div>
-        <CollectionIconBtn
+        <CollectionIndicator
           v-if="!routePerson.path.startsWith('/person')"
           :media="{ ...item, media_type: type }"
         />
@@ -64,7 +64,7 @@ import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
-import CollectionIconBtn from './CollectionIconBtn.vue'
+import CollectionIndicator from './CollectionIndicator.vue'
 import { truncateTitle } from '@/utils/truncateTitle'
 
 const loaderStore = useLoaderStore()
