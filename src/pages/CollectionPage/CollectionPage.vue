@@ -5,19 +5,13 @@
 
       <div class="tabs">
         <IButton
+          v-for="tab in tabs"
+          :key="tab.key"
           variant="categories-btn"
-          :class="{ active: activeTab === 'favorite' }"
-          @click="changeTab('favorite')"
+          :class="{ active: activeTab === tab.key }"
+          @click="changeTab(tab.key)"
         >
-          {{ $t('collection_page.favorites') }}
-        </IButton>
-
-        <IButton
-          variant="categories-btn"
-          :class="{ active: activeTab === 'watch_later' }"
-          @click="changeTab('watch_later')"
-        >
-          {{ $t('collection_page.watch_later') }}
+          {{ tab.label }}
         </IButton>
       </div>
 
@@ -35,33 +29,45 @@ import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
 import { useLoaderStore } from '@/stores/loader'
 import IButton from '@/components/IButton/IButton.vue'
+import { useI18n } from 'vue-i18n'
+import { MAIN_ACCOUNT_ID } from '@/constants'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
 
-const activeTab = ref<'favorite' | 'watch_later'>('favorite')
+type TabKey = 'recommended' | 'favorites' | 'watch_later'
 
-onMounted(async () => {
-  const urlCategory = route.query.category
+interface Tab {
+  key: TabKey
+  label: string
+}
 
-  if (urlCategory === 'favorite' || urlCategory === 'watch_later') {
-    activeTab.value = urlCategory
+const tabs = computed<Tab[]>(() => {
+  const baseTabs: Tab[] = [
+    { key: 'favorites', label: t('collection_page.favorites') },
+    { key: 'watch_later', label: t('collection_page.watch_later') },
+  ]
+
+  if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
+    baseTabs.unshift({ key: 'recommended', label: t('collection_page.recommended') })
   }
-
-  loaderStore.showLoader()
-  await mediaStore.load()
-  loaderStore.hideLoader()
+  return baseTabs
 })
-const changeTab = (tab: 'favorite' | 'watch_later') => {
-  activeTab.value = tab
 
+const activeTab = ref<TabKey>(
+  (route.query.category as TabKey) ||
+    (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID ? 'recommended' : 'favorites'),
+)
+const changeTab = (tab: TabKey) => {
+  activeTab.value = tab
   router.replace({
     query: {
-      category: activeTab.value,
+      category: tab,
     },
   })
 }
@@ -69,11 +75,24 @@ const changeTab = (tab: 'favorite' | 'watch_later') => {
 watch(
   () => route.query.category,
   (newValue) => {
-    if (newValue === 'favorite' || newValue === 'watch_later') {
+    if (newValue === 'favorites' || newValue === 'watch_later' || newValue === 'recommended') {
       activeTab.value = newValue
     }
   },
 )
+
+onMounted(async () => {
+  if (!route.query.category) {
+    router.replace({ path: route.path, query: { category: 'recommended' } })
+  }
+
+  loaderStore.showLoader()
+  await mediaStore.load()
+  if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
+    await mediaStore.fetchRecommended()
+  }
+  loaderStore.hideLoader()
+})
 
 watch(
   () => authStore.user,
@@ -85,7 +104,16 @@ watch(
 )
 
 const currentData = computed(() => {
-  return activeTab.value === 'favorite' ? mediaStore.favoriteList() : mediaStore.watchLaterList()
+  switch (activeTab.value) {
+    case 'favorites':
+      return mediaStore.favoriteList()
+    case 'watch_later':
+      return mediaStore.watchLaterList()
+    case 'recommended':
+      return mediaStore.recommendedList()
+    default:
+      return []
+  }
 })
 
 watch(
@@ -96,21 +124,6 @@ watch(
   },
   { deep: true },
 )
-
-onMounted(async () => {
-  const urlCategory = route.query.category
-
-  if (!urlCategory) {
-    router.replace({ query: { category: 'favorite' } })
-    activeTab.value = 'favorite'
-  } else if (urlCategory === 'favorite' || urlCategory === 'watch_later') {
-    activeTab.value = urlCategory
-  }
-
-  loaderStore.showLoader()
-  await mediaStore.load()
-  loaderStore.hideLoader()
-})
 </script>
 
 <style scoped>

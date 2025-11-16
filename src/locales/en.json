@@ -24,7 +24,8 @@
   "collection_page": {
     "title": "Collection",
     "favorites": "Favorites",
-    "watch_later": "Watch later"
+    "watch_later": "Watch later",
+    "recommended": "Recommended"
   },
   "media_page": {
     "release": "Release:",

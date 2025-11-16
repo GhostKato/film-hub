@@ -75,3 +75,21 @@ export const removeMediaItem = async (userId: string, item: MediaItem) => {
   const filtered = existing.filter((m) => !(m.id === item.id && m.media_type === item.media_type))
   await setDoc(ref, { media: filtered }, { merge: true })
 }
+
+//Save recommendations (master account only)
+export const saveRecommended = async (media: MediaItem[]) => {
+  const ref = doc(db, 'recommended', 'mainId')
+  await setDoc(ref, { recommended: media })
+}
+
+// //Reads recommendations
+export const loadRecommended = async (): Promise<MediaItem[]> => {
+  const ref = doc(db, 'recommended', 'mainId')
+  const snap = await getDoc(ref)
+
+  if (snap.exists()) {
+    return snap.data()?.recommended || []
+  }
+
+  return []
+}

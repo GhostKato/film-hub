@@ -24,7 +24,8 @@
   "collection_page": {
     "title": "Коллекции",
     "favorites": "Избранное",
-    "watch_later": "Посмотреть позже"
+    "watch_later": "Посмотреть позже",
+    "recommended": "Рекомендуется"
   },
   "media_page": {
     "release": "Дата выхода:",

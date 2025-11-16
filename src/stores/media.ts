@@ -1,7 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useAuthStore } from './auth'
-import { loadMedia, saveMedia, removeMediaItem, updateMediaItem } from '@/api/firebase'
+import {
+  loadMedia,
+  saveMedia,
+  removeMediaItem,
+  updateMediaItem,
+  saveRecommended,
+  loadRecommended,
+} from '@/api/firebase'
+import { MAIN_ACCOUNT_ID } from '@/constants'
 
 export interface MediaItem {
   id: number
@@ -18,9 +26,11 @@ export interface MediaItem {
 
 export const useMediaStore = defineStore('media', () => {
   const media = ref<MediaItem[]>(JSON.parse(localStorage.getItem('media') || '[]'))
+
+  const recommended = ref<MediaItem[]>([])
+
   const authStore = useAuthStore()
 
-  // Saves changes to either Firestore (if the user is logged in) or localStorage.
   const save = async () => {
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, media.value)
@@ -29,14 +39,21 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
 
-  // Adds or removes media to favorites/“view later” by syncing with Firestore or locally.
+  const updateRecommended = async () => {
+    if (authStore.user?.uid !== MAIN_ACCOUNT_ID) return
+
+    const list = media.value.filter((item) => item.favorite)
+
+    await saveRecommended(list)
+
+    recommended.value = list
+  }
   const toggleMedia = async (item: MediaItem, key: 'favorite' | 'watch_later') => {
     const existing = media.value.find((m) => m.id === item.id && m.media_type === item.media_type)
 
     if (existing) {
       existing[key] = !existing[key]
 
-      // If both false — keys are deleted
       if (!existing.favorite && !existing.watch_later) {
         media.value = media.value.filter(
           (m) => !(m.id === item.id && m.media_type === item.media_type),
@@ -46,31 +63,28 @@ export const useMediaStore = defineStore('media', () => {
         await updateMediaItem(authStore.user.uid, existing)
       }
     } else {
-      const newItem: MediaItem = {
+      const newItem = {
         ...item,
         favorite: key === 'favorite',
         watch_later: key === 'watch_later',
       }
       media.value.push(newItem)
+
       if (authStore.user?.uid) await updateMediaItem(authStore.user.uid, newItem)
     }
 
-    // Local saving for guests
+    if (authStore.user?.uid === MAIN_ACCOUNT_ID) {
+      await updateRecommended()
+    }
+
     if (!authStore.user?.uid) await save()
   }
 
-  // The load function loads the user's media:
-  // if the user is logged in, it takes data from Firestore, combines it with local (no duplicates), saves the updated list back to Firestore, and clears localStorage;
-  // if the user is not logged in, simply pulls up the media from localStorage.
   const load = async () => {
     if (authStore.user?.uid) {
-      // 1. Downloading Firestore
       const serverMedia = await loadMedia(authStore.user.uid)
-
-      // 2. Upload local media (if any)
       const localMedia: MediaItem[] = JSON.parse(localStorage.getItem('media') || '[]')
 
-      // 3. Combine while avoiding duplicates
       const merged = [
         ...serverMedia,
         ...localMedia.filter(
@@ -79,26 +93,50 @@ export const useMediaStore = defineStore('media', () => {
       ]
 
       media.value = merged
-
-      // 4. We store the already combined data on Firestore
       await saveMedia(authStore.user.uid, merged)
-
-      // 5. Cleaning localStorage
       localStorage.removeItem('media')
+
+      if (authStore.user?.uid === MAIN_ACCOUNT_ID) {
+        await updateRecommended()
+      }
     } else {
       media.value = JSON.parse(localStorage.getItem('media') || '[]')
     }
-  }
 
-  // Clears everything saved (on the server or locally).
+    recommended.value = await loadRecommended()
+  }
   const clear = async () => {
     media.value = []
-    if (authStore.user?.uid) await saveMedia(authStore.user.uid, [])
-    else localStorage.setItem('media', JSON.stringify([]))
+
+    if (authStore.user?.uid) {
+      await saveMedia(authStore.user.uid, [])
+
+      if (authStore.user?.uid === MAIN_ACCOUNT_ID) {
+        await updateRecommended()
+      }
+    } else {
+      localStorage.setItem('media', JSON.stringify([]))
+    }
   }
-  // Selectors for quick access to the desired lists.
+
+  const fetchRecommended = async () => {
+    recommended.value = await loadRecommended()
+  }
+
   const favoriteList = () => media.value.filter((m) => m.favorite)
   const watchLaterList = () => media.value.filter((m) => m.watch_later)
+  const recommendedList = () => recommended.value
 
-  return { media, toggleMedia, favoriteList, watchLaterList, load, clear }
+  return {
+    media,
+    recommended,
+    toggleMedia,
+    favoriteList,
+    watchLaterList,
+    recommendedList,
+    load,
+    clear,
+    updateRecommended,
+    fetchRecommended,
+  }
 })

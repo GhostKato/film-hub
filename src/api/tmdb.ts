@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { useLanguageStore } from '@/stores/language'
+import { TMDB_TOKEN } from '@/constants'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
-const TOKEN = import.meta.env.VITE_TMDB_TOKEN
 
 export const api = axios.create({
   baseURL: BASE_URL,
   headers: {
-    Authorization: `Bearer ${TOKEN}`,
+    Authorization: `Bearer ${TMDB_TOKEN}`,
   },
 })
 
