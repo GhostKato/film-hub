@@ -15,7 +15,14 @@
         </IButton>
       </div>
 
-      <MediaList :items="currentData" />
+      <MediaList :items="paginatedData" />
+
+      <IPagination
+        v-if="totalPages > 1"
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @update:page="(p) => (currentPage = p)"
+      />
     </div>
   </IBackground>
 </template>
@@ -25,6 +32,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
+import IPagination from '@/components/IPagination/IPagination.vue'
 import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
 import { useLoaderStore } from '@/stores/loader'
@@ -54,8 +62,12 @@ const tabs = computed<Tab[]>(() => {
   ]
 
   if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
-    baseTabs.unshift({ key: 'recommended', label: t('collection_page.recommended') })
+    baseTabs.unshift({
+      key: 'recommended',
+      label: t('collection_page.recommended'),
+    })
   }
+
   return baseTabs
 })
 
@@ -63,42 +75,38 @@ const activeTab = ref<TabKey>(
   (route.query.category as TabKey) ||
     (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID ? 'recommended' : 'favorites'),
 )
+
 const changeTab = (tab: TabKey) => {
   activeTab.value = tab
   router.replace({
-    query: {
-      category: tab,
-    },
+    query: { category: tab, page: 1 },
   })
 }
 
 watch(
   () => route.query.category,
   (newValue) => {
-    if (newValue === 'favorites' || newValue === 'watch_later' || newValue === 'recommended') {
-      activeTab.value = newValue
+    if (['favorites', 'watch_later', 'recommended'].includes(newValue as string)) {
+      activeTab.value = newValue as TabKey
     }
   },
 )
 
-onMounted(async () => {
-  if (!route.query.category) {
-    router.replace({ path: route.path, query: { category: 'recommended' } })
-  }
-
-  loaderStore.showLoader()
-  await mediaStore.load()
-  if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
-    await mediaStore.fetchRecommended()
-  }
-  loaderStore.hideLoader()
-})
-
 watch(
   () => authStore.user,
-  async () => {
+  async (newUser) => {
     loaderStore.showLoader()
     await mediaStore.load()
+
+    if (newUser?.uid === MAIN_ACCOUNT_ID) {
+      router.replace({ query: { category: 'favorites', page: 1 } })
+      activeTab.value = 'favorites'
+    } else {
+      router.replace({ query: { category: 'recommended', page: 1 } })
+      activeTab.value = 'recommended'
+      await mediaStore.fetchRecommended()
+    }
+
     loaderStore.hideLoader()
   },
 )
@@ -116,6 +124,29 @@ const currentData = computed(() => {
   }
 })
 
+const pageSize = 20
+
+const currentPage = computed({
+  get: () => Number(route.query.page) || 1,
+  set: (value: number) => {
+    router.replace({ query: { ...route.query, page: value } })
+  },
+})
+
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return currentData.value.slice(start, start + pageSize)
+})
+
+const totalPages = computed(() => Math.ceil(currentData.value.length / pageSize))
+
+watch(
+  () => route.query.page,
+  (newVal) => {
+    currentPage.value = Number(newVal) || 1
+  },
+)
+
 watch(
   () => mediaStore.media,
   () => {
@@ -124,6 +155,27 @@ watch(
   },
   { deep: true },
 )
+
+onMounted(async () => {
+  if (!route.query.category || !route.query.page) {
+    router.replace({
+      path: route.path,
+      query: {
+        category: activeTab.value,
+        page: 1,
+      },
+    })
+  }
+
+  loaderStore.showLoader()
+  await mediaStore.load()
+
+  if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
+    await mediaStore.fetchRecommended()
+  }
+
+  loaderStore.hideLoader()
+})
 </script>
 
 <style scoped>
