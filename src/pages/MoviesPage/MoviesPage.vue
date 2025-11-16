@@ -16,17 +16,14 @@
 
       <MediaList :items="movies" />
 
-      <IPagination
-        :currentPage="currentPage"
-        :totalPages="totalPages"
-        @update:page="fetchMovies(activeCategory, $event)"
-      />
+      <IPagination :currentPage="currentPage" :totalPages="totalPages" @update:page="changePage" />
     </div>
   </IBackground>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
@@ -42,6 +39,8 @@ import { useLoaderStore } from '@/stores/loader'
 import IButton from '@/components/IButton/IButton.vue'
 
 const { t, locale } = useI18n()
+const route = useRoute()
+const router = useRouter()
 
 interface CategoryMedia {
   key: string
@@ -71,9 +70,50 @@ watch(
   { immediate: true },
 )
 
-const activeCategory = ref('popular')
+watch(
+  () => route.query,
+  () => {
+    const hasCategory = !!route.query.category
+    const hasPage = !!route.query.page
+
+    if (!hasCategory || !hasPage) {
+      router.replace({
+        query: {
+          category: hasCategory ? route.query.category : 'popular',
+          page: hasPage ? route.query.page : 1,
+        },
+      })
+    }
+  },
+  { immediate: true },
+)
+
+const activeCategory = computed({
+  get: () => (route.query.category as string) || 'popular',
+  set: (value: string) => {
+    router.push({
+      query: {
+        ...route.query,
+        category: value,
+        page: 1,
+      },
+    })
+  },
+})
+
+const currentPage = computed({
+  get: () => Number(route.query.page) || 1,
+  set: (value: number) => {
+    router.push({
+      query: {
+        ...route.query,
+        page: value,
+      },
+    })
+  },
+})
+
 const movies = ref<MovieItem[]>([])
-const currentPage = ref(1)
 const totalPages = ref(1)
 
 const loaderStore = useLoaderStore()
@@ -99,25 +139,24 @@ const fetchMovies = async (category: string, page = 1) => {
     }
 
     movies.value = data.results.filter((item: MovieItem) => item.poster_path)
-    currentPage.value = data.page
     totalPages.value = data.total_pages
   } finally {
     loaderStore.hideLoader()
   }
 }
-
 const changeCategory = (category: string) => {
-  if (activeCategory.value === category) return
   activeCategory.value = category
-  currentPage.value = 1
-  fetchMovies(category, 1)
+}
+const changePage = (page: number) => {
+  currentPage.value = page
 }
 
-onMounted(() => fetchMovies(activeCategory.value))
-
 watch(
-  () => languageStore.lang,
-  () => fetchMovies(activeCategory.value, currentPage.value),
+  () => [activeCategory.value, currentPage.value, languageStore.lang],
+  () => {
+    fetchMovies(activeCategory.value, currentPage.value)
+  },
+  { immediate: true },
 )
 </script>
 

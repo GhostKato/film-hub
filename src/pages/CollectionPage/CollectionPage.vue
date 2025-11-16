@@ -11,6 +11,7 @@
         >
           {{ $t('collection_page.favorites') }}
         </IButton>
+
         <IButton
           variant="categories-btn"
           :class="{ active: activeTab === 'watch_later' }"
@@ -27,6 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import { useMediaStore } from '@/stores/media'
@@ -38,13 +40,40 @@ const mediaStore = useMediaStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 
+const route = useRoute()
+const router = useRouter()
+
 const activeTab = ref<'favorite' | 'watch_later'>('favorite')
 
 onMounted(async () => {
+  const urlCategory = route.query.category
+
+  if (urlCategory === 'favorite' || urlCategory === 'watch_later') {
+    activeTab.value = urlCategory
+  }
+
   loaderStore.showLoader()
   await mediaStore.load()
   loaderStore.hideLoader()
 })
+const changeTab = (tab: 'favorite' | 'watch_later') => {
+  activeTab.value = tab
+
+  router.replace({
+    query: {
+      category: activeTab.value,
+    },
+  })
+}
+
+watch(
+  () => route.query.category,
+  (newValue) => {
+    if (newValue === 'favorite' || newValue === 'watch_later') {
+      activeTab.value = newValue
+    }
+  },
+)
 
 watch(
   () => authStore.user,
@@ -59,20 +88,29 @@ const currentData = computed(() => {
   return activeTab.value === 'favorite' ? mediaStore.favoriteList() : mediaStore.watchLaterList()
 })
 
-const changeTab = (tab: 'favorite' | 'watch_later') => {
-  activeTab.value = tab
-}
-
 watch(
   () => mediaStore.media,
   () => {
     loaderStore.showLoader()
-    setTimeout(() => {
-      loaderStore.hideLoader()
-    }, 200)
+    setTimeout(() => loaderStore.hideLoader(), 200)
   },
   { deep: true },
 )
+
+onMounted(async () => {
+  const urlCategory = route.query.category
+
+  if (!urlCategory) {
+    router.replace({ query: { category: 'favorite' } })
+    activeTab.value = 'favorite'
+  } else if (urlCategory === 'favorite' || urlCategory === 'watch_later') {
+    activeTab.value = urlCategory
+  }
+
+  loaderStore.showLoader()
+  await mediaStore.load()
+  loaderStore.hideLoader()
+})
 </script>
 
 <style scoped>
