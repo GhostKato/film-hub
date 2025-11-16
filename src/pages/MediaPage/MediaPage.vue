@@ -185,9 +185,8 @@ watch(
 }
 .rating,
 .release {
-  padding: 2px;
+  padding: 3px 5px;
   border-radius: 8px;
-  font-size: 20px;
 }
 .poster-cont {
   display: flex;
