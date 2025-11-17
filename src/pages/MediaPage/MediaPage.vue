@@ -18,7 +18,7 @@
             <p class="overview">{{ media.overview }}</p>
 
             <div class="info-item" v-if="media.vote_average">
-              <strong>Rating:</strong>
+              <strong>{{ $t('media_page.rating') }}</strong>
               <p
                 class="rating"
                 :style="{ backgroundColor: getRatingColor(Number(media.vote_average)) }"
