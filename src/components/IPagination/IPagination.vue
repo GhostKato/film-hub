@@ -33,9 +33,14 @@ const next = () => {
   if (props.currentPage < props.totalPages) emit('update:page', props.currentPage + 1)
 }
 const handleKeyDown = (e: KeyboardEvent) => {
-  if (e.key === 'ArrowRight') next()
-  if (e.key === 'ArrowLeft') prev()
-  modalStore.closeAll()
+  if (e.key === 'ArrowRight') {
+    modalStore.closeAll()
+    next()
+  }
+  if (e.key === 'ArrowLeft') {
+    modalStore.closeAll()
+    prev()
+  }
 }
 
 onMounted(() => {

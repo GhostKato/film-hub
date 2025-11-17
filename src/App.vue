@@ -12,54 +12,64 @@
 import IHeader from '@/components/IHeader/IHeader.vue'
 import ILoader from '@/components/ILoader/ILoader.vue'
 import ModalMenu from '@/components/ModalMenu/ModalMenu.vue'
-import { useAuthStore } from './stores/auth'
 import ModalAuth from './components/ModalAuth/ModalAuth.vue'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { useAuthStore } from './stores/auth'
 import { useModalStore } from './stores/modal'
 import { useRouter } from 'vue-router'
+import { onMounted, onBeforeUnmount } from 'vue'
 
 const authStore = useAuthStore()
 const modalStore = useModalStore()
-authStore.initAuthListener()
 const router = useRouter()
 
-const closeAllModals = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') modalStore.close('menu')
+authStore.initAuthListener()
+const isTyping = (target: EventTarget | null) => {
+  if (!(target instanceof HTMLElement)) return false
+
+  return target.closest('input, textarea, .modal-input, [data-ignore-hotkeys]') !== null
 }
-const navigationHotkeys = (e: KeyboardEvent) => {
-  const tag = (e.target as HTMLElement).tagName
-  if (['INPUT', 'TEXTAREA'].includes(tag)) return
+const handleHotkeys = (e: KeyboardEvent) => {
+  if (isTyping(e.target)) return
+
   switch (e.key) {
     case '1':
+      modalStore.closeAll()
       router.push('/')
-      modalStore.close('menu')
       break
     case '2':
+      modalStore.closeAll()
       router.push('/search')
-      modalStore.close('menu')
       break
     case '3':
+      modalStore.closeAll()
       router.push('/movies')
-      modalStore.close('menu')
       break
     case '4':
+      modalStore.closeAll()
       router.push('/series')
-      modalStore.close('menu')
       break
     case '5':
+      modalStore.closeAll()
       router.push('/collection')
-      modalStore.close('menu')
+      break
+    case '6':
+      modalStore.toggle('menu')
+      break
+    case 'Escape':
+      modalStore.closeAll()
       break
   }
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', closeAllModals)
-  window.addEventListener('keydown', navigationHotkeys)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', handleHotkeys)
+  }
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', closeAllModals)
-  window.removeEventListener('keydown', navigationHotkeys)
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('keydown', handleHotkeys)
+  }
 })
 </script>
