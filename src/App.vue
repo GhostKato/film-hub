@@ -29,22 +29,26 @@ const closeAllModals = (e: KeyboardEvent) => {
 const navigationHotkeys = (e: KeyboardEvent) => {
   const tag = (e.target as HTMLElement).tagName
   if (['INPUT', 'TEXTAREA'].includes(tag)) return
-  modalStore.closeAll()
   switch (e.key) {
     case '1':
       router.push('/')
+      modalStore.closeAll()
       break
     case '2':
       router.push('/search')
+      modalStore.closeAll()
       break
     case '3':
       router.push('/movies')
+      modalStore.closeAll()
       break
     case '4':
       router.push('/series')
+      modalStore.closeAll()
       break
     case '5':
       router.push('/collection')
+      modalStore.closeAll()
       break
   }
 }
