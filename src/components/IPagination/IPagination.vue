@@ -12,6 +12,10 @@
 
 <script setup lang="ts">
 import IButton from '@/components/IButton/IButton.vue'
+import { useModalStore } from '@/stores/modal'
+import { onBeforeUnmount, onMounted } from 'vue'
+
+const modalStore = useModalStore()
 
 const props = defineProps<{
   currentPage: number
@@ -21,7 +25,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:page', page: number): void
 }>()
-
 const prev = () => {
   if (props.currentPage > 1) emit('update:page', props.currentPage - 1)
 }
@@ -29,6 +32,19 @@ const prev = () => {
 const next = () => {
   if (props.currentPage < props.totalPages) emit('update:page', props.currentPage + 1)
 }
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (e.key === 'ArrowRight') next()
+  if (e.key === 'ArrowLeft') prev()
+  modalStore.closeAll()
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyDown)
+})
 </script>
 
 <style scoped>
