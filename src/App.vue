@@ -24,7 +24,7 @@ authStore.initAuthListener()
 const router = useRouter()
 
 const closeAllModals = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') modalStore.closeAll()
+  if (e.key === 'Escape') modalStore.close('menu')
 }
 const navigationHotkeys = (e: KeyboardEvent) => {
   const tag = (e.target as HTMLElement).tagName
@@ -32,23 +32,23 @@ const navigationHotkeys = (e: KeyboardEvent) => {
   switch (e.key) {
     case '1':
       router.push('/')
-      modalStore.closeAll()
+      modalStore.close('menu')
       break
     case '2':
       router.push('/search')
-      modalStore.closeAll()
+      modalStore.close('menu')
       break
     case '3':
       router.push('/movies')
-      modalStore.closeAll()
+      modalStore.close('menu')
       break
     case '4':
       router.push('/series')
-      modalStore.closeAll()
+      modalStore.close('menu')
       break
     case '5':
       router.push('/collection')
-      modalStore.closeAll()
+      modalStore.close('menu')
       break
   }
 }
