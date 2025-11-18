@@ -46,7 +46,7 @@
         />
 
         <div class="info">
-          <h3>{{ truncateTitle(item.title ?? item.name ?? '') }}</h3>
+          <h3 class="title">{{ truncateTitle(item.title ?? item.name ?? '') }}</h3>
           <p class="type">
             {{
               item.media_type === 'tv' || (!item.media_type && item.name && !item.title)
@@ -110,14 +110,13 @@ const goToMedia = (item: MediaItem) => {
 .media-list {
   padding: 10px;
 }
-
 .media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
-
 .media-card {
+  aspect-ratio: 9 / 17;
   position: relative;
   background: var(--color-transparent);
   border-radius: 8px;
@@ -125,7 +124,12 @@ const goToMedia = (item: MediaItem) => {
   cursor: pointer;
   transition: transform 0.3s ease;
 }
-
+.media-card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
 .release-vote-container {
   position: absolute;
   top: 3px;
@@ -134,73 +138,76 @@ const goToMedia = (item: MediaItem) => {
   flex-direction: column;
   gap: 3px;
 }
-
 .release {
   padding: 3px;
   border-radius: 8px;
   font-size: 15px;
 }
-
 .rating {
   padding: 3px;
   border-radius: 8px;
   font-size: 15px;
   margin-right: auto;
 }
-
-.media-card:hover {
-  transform: scale(1.05);
-}
-
-.media-card img {
-  width: 100%;
-  height: 460px;
-  object-fit: cover;
-  display: block;
-}
-
 .info {
-  padding: 10px;
+  padding: 5px;
   text-align: center;
   color: var(--color-white);
 }
-
-h3 {
+.title {
   font-size: 16px;
   margin-bottom: 5px;
 }
-
 .type {
   font-size: 14px;
   opacity: 0.8;
 }
-
 .empty {
   text-align: center;
   color: var(--color-white);
   margin-top: 40px;
 }
+@media (min-width: 640px) {
+  .media-card {
+    aspect-ratio: 9 / 16;
+  }
+}
 @media (min-width: 768px) {
   .media-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    grid-auto-rows: 320px;
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
-  .media-card img {
-    height: 240px;
+  .media-card {
+    aspect-ratio: 9 / 17;
   }
   .empty {
     font-size: 20px;
   }
 }
+@media (min-width: 1024px) {
+  .media-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .media-card {
+    aspect-ratio: 9 / 16;
+  }
+}
+@media (min-width: 1280px) {
+  .media-card {
+    aspect-ratio: 9 / 16;
+  }
+}
+@media (min-width: 1920px) {
+  .media-grid {
+    grid-template-columns: repeat(10, 1fr);
+  }
+  .media-card {
+    aspect-ratio: 9 / 17;
+  }
+}
 @media (min-width: 2560px) {
   .media-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    grid-auto-rows: 480px;
-  }
-  .media-card img {
-    height: 400px;
+    gap: 30px 10px;
   }
 }
 </style>

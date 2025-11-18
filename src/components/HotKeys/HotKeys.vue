@@ -1,3 +1,7 @@
+<template>
+  <div style="display: none"></div>
+</template>
+
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue'
 import { useModalStore } from '@/stores/modal'
