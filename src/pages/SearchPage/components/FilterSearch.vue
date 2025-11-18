@@ -163,7 +163,7 @@ watch(
   outline: 1px solid var(--color-hover);
 }
 
-.option {
+.select option {
   font-size: 16px;
   text-align: center;
   border: none;
@@ -183,11 +183,11 @@ watch(
 @media (min-width: 768px) {
   .select {
     height: 48px;
-    width: 150px;
-    font-size: 18px;
+    width: 172px;
+    font-size: 20px;
   }
-  .option {
-    font-size: 18px;
+  .select option {
+    font-size: 20px;
   }
   .result {
     margin: 15px;

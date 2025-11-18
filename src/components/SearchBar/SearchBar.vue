@@ -80,8 +80,9 @@ const clearQuery = () => {
 
 @media (min-width: 768px) {
   .input {
+    height: 48px;
     width: 340px;
-    font-size: 24px;
+    font-size: 20px;
   }
 }
 @media (min-width: 1024px) {

@@ -183,7 +183,7 @@ const handleClick = (e: Event) => {
   .search-btn {
     width: 90px;
     height: 48px;
-    font-size: 24px;
+    font-size: 20px;
   }
   .clear-btn {
     right: 1px;

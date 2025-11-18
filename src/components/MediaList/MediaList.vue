@@ -1,7 +1,7 @@
 <template>
   <div class="media-list">
     <div
-      v-if="!itemsWithPoster.length && !loaderStore.loading && routePath !== '/search'"
+      v-if="!itemsWithPoster.length && !loaderStore.loading && Object.keys(routeQuery.query).length"
       class="empty"
     >
       <p>{{ $t('media_list.not_found') }}</p>
@@ -86,6 +86,7 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
+const routeQuery = useRoute()
 const routeSeries = useRoute()
 const routePerson = useRoute()
 

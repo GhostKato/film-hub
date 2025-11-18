@@ -6,7 +6,6 @@
 
 <script setup lang="ts">
 import IButton from '@/components/IButton/IButton.vue'
-import { defineProps } from 'vue'
 
 const props = defineProps({
   title: {

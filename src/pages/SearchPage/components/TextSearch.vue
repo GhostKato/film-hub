@@ -113,7 +113,6 @@ watch(
 }
 
 .select {
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -155,10 +154,10 @@ watch(
   .select {
     height: 48px;
     width: 90px;
-    font-size: 24px;
+    font-size: 20px;
   }
   .option {
-    font-size: 24px;
+    font-size: 20px;
   }
   .result {
     margin: 15px;

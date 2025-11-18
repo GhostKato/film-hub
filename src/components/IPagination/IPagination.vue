@@ -79,4 +79,9 @@ onBeforeUnmount(() => {
   opacity: 0.3;
   cursor: default;
 }
+@media (min-width: 768px) {
+  .pagination button {
+    font-size: 20px;
+  }
+}
 </style>
