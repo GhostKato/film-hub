@@ -1,77 +1,37 @@
 <template>
   <IBackground>
     <div class="search-page">
-      <SearchBar />
-      <h3 class="result" v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h3>
+      <div class="tab-buttons">
+        <IButton
+          variant="categories-btn"
+          :class="{ active: activeComponent === 'text' }"
+          @click="activeComponent = 'text'"
+        >
+          Text Search
+        </IButton>
+        <IButton
+          variant="categories-btn"
+          :class="{ active: activeComponent === 'filter' }"
+          @click="activeComponent = 'filter'"
+        >
+          Filter Search
+        </IButton>
+      </div>
 
-      <MediaList :items="results" :routePath="route.path" />
-
-      <IPagination
-        v-if="query"
-        :currentPage="currentPage"
-        :totalPages="totalPages"
-        @update:page="fetchSearchResults(query, $event)"
-      />
+      <TextSearch v-if="activeComponent === 'text'" />
+      <FilterSearch v-if="activeComponent === 'filter'" />
     </div>
   </IBackground>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref } from 'vue'
 import IBackground from '@/components/IBackground/IBackground.vue'
-import MediaList from '@/components/MediaList/MediaList.vue'
-import IPagination from '@/components/IPagination/IPagination.vue'
-import { searchMulti } from '@/api/tmdb'
-import SearchBar from '@/components/SearchBar/SearchBar.vue'
-import { useLoaderStore } from '@/stores/loader'
+import TextSearch from './components/TextSearch.vue'
+import FilterSearch from './components/FilterSearch.vue'
+import IButton from '@/components/IButton/IButton.vue'
 
-const loaderStore = useLoaderStore()
-
-const route = useRoute()
-
-interface MediaItem {
-  id: number
-  media_type: 'movie' | 'tv' | 'person'
-  title?: string
-  name?: string
-  poster_path?: string
-  profile_path?: string
-  first_air_date?: string
-  release_date?: string
-}
-
-const results = ref<MediaItem[]>([])
-
-const currentPage = ref(1)
-const totalPages = ref(1)
-
-const query = computed(() => (route.query.query as string) || '')
-
-const fetchSearchResults = async (q: string, page = 1) => {
-  if (!q) return
-  loaderStore.showLoader()
-  try {
-    const data = await searchMulti(q, page)
-    results.value = data.results.filter((item: MediaItem) => item.poster_path || item.profile_path)
-    currentPage.value = data.page
-    totalPages.value = data.total_pages
-  } finally {
-    loaderStore.hideLoader()
-  }
-}
-
-onMounted(() => {
-  if (query.value) fetchSearchResults(query.value)
-})
-
-watch(
-  () => query.value,
-  (newQuery) => {
-    results.value = []
-    if (newQuery) fetchSearchResults(newQuery)
-  },
-)
+const activeComponent = ref<'text' | 'filter'>('text')
 </script>
 
 <style scoped>
@@ -81,20 +41,20 @@ watch(
   align-items: center;
   padding: 5px;
 }
-.result {
-  font-weight: bold;
-  margin: 10px;
-  text-align: center;
-  font-size: 16px;
+
+.tab-buttons {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
 }
+
 @media (min-width: 768px) {
   .search-page {
     display: block;
   }
-  .result {
-    margin: 15px;
-    font-size: 20px;
-    text-align: start;
+  .tab-buttons {
+    padding-left: 20px;
+    gap: 10px;
   }
 }
 </style>

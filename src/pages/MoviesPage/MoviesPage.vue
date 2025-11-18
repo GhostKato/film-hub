@@ -185,14 +185,12 @@ watch(
   .movies-page {
     display: block;
   }
-  .categories {
-    padding-left: 20px;
-  }
   .title {
     padding-left: 20px;
     font-size: 40px;
   }
   .categories {
+    padding-left: 20px;
     gap: 10px;
   }
 }

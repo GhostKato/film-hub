@@ -47,7 +47,7 @@
           <h3>{{ truncateTitle(item.title ?? item.name ?? '') }}</h3>
           <p class="type">
             {{
-              item.media_type === 'tv' || (!item.media_type && isSeriesRoute)
+              item.media_type === 'tv' || (!item.media_type && item.name && !item.title)
                 ? $t('media_list.type_series')
                 : $t('media_list.type_movie')
             }}
