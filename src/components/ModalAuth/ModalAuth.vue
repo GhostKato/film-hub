@@ -37,7 +37,7 @@ const mode = ref<'login' | 'register'>('login')
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--color-transparent-black);
   display: flex;
   justify-content: center;
   align-items: center;

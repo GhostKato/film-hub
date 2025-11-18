@@ -1,7 +1,9 @@
 <template>
   <div class="media-list">
     <div
-      v-if="!itemsWithPoster.length && !loaderStore.loading && Object.keys(routeQuery.query).length"
+      v-if="
+        !itemsWithPoster.length && !loaderStore.isLoading && Object.keys(routeQuery.query).length
+      "
       class="empty"
     >
       <p>{{ $t('media_list.not_found') }}</p>

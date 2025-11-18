@@ -1,16 +1,26 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 
-export const useLoaderStore = defineStore('loader', () => {
-  const loading = ref(false)
+export const useLoaderStore = defineStore('loader', {
+  state: () => ({
+    isLoading: false,
+    isGlobalLoading: false,
+  }),
+  actions: {
+    showLoader() {
+      this.isLoading = true
+    },
+    hideLoader() {
+      this.isLoading = false
+    },
 
-  function showLoader() {
-    loading.value = true
-  }
+    showGlobalLoader() {
+      this.isGlobalLoading = true
+      this.isLoading = true
+    },
 
-  function hideLoader() {
-    loading.value = false
-  }
-
-  return { loading, showLoader, hideLoader }
+    hideGlobalLoader() {
+      this.isGlobalLoading = false
+      this.isLoading = false
+    },
+  },
 })

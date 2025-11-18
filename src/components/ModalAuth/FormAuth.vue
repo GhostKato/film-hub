@@ -18,7 +18,7 @@
       <ErrorMessage name="password" class="error" />
     </div>
 
-    <IButton variant="auth-btn" type="submit" :disabled="authStore.loading">
+    <IButton variant="auth-btn" type="submit" :disabled="loaderStore.isLoading">
       {{
         mode === 'register' ? $t('modal-auth.form_btn_register') : $t('modal-auth.form_btn_login')
       }}
@@ -35,10 +35,12 @@ import * as yup from 'yup'
 import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modal'
 import IButton from '../IButton/IButton.vue'
+import { useLoaderStore } from '@/stores/loader'
 
 const props = defineProps<{ mode: 'login' | 'register' }>()
 const authStore = useAuthStore()
 const modalStore = useModalStore()
+const loaderStore = useLoaderStore()
 
 const schema = computed(() => {
   if (props.mode === 'register') {

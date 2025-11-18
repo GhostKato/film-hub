@@ -4,14 +4,15 @@ import type { User } from 'firebase/auth'
 import * as FirebaseAPI from '@/api/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '@/firebase'
+import { useLoaderStore } from '@/stores/loader'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
-  const loading = ref(false)
+  const loaderStore = useLoaderStore()
   const error = ref<string | null>(null)
 
   const register = async (nickname: string, email: string, password: string) => {
-    loading.value = true
+    loaderStore.showLoader()
     error.value = null
     try {
       const u = await FirebaseAPI.register(nickname, email, password)
@@ -20,12 +21,12 @@ export const useAuthStore = defineStore('auth', () => {
       if (err instanceof Error) error.value = err.message
       else error.value = String(err)
     } finally {
-      loading.value = false
+      loaderStore.hideLoader()
     }
   }
 
   const login = async (email: string, password: string) => {
-    loading.value = true
+    loaderStore.showLoader()
     error.value = null
     try {
       const u = await FirebaseAPI.login(email, password)
@@ -34,12 +35,12 @@ export const useAuthStore = defineStore('auth', () => {
       if (err instanceof Error) error.value = err.message
       else error.value = String(err)
     } finally {
-      loading.value = false
+      loaderStore.hideLoader()
     }
   }
 
   const logout = async () => {
-    loading.value = true
+    loaderStore.showLoader()
     error.value = null
     try {
       await FirebaseAPI.logout()
@@ -48,7 +49,7 @@ export const useAuthStore = defineStore('auth', () => {
       if (err instanceof Error) error.value = err.message
       else error.value = String(err)
     } finally {
-      loading.value = false
+      loaderStore.hideLoader()
     }
   }
 
@@ -57,7 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
       error.value = 'No user logged in'
       return
     }
-    loading.value = true
+    loaderStore.showLoader()
     error.value = null
     try {
       const updatedUser = await FirebaseAPI.updateUserProfile(updates)
@@ -66,7 +67,7 @@ export const useAuthStore = defineStore('auth', () => {
       if (err instanceof Error) error.value = err.message
       else error.value = String(err)
     } finally {
-      loading.value = false
+      loaderStore.hideLoader()
     }
   }
 
@@ -76,5 +77,5 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  return { user, loading, error, register, login, logout, updateProfile, initAuthListener }
+  return { user, error, register, login, logout, updateProfile, initAuthListener }
 })

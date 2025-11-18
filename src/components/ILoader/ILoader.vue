@@ -1,14 +1,17 @@
 <template>
-  <div v-if="loading" class="loader-overlay">
-    <div class="spinner"></div>
-  </div>
+  <teleport to="body">
+    <div v-if="loader.isGlobalLoading" class="loader-overlay"></div>
+
+    <div v-if="loader.isLoading" class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+  </teleport>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { useLoaderStore } from '@/stores/loader'
 
-const { loading } = storeToRefs(useLoaderStore())
+const loader = useLoaderStore()
 </script>
 
 <style scoped>
@@ -16,11 +19,18 @@ const { loading } = storeToRefs(useLoaderStore())
   position: fixed;
   inset: 0;
   background: var(--color-transparent-black);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  backdrop-filter: blur(2px);
+  z-index: 9998;
+}
+
+.spinner-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 9999;
 }
+
 .spinner {
   width: 60px;
   height: 60px;
@@ -29,6 +39,7 @@ const { loading } = storeToRefs(useLoaderStore())
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
