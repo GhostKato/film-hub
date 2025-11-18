@@ -7,14 +7,14 @@
           :class="{ active: activeComponent === 'text' }"
           @click="activeComponent = 'text'"
         >
-          Text Search
+          {{ t('search_page.text_search') }}
         </IButton>
         <IButton
           variant="categories-btn"
           :class="{ active: activeComponent === 'filter' }"
           @click="activeComponent = 'filter'"
         >
-          Filter Search
+          {{ t('search_page.filter_search') }}
         </IButton>
       </div>
 
@@ -30,8 +30,11 @@ import IBackground from '@/components/IBackground/IBackground.vue'
 import TextSearch from './components/TextSearch.vue'
 import FilterSearch from './components/FilterSearch.vue'
 import IButton from '@/components/IButton/IButton.vue'
+import { useI18n } from 'vue-i18n'
 
 const activeComponent = ref<'text' | 'filter'>('text')
+
+const { t } = useI18n()
 </script>
 
 <style scoped>
