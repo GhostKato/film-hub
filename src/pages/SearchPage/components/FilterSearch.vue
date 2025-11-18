@@ -86,7 +86,9 @@ const genres = ref([
   { id: 878, name: 'search_page.science_fiction' },
   { id: 16, name: 'search_page.animation' },
 ])
-const years = ref([2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015])
+const years = ref([
+  2028, 2027, 2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014,
+])
 
 const fetchResults = async (page = 1) => {
   loaderStore.showLoader()
