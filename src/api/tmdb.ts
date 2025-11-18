@@ -158,3 +158,77 @@ export async function getMediaReviews(id: number | string, type: MediaType): Pro
     return []
   }
 }
+
+interface FetchOptions {
+  rating?: 'all' | 'low' | 'medium' | 'high'
+  genre?: string
+  year?: number | string
+  page?: number
+}
+
+interface MovieParams {
+  sort_by: string
+  include_adult: boolean
+  include_video: boolean
+  page: number
+  with_genres?: string
+  primary_release_year?: number | string
+  'vote_average.lte'?: number
+  'vote_average.gte'?: number
+}
+
+interface TVParams {
+  sort_by: string
+  page: number
+  with_genres?: string
+  first_air_date_year?: number
+  'vote_average.lte'?: number
+  'vote_average.gte'?: number
+}
+
+const getVoteAverage = (rating?: 'all' | 'low' | 'medium' | 'high') => {
+  switch (rating) {
+    case 'low':
+      return { 'vote_average.lte': 5 }
+    case 'medium':
+      return { 'vote_average.gte': 5, 'vote_average.lte': 8 }
+    case 'high':
+      return { 'vote_average.gte': 8 }
+    default:
+      return {}
+  }
+}
+
+export const fetchMovies = async (options: FetchOptions) => {
+  const { rating, genre, year, page = 1 } = options
+  const voteFilter = getVoteAverage(rating)
+
+  const params: MovieParams = {
+    sort_by: 'popularity.desc',
+    include_adult: false,
+    include_video: false,
+    page,
+    with_genres: genre || undefined,
+    primary_release_year: year || undefined,
+    ...voteFilter,
+  }
+
+  const { data } = await api.get('/discover/movie', { params })
+  return data
+}
+
+export const fetchTV = async (options: FetchOptions) => {
+  const { rating, genre, year, page = 1 } = options
+  const voteFilter = getVoteAverage(rating)
+
+  const params: TVParams = {
+    sort_by: 'popularity.desc',
+    page,
+    with_genres: genre || undefined,
+    first_air_date_year: year ? Number(year) : undefined,
+    ...voteFilter,
+  }
+
+  const { data } = await api.get('/discover/tv', { params })
+  return data
+}

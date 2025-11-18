@@ -65,7 +65,7 @@ const clearQuery = () => {
   padding: 10px 35px 10px 10px;
   border-radius: 8px;
   border: none;
-  width: 230px;
+  width: 220px;
   color: var(--color-white);
   background-color: var(--color-dark-grey);
 }

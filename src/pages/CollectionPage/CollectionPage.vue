@@ -203,14 +203,12 @@ onMounted(async () => {
   .collection-page {
     display: block;
   }
-  .tabs {
-    padding-left: 20px;
-  }
   .title {
     padding-left: 20px;
     font-size: 40px;
   }
   .tabs {
+    padding-left: 20px;
     gap: 10px;
   }
 }
