@@ -1,42 +1,37 @@
 <template>
   <div class="filter-search">
-    <div class="text-search">
-      <!-- Тип -->
+    <div class="select-container">
       <select class="select" v-model="filterType" @change="onFilterChange">
-        <option value="movie">Movies</option>
-        <option value="tv">Series</option>
+        <option value="movie">{{ t('search_page.movies') }}</option>
+        <option value="tv">{{ t('search_page.series') }}</option>
       </select>
 
-      <!-- Рейтинг -->
       <select class="select" v-model="rating" @change="onFilterChange">
-        <option value="all">All ratings</option>
-        <option value="low">0-5</option>
-        <option value="medium">5-8</option>
-        <option value="high">8+</option>
+        <option value="all">{{ t('search_page.all_ratings') }}</option>
+        <option value="high">{{ t('search_page.ratings') }} 8+</option>
+        <option value="medium">{{ t('search_page.ratings') }} 5-8</option>
+        <option value="low">{{ t('search_page.ratings') }} 0-5</option>
       </select>
 
-      <!-- Жанри -->
       <select class="select" v-model="genre" @change="onFilterChange">
-        <option value="">All genres</option>
-        <option v-for="g in genres" :key="g.id" :value="g.id">{{ g.name }}</option>
+        <option value="">{{ t('search_page.all_genres') }}</option>
+        <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
       </select>
 
-      <!-- Рік -->
       <select class="select" v-model="year" @change="onFilterChange">
-        <option value="">All years</option>
+        <option value="">{{ t('search_page.all_years') }}</option>
         <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
       </select>
     </div>
 
-    <!-- Результати -->
-    <div class="media-list-wrapper" v-if="results.length">
+    <div v-if="results.length">
       <MediaList :items="results" />
-      <IPagination
-        :currentPage="currentPage"
-        :totalPages="totalPages"
-        @update:page="fetchResults($event)"
-      />
     </div>
+    <IPagination
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      @update:page="fetchResults($event)"
+    />
   </div>
 </template>
 
@@ -47,9 +42,11 @@ import IPagination from '@/components/IPagination/IPagination.vue'
 import { useLoaderStore } from '@/stores/loader'
 import { fetchMovies, fetchTV } from '@/api/tmdb'
 import { useLanguageStore } from '@/stores/language'
+import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
 const languageStore = useLanguageStore()
+const { t } = useI18n()
 
 const filterType = ref<'movie' | 'tv'>('movie')
 const rating = ref<'all' | 'low' | 'medium' | 'high'>('all')
@@ -71,23 +68,23 @@ const currentPage = ref(1)
 const totalPages = ref(1)
 
 const genres = ref([
-  { id: 28, name: 'Action' }, // Бойовик
-  { id: 12, name: 'Adventure' }, // Пригоди
-  { id: 16, name: 'Animation' }, // Анімація
-  { id: 35, name: 'Comedy' }, // Комедія
-  { id: 80, name: 'Crime' }, // Кримінал
-  { id: 99, name: 'Documentary' }, // Документальні
-  { id: 18, name: 'Drama' }, // Драма
-  { id: 10751, name: 'Family' }, // Сімейні
-  { id: 14, name: 'Fantasy' }, // Фентезі
-  { id: 36, name: 'History' }, // Історичні
-  { id: 27, name: 'Horror' }, // Жахи
-  { id: 9648, name: 'Mystery' }, // Детективи
-  { id: 10749, name: 'Romance' }, // Романтика
-  { id: 878, name: 'Science Fiction' }, // Наукова фантастика
-  { id: 10752, name: 'War' }, // Військові
-  { id: 53, name: 'Thriller' }, // Трилери
-  { id: 37, name: 'Western' }, // Вестерни
+  { id: 28, name: 'search_page.action' },
+  { id: 35, name: 'search_page.comedy' },
+  { id: 10751, name: 'search_page.family' },
+  { id: 12, name: 'search_page.adventure' },
+  { id: 14, name: 'search_page.fantasy' },
+  { id: 99, name: 'search_page.documentary' },
+  { id: 18, name: 'search_page.drama' },
+  { id: 36, name: 'search_page.history' },
+  { id: 80, name: 'search_page.crime' },
+  { id: 9648, name: 'search_page.mystery' },
+  { id: 27, name: 'search_page.horror' },
+  { id: 53, name: 'search_page.thriller' },
+  { id: 10752, name: 'search_page.war' },
+  { id: 37, name: 'search_page.western' },
+  { id: 10749, name: 'search_page.romance' },
+  { id: 878, name: 'search_page.science_fiction' },
+  { id: 16, name: 'search_page.animation' },
 ])
 const years = ref([2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015])
 
@@ -136,7 +133,7 @@ watch(
 </script>
 
 <style scoped>
-.text-search {
+.select-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -181,10 +178,6 @@ watch(
   margin: 10px;
   text-align: center;
   font-size: 16px;
-}
-
-.media-list-wrapper {
-  flex: 1;
 }
 
 @media (min-width: 768px) {

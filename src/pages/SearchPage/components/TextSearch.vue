@@ -8,7 +8,7 @@
           :key="option.value"
           :value="option.value"
         >
-          {{ option.label }}
+          {{ t(option.label) }}
         </option>
       </select>
       <SearchBar />
@@ -37,9 +37,11 @@ import IPagination from '@/components/IPagination/IPagination.vue'
 import { searchMulti } from '@/api/tmdb'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
+import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
 const route = useRoute()
+const { t } = useI18n()
 
 interface MediaItem {
   id: number
@@ -58,9 +60,9 @@ const totalPages = ref(1)
 const filterType = ref<'all' | 'movie' | 'tv'>('all')
 
 const filterOptions = [
-  { label: 'All', value: 'all' },
-  { label: 'Movies', value: 'movie' },
-  { label: 'Series', value: 'tv' },
+  { label: 'search_page.all', value: 'all' },
+  { label: 'search_page.movies', value: 'movie' },
+  { label: 'search_page.series', value: 'tv' },
 ]
 
 const query = computed(() => (route.query.query as string) || '')
