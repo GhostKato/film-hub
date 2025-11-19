@@ -1,47 +1,51 @@
 <template>
-  <div class="main-container">
-    <div class="text-search">
-      <select class="select" v-model="filterType">
-        <option
-          class="option"
-          v-for="option in filterOptions"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ t(option.label) }}
-        </option>
-      </select>
-      <SearchBar />
+  <IBackground>
+    <div class="search-page">
+      <div class="text-search">
+        <select class="select" v-model="filterType">
+          <option
+            class="option"
+            v-for="option in filterOptions"
+            :key="option.value"
+            :value="option.value"
+          >
+            {{ t(option.label) }}
+          </option>
+        </select>
+        <SearchBar />
+      </div>
+
+      <h3 class="result" v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h3>
+
+      <div class="media-list-wrapper">
+        <MediaList :items="filteredResults" :routePath="route.path" />
+      </div>
+
+      <IPagination
+        v-if="query"
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @update:page="fetchSearchResults(query, $event)"
+      />
     </div>
-
-    <h3 class="result" v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h3>
-
-    <div class="media-list-wrapper">
-      <MediaList :items="filteredResults" :routePath="route.path" />
-    </div>
-
-    <IPagination
-      v-if="query"
-      :currentPage="currentPage"
-      :totalPages="totalPages"
-      @update:page="fetchSearchResults(query, $event)"
-    />
-  </div>
+  </IBackground>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
-import { searchMulti } from '@/api/tmdb'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
+import { searchMulti } from '@/api/tmdb'
+
 import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const loaderStore = useLoaderStore()
 const route = useRoute()
-const { t } = useI18n()
 
 interface MediaItem {
   id: number
@@ -106,6 +110,13 @@ watch(
 </script>
 
 <style scoped>
+.search-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+}
+
 .text-search {
   display: flex;
   justify-content: center;
@@ -151,6 +162,9 @@ watch(
 }
 
 @media (min-width: 768px) {
+  .search-page {
+    display: block;
+  }
   .select {
     height: 48px;
     width: 90px;
@@ -166,11 +180,11 @@ watch(
   }
 }
 @media (min-width: 1024px) {
-  .main-container {
+  /* .main-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
-  }
+  } */
   .media-list-wrapper {
     flex: 1;
   }

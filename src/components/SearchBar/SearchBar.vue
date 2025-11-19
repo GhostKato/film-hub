@@ -38,13 +38,13 @@ watch(
 
 const search = () => {
   if (!query.value.trim()) return
-  router.push({ path: '/search', query: { query: query.value } })
+  router.push({ path: '/multi-search', query: { query: query.value } })
 }
 
 const clearQuery = () => {
   query.value = ''
-  if (route.path === '/search') {
-    router.push({ path: '/search' })
+  if (route.path === '/multi-search') {
+    router.push({ path: '/multi-search' })
   }
 }
 </script>

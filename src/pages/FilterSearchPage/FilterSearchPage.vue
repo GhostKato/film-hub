@@ -1,38 +1,42 @@
 <template>
-  <div class="filter-search">
-    <div class="select-container">
-      <select class="select" v-model="filterType" @change="onFilterChange">
-        <option value="movie">{{ t('search_page.movies') }}</option>
-        <option value="tv">{{ t('search_page.series') }}</option>
-      </select>
+  <IBackground>
+    <div class="search-page">
+      <div class="filter-search">
+        <div class="select-container">
+          <select class="select" v-model="filterType" @change="onFilterChange">
+            <option value="movie">{{ t('search_page.movies') }}</option>
+            <option value="tv">{{ t('search_page.series') }}</option>
+          </select>
 
-      <select class="select" v-model="rating" @change="onFilterChange">
-        <option value="all">{{ t('search_page.all_ratings') }}</option>
-        <option value="high">{{ t('search_page.ratings') }} 8+</option>
-        <option value="medium">{{ t('search_page.ratings') }} 5-8</option>
-        <option value="low">{{ t('search_page.ratings') }} 0-5</option>
-      </select>
+          <select class="select" v-model="rating" @change="onFilterChange">
+            <option value="all">{{ t('search_page.all_ratings') }}</option>
+            <option value="high">{{ t('search_page.ratings') }} 8+</option>
+            <option value="medium">{{ t('search_page.ratings') }} 5-8</option>
+            <option value="low">{{ t('search_page.ratings') }} 0-5</option>
+          </select>
 
-      <select class="select" v-model="genre" @change="onFilterChange">
-        <option value="">{{ t('search_page.all_genres') }}</option>
-        <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
-      </select>
+          <select class="select" v-model="genre" @change="onFilterChange">
+            <option value="">{{ t('search_page.all_genres') }}</option>
+            <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
+          </select>
 
-      <select class="select" v-model="year" @change="onFilterChange">
-        <option value="">{{ t('search_page.all_years') }}</option>
-        <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-      </select>
+          <select class="select" v-model="year" @change="onFilterChange">
+            <option value="">{{ t('search_page.all_years') }}</option>
+            <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+          </select>
+        </div>
+
+        <div v-if="results.length">
+          <MediaList :items="results" />
+        </div>
+        <IPagination
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          @update:page="fetchResults($event)"
+        />
+      </div>
     </div>
-
-    <div v-if="results.length">
-      <MediaList :items="results" />
-    </div>
-    <IPagination
-      :currentPage="currentPage"
-      :totalPages="totalPages"
-      @update:page="fetchResults($event)"
-    />
-  </div>
+  </IBackground>
 </template>
 
 <script setup lang="ts">
@@ -43,6 +47,7 @@ import { useLoaderStore } from '@/stores/loader'
 import { fetchMovies, fetchTV } from '@/api/tmdb'
 import { useLanguageStore } from '@/stores/language'
 import { useI18n } from 'vue-i18n'
+import IBackground from '@/components/IBackground/IBackground.vue'
 
 const loaderStore = useLoaderStore()
 const languageStore = useLanguageStore()
@@ -135,6 +140,12 @@ watch(
 </script>
 
 <style scoped>
+.search-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+}
 .select-container {
   display: flex;
   flex-wrap: wrap;
@@ -183,6 +194,9 @@ watch(
 }
 
 @media (min-width: 768px) {
+  .search-page {
+    display: block;
+  }
   .select {
     height: 48px;
     width: 172px;
