@@ -1,9 +1,7 @@
 <template>
   <div class="media-list">
     <div
-      v-if="
-        !itemsWithPoster.length && !loaderStore.isLoading && Object.keys(routeQuery.query).length
-      "
+      v-if="!itemsWithPoster.length && useMultiSearch.isSearched && !useMultiSearch.query"
       class="empty"
     >
       <p>{{ $t('media_list.not_found') }}</p>
@@ -65,11 +63,11 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
-import { useLoaderStore } from '@/stores/loader'
 import CollectionIndicator from './CollectionIndicator.vue'
 import { truncateTitle } from '@/utils/truncateTitle'
+import { useMultiSearchStore } from '@/stores/multi-search'
 
-const loaderStore = useLoaderStore()
+const useMultiSearch = useMultiSearchStore()
 
 interface MediaItem {
   id: number
@@ -88,7 +86,6 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
-const routeQuery = useRoute()
 const routeSeries = useRoute()
 const routePerson = useRoute()
 

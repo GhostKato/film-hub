@@ -1,40 +1,36 @@
 <template>
   <IBackground>
-    <div class="search-page">
-      <div class="filter-search">
-        <div class="select-container">
-          <select class="select" v-model="filterType" @change="onFilterChange">
-            <option value="movie">{{ t('search_page.movies') }}</option>
-            <option value="tv">{{ t('search_page.series') }}</option>
-          </select>
-
-          <select class="select" v-model="rating" @change="onFilterChange">
-            <option value="all">{{ t('search_page.all_ratings') }}</option>
-            <option value="high">{{ t('search_page.ratings') }} 8+</option>
-            <option value="medium">{{ t('search_page.ratings') }} 5-8</option>
-            <option value="low">{{ t('search_page.ratings') }} 0-5</option>
-          </select>
-
-          <select class="select" v-model="genre" @change="onFilterChange">
-            <option value="">{{ t('search_page.all_genres') }}</option>
-            <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
-          </select>
-
-          <select class="select" v-model="year" @change="onFilterChange">
-            <option value="">{{ t('search_page.all_years') }}</option>
-            <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-          </select>
-        </div>
-
-        <div v-if="results.length">
-          <MediaList :items="results" />
-        </div>
-        <IPagination
-          :currentPage="currentPage"
-          :totalPages="totalPages"
-          @update:page="fetchResults($event)"
-        />
+    <div class="filter-search-page">
+      <h1 class="title">{{ $t('filter_search_page.title') }}</h1>
+      <div class="select-container">
+        <select class="select" v-model="filterType" @change="onFilterChange">
+          <option value="movie">{{ t('filter_search_page.movies') }}</option>
+          <option value="tv">{{ t('filter_search_page.series') }}</option>
+        </select>
+        <select class="select" v-model="genre" @change="onFilterChange">
+          <option value="">{{ t('filter_search_page.all_genres') }}</option>
+          <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
+        </select>
+        <select class="select" v-model="rating" @change="onFilterChange">
+          <option value="all">{{ t('filter_search_page.all_ratings') }}</option>
+          <option value="high">{{ t('filter_search_page.ratings') }} 8+</option>
+          <option value="medium">{{ t('filter_search_page.ratings') }} 5-7</option>
+          <option value="low">{{ t('filter_search_page.ratings') }} 0-5</option>
+        </select>
+        <select class="select" v-model="year" @change="onFilterChange">
+          <option value="">{{ t('filter_search_page.all_years') }}</option>
+          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+        </select>
       </div>
+
+      <div v-if="results.length">
+        <MediaList :items="results" />
+      </div>
+      <IPagination
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @update:page="fetchResults($event)"
+      />
     </div>
   </IBackground>
 </template>
@@ -73,23 +69,22 @@ const currentPage = ref(1)
 const totalPages = ref(1)
 
 const genres = ref([
-  { id: 28, name: 'search_page.action' },
-  { id: 35, name: 'search_page.comedy' },
-  { id: 10751, name: 'search_page.family' },
-  { id: 12, name: 'search_page.adventure' },
-  { id: 14, name: 'search_page.fantasy' },
-  { id: 99, name: 'search_page.documentary' },
-  { id: 18, name: 'search_page.drama' },
-  { id: 36, name: 'search_page.history' },
-  { id: 80, name: 'search_page.crime' },
-  { id: 9648, name: 'search_page.mystery' },
-  { id: 27, name: 'search_page.horror' },
-  { id: 53, name: 'search_page.thriller' },
-  { id: 10752, name: 'search_page.war' },
-  { id: 37, name: 'search_page.western' },
-  { id: 10749, name: 'search_page.romance' },
-  { id: 878, name: 'search_page.science_fiction' },
-  { id: 16, name: 'search_page.animation' },
+  { id: 28, name: 'filter_search_page.action' },
+  { id: 35, name: 'filter_search_page.comedy' },
+  { id: 10751, name: 'filter_search_page.family' },
+  { id: 12, name: 'filter_search_page.adventure' },
+  { id: 14, name: 'filter_search_page.fantasy' },
+  { id: 99, name: 'filter_search_page.documentary' },
+  { id: 18, name: 'filter_search_page.drama' },
+  { id: 36, name: 'filter_search_page.history' },
+  { id: 80, name: 'filter_search_page.crime' },
+  { id: 9648, name: 'filter_search_page.mystery' },
+  { id: 27, name: 'filter_search_page.horror' },
+  { id: 53, name: 'filter_search_page.thriller' },
+  { id: 10752, name: 'filter_search_page.war' },
+  { id: 37, name: 'filter_search_page.western' },
+  { id: 10749, name: 'filter_search_page.romance' },
+  { id: 16, name: 'filter_search_page.animation' },
 ])
 const years = ref([
   2028, 2027, 2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014,
@@ -140,30 +135,31 @@ watch(
 </script>
 
 <style scoped>
-.search-page {
+.filter-search-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 5px;
+}
+.title {
+  font-weight: bold;
+  text-shadow: 0 0 15px var(--color-shadow);
+  margin: 0;
+  margin-bottom: 10px;
 }
 .select-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  max-width: 400px;
 }
 
 .select {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align-last: center;
-  height: 40px;
-  width: 120px;
+  height: 27px;
+  width: 170px;
   border-radius: 8px;
-  font-size: 16px;
   color: var(--color-white);
   background-color: var(--color-dark-grey);
   border: none;
@@ -194,12 +190,22 @@ watch(
 }
 
 @media (min-width: 768px) {
-  .search-page {
+  .filter-search-page {
     display: block;
   }
+  .title {
+    padding-left: 20px;
+    font-size: 40px;
+  }
+  .select-container {
+    justify-content: flex-start;
+    max-width: 100%;
+    padding-left: 20px;
+    gap: 10px;
+  }
   .select {
-    height: 48px;
-    width: 172px;
+    height: 33px;
+    width: 140px;
     font-size: 20px;
   }
   .select option {

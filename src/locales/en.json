@@ -49,15 +49,10 @@
     "biography": "Biography:",
     "movies_series_title": "Movies and series"
   },
-  "search_page": {
-    "text_search": "Text Search",
-    "filter_search": "Filter Search",
-    "all": "All",
+  "filter_search_page": {
+    "title": "Filter Search",
     "movies": "Movies",
     "series": "Series",
-    "placeholder": "Search movies, series...",
-    "button": "Search",
-    "search_result": "Search result:",
     "all_ratings": "All ratings",
     "ratings": "Ratings",
     "all_genres": "All genres",
@@ -76,9 +71,17 @@
     "war": "War",
     "western": "Western",
     "romance": "Romance",
-    "science_fiction": "Science Fiction",
     "animation": "Animation",
     "all_years": "All years"
+  },
+  "multi_search_page": {
+    "title": "Text Search",
+    "all": "All",
+    "movies": "Movies",
+    "series": "Series",
+    "placeholder": "Search movies, series...",
+    "button": "Search",
+    "search_result": "Search result:"
   },
   "pagination": {
     "previous": "Previous",
@@ -89,14 +92,14 @@
     "type_movie": "Movie",
     "type_series": "Series"
   },
-  "modal-menu": {
+  "modal_menu": {
     "title_welcome": "Welcome",
     "displayName": "Guest",
     "login": "Log in",
     "logout": "Log out",
     "title_language_selection": "Language selection"
   },
-  "modal-auth": {
+  "modal_auth": {
     "nav_btn_login": "Loginization",
     "nav_btn_register": "Registration",
     "label_nickname": "Nickname",
@@ -106,7 +109,7 @@
     "form_btn_login": "Log in",
     "form_btn_update": "Update"
   },
-  "share-button": {
+  "share_button": {
     "message": "Look it!"
   }
 }

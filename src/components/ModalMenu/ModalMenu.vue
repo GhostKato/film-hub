@@ -7,15 +7,15 @@
     >
       <div class="modal-menu">
         <div class="auth-container">
-          <h3 class="user-greeting">{{ $t('modal-menu.title_welcome') }}</h3>
+          <h3 class="user-greeting">{{ $t('modal_menu.title_welcome') }}</h3>
           <h3 class="user-name">{{ nickname }}</h3>
           <IButton @click="authStore.user ? handleLogout() : openAuthModal()" variant="auth-btn">
-            {{ authStore.user ? $t('modal-menu.logout') : $t('modal-menu.login') }}
+            {{ authStore.user ? $t('modal_menu.logout') : $t('modal_menu.login') }}
           </IButton>
         </div>
 
         <div class="language-container">
-          <h3 class="language-title">{{ $t('modal-menu.title_language_selection') }}</h3>
+          <h3 class="language-title">{{ $t('modal_menu.title_language_selection') }}</h3>
           <LanguageSwitcher />
         </div>
       </div>
@@ -60,7 +60,7 @@ onUnmounted(() => {
 
 const transitionName = computed(() => (width.value > 1023 ? 'slide-top' : 'slide-right'))
 
-const nickname = computed(() => authStore.user?.displayName ?? t('modal-menu.displayName'))
+const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.displayName'))
 </script>
 
 <style scoped>

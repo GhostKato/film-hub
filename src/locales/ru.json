@@ -49,15 +49,10 @@
     "biography": "Биография:",
     "movies_series_title": "Фильмы и сериалы"
   },
-  "search_page": {
-    "text_search": "Текстовый поиск",
-    "filter_search": "Поиск с фильтрами",
-    "all": "Все",
+  "filter_search_page": {
+    "title": "Поиск с фильтрами",
     "movies": "Фильмы",
     "series": "Сериалы",
-    "placeholder": "Поиск фильмов, сериалов...",
-    "button": "Поиск",
-    "search_result": "Результат поиска:",
     "all_ratings": "Все рейтинги",
     "ratings": "Рейтинги",
     "all_genres": "Все жанры",
@@ -76,9 +71,17 @@
     "war": "Военные",
     "western": "Вестерны",
     "romance": "Романтичиские",
-    "science_fiction": "Научно фантастические",
     "animation": "Анимационные",
     "all_years": "Все года"
+  },
+  "multi_search_page": {
+    "title": "Текстовый поиск",
+    "all": "Все",
+    "movies": "Фильмы",
+    "series": "Сериалы",
+    "placeholder": "Поиск фильмов, сериалов...",
+    "button": "Поиск",
+    "search_result": "Результат поиска:"
   },
   "pagination": {
     "previous": "Предыдущяя",
@@ -89,14 +92,14 @@
     "type_movie": "Фильм",
     "type_series": "Сериал"
   },
-  "modal-menu": {
+  "modal_menu": {
     "title_welcome": "Добро пожаловать",
     "displayName": "Гость",
     "login": "Войти",
     "logout": "Выйти",
     "title_language_selection": "Выбор языка"
   },
-  "modal-auth": {
+  "modal_auth": {
     "nav_btn_login": "Логизация",
     "nav_btn_register": "Регистрация",
     "label_nickname": "Прозвище",
@@ -106,7 +109,7 @@
     "form_btn_login": "Войти",
     "form_btn_update": "Обновить"
   },
-  "share-button": {
+  "share_button": {
     "message": "Посмотри на это!"
   }
 }

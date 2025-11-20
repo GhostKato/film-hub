@@ -204,7 +204,7 @@ const handleClick = (e: Event) => {
     font-size: 20px;
   }
   .categories-btn {
-    padding: 10px 10px;
+    padding: 5px 10px;
     font-size: 20px;
   }
 }
@@ -216,12 +216,14 @@ const handleClick = (e: Event) => {
     top: 7px;
   }
   .categories-btn {
-    padding: 5px 15px;
+    padding: none;
+    height: 33px;
+    width: 210px;
   }
 }
 @media (min-width: 2560px) {
   .categories-btn {
-    padding: 10px 15px;
+    height: 43px;
   }
 }
 </style>

@@ -1,31 +1,21 @@
 <template>
   <IBackground>
     <div class="search-page">
-      <div class="text-search">
-        <select class="select" v-model="filterType">
-          <option
-            class="option"
-            v-for="option in filterOptions"
-            :key="option.value"
-            :value="option.value"
-          >
-            {{ t(option.label) }}
-          </option>
-        </select>
-        <SearchBar />
-      </div>
+      <SearchBar @search="fetchSearchResults" />
 
-      <h3 class="result" v-if="query">{{ $t('search_page.search_result') }} "{{ query }}"</h3>
+      <h3 class="result" v-if="useMultiSearch.query">
+        {{ $t('multi_search_page.search_result') }} "{{ useMultiSearch.query }}"
+      </h3>
 
       <div class="media-list-wrapper">
         <MediaList :items="filteredResults" :routePath="route.path" />
       </div>
 
       <IPagination
-        v-if="query"
+        v-if="useMultiSearch.query"
         :currentPage="currentPage"
         :totalPages="totalPages"
-        @update:page="fetchSearchResults(query, $event)"
+        @update:page="fetchSearchResults(useMultiSearch.query, $event)"
       />
     </div>
   </IBackground>
@@ -40,11 +30,10 @@ import IPagination from '@/components/IPagination/IPagination.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
 import { searchMulti } from '@/api/tmdb'
+import { useMultiSearchStore } from '@/stores/multi-search'
 
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 const loaderStore = useLoaderStore()
+const useMultiSearch = useMultiSearchStore()
 const route = useRoute()
 
 interface MediaItem {
@@ -61,19 +50,11 @@ interface MediaItem {
 const results = ref<MediaItem[]>([])
 const currentPage = ref(1)
 const totalPages = ref(1)
-const filterType = ref<'all' | 'movie' | 'tv'>('all')
-
-const filterOptions = [
-  { label: 'search_page.all', value: 'all' },
-  { label: 'search_page.movies', value: 'movie' },
-  { label: 'search_page.series', value: 'tv' },
-]
-
-const query = computed(() => (route.query.query as string) || '')
 
 const fetchSearchResults = async (q: string, page = 1) => {
   if (!q) return
   loaderStore.showLoader()
+  useMultiSearch.startSearch()
   try {
     const data = await searchMulti(q, page)
     results.value = data.results.filter((item: MediaItem) => item.poster_path || item.profile_path)
@@ -81,30 +62,36 @@ const fetchSearchResults = async (q: string, page = 1) => {
     totalPages.value = data.total_pages
   } finally {
     loaderStore.hideLoader()
+    setTimeout(() => {
+      useMultiSearch.finishSearch()
+    }, 5000)
   }
 }
 
 const filteredResults = computed(() => {
-  if (filterType.value === 'all') return results.value
-  return results.value.filter((item) => item.media_type === filterType.value)
+  if (useMultiSearch.type === 'all') return results.value
+  return results.value.filter((item) => item.media_type === useMultiSearch.type)
 })
 
 onMounted(() => {
-  if (query.value) fetchSearchResults(query.value)
+  if (useMultiSearch.query) fetchSearchResults(useMultiSearch.query)
 })
 
 watch(
-  () => query.value,
+  () => useMultiSearch.query,
   (newQuery) => {
-    results.value = []
-    if (newQuery) fetchSearchResults(newQuery)
+    if (!newQuery.trim()) {
+      results.value = []
+    }
   },
 )
+
 watch(
-  () => filterType.value,
+  () => useMultiSearch.type,
   () => {
+    if (!useMultiSearch.query.trim()) return
     currentPage.value = 1
-    if (query.value) fetchSearchResults(query.value, 1)
+    fetchSearchResults(useMultiSearch.query, 1)
   },
 )
 </script>
@@ -115,43 +102,6 @@ watch(
   flex-direction: column;
   align-items: center;
   padding: 5px;
-}
-
-.text-search {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.select {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align-last: center;
-  height: 40px;
-  width: 60px;
-  border-radius: 8px;
-  font-size: 16px;
-  color: var(--color-white);
-  background-color: var(--color-dark-grey);
-  border: none;
-  outline: none;
-  appearance: none;
-  cursor: pointer;
-}
-
-.select:hover {
-  outline: 1px solid var(--color-hover);
-}
-
-.option {
-  font-size: 16px;
-  text-align: center;
-  border: none;
-}
-
-.option:checked {
-  background-color: var(--color-red);
 }
 
 .result {
@@ -165,14 +115,7 @@ watch(
   .search-page {
     display: block;
   }
-  .select {
-    height: 48px;
-    width: 90px;
-    font-size: 20px;
-  }
-  .option {
-    font-size: 20px;
-  }
+
   .result {
     margin: 15px;
     font-size: 20px;

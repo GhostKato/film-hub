@@ -49,15 +49,10 @@
     "biography": "Біографія:",
     "movies_series_title": "Фільми та серіали"
   },
-  "search_page": {
-    "text_search": "Текстовий пошук",
-    "filter_search": "Пошук з фыіьтрами",
-    "all": "Всі",
+  "filter_search_page": {
+    "title": "Пошук з фільтрами",
     "movies": "Фільми",
     "series": "Серіали",
-    "placeholder": "Пошук фільмів, серіалів...",
-    "button": "Пошук",
-    "search_result": "Результат пошуку:",
     "all_ratings": "Всі рейтинги",
     "ratings": "Рейтинги",
     "all_genres": "Всі жанри",
@@ -76,9 +71,17 @@
     "war": "Військові",
     "western": "Вестерни",
     "romance": "Романтичні",
-    "science_fiction": "Науково фантастичні",
     "animation": "Анімаційні",
     "all_years": "Всі роки"
+  },
+  "multi_search_page": {
+    "title": "Текстовий пошук",
+    "all": "Всі",
+    "movies": "Фільми",
+    "series": "Серіали",
+    "placeholder": "Пошук фільмів, серіалів...",
+    "button": "Пошук",
+    "search_result": "Результат пошуку:"
   },
   "pagination": {
     "previous": "Попередня",
@@ -89,14 +92,14 @@
     "type_movie": "Фільм",
     "type_series": "Серіал"
   },
-  "modal-menu": {
+  "modal_menu": {
     "title_welcome": "Ласкаво просимо",
     "displayName": "Гість",
     "login": "Увійти",
     "logout": "Вийти",
     "title_language_selection": "Вибір мови"
   },
-  "modal-auth": {
+  "modal_auth": {
     "nav_btn_login": "Логінізація",
     "nav_btn_register": "Реєстрація",
     "label_nickname": "Псевдонім",
@@ -106,7 +109,7 @@
     "form_btn_login": "Увійти",
     "form_btn_update": "Оновити"
   },
-  "share-button": {
+  "share_button": {
     "message": "Подивись це!"
   }
 }

@@ -7,14 +7,14 @@
           :class="{ active: mode === 'login' }"
           @click="mode = 'login'"
         >
-          {{ $t('modal-auth.nav_btn_login') }}
+          {{ $t('modal_auth.nav_btn_login') }}
         </IButton>
         <IButton
           variant="modal-auth-nav-btn"
           :class="{ active: mode === 'register' }"
           @click="mode = 'register'"
         >
-          {{ $t('modal-auth.nav_btn_register') }}
+          {{ $t('modal_auth.nav_btn_register') }}
         </IButton>
       </div>
 
