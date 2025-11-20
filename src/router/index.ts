@@ -38,8 +38,11 @@ router.beforeEach((to, from, next) => {
     multiSearchStore.setType('movie')
   } else if (from.name === 'series') {
     multiSearchStore.setType('tv')
+  } else if (from.name === 'collection') {
+    multiSearchStore.setType('all')
+  } else if (from.name === 'filter-search') {
+    multiSearchStore.setType('all')
   }
-
   next()
 })
 

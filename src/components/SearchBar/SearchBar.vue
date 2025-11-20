@@ -18,10 +18,15 @@
         type="text"
         :placeholder="t('multi_search_page.placeholder')"
       />
-      <IButton v-if="useMultiSearch.query" variant="clear-btn" @click="clearQuery">✖</IButton>
+      <IButton
+        v-if="useMultiSearch.query"
+        :variant="isBigSearchBar ? 'big-clean-btn' : 'small-clean-btn'"
+        @click="clearQuery"
+        >✖</IButton
+      >
     </div>
     <IButton
-      :variant="isBigSearchBar ? 'search-big-btn' : 'search-small-btn'"
+      :variant="isBigSearchBar ? 'big-search-btn' : 'small-search-btn'"
       :disabled="!useMultiSearch.query.trim()"
       @click="search"
     >
@@ -103,28 +108,23 @@ const filterOptions = [
   align-items: center;
   gap: 5px;
 }
-
 .position {
   position: relative;
   display: flex;
   gap: 5px;
 }
-
 .input {
   border-radius: 8px;
   border: none;
   color: var(--color-white);
   background-color: var(--color-dark-grey);
 }
-
 .input:focus {
   outline: 1px solid var(--color-red);
 }
-
 .input:hover {
   outline: 1px solid var(--color-hover);
 }
-
 .big-search-bar {
   padding: 10px 35px 10px 10px;
   width: 220px;
@@ -133,13 +133,11 @@ const filterOptions = [
   padding: 5px 25px 5px 10px;
   width: 260px;
 }
-
 .text-search {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
-
 .select {
   display: flex;
   justify-content: center;
@@ -156,21 +154,17 @@ const filterOptions = [
   appearance: none;
   cursor: pointer;
 }
-
 .select:hover {
   outline: 1px solid var(--color-hover);
 }
-
 .option {
   font-size: 16px;
   text-align: center;
   border: none;
 }
-
 .option:checked {
   background-color: var(--color-red);
 }
-
 @media (min-width: 768px) {
   .search-bar {
     gap: 10px;

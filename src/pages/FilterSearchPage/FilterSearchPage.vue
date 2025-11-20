@@ -2,25 +2,31 @@
   <IBackground>
     <div class="filter-search-page">
       <h1 class="title">{{ $t('filter_search_page.title') }}</h1>
-      <div class="select-container">
-        <select class="select" v-model="filterType" @change="onFilterChange">
-          <option value="movie">{{ t('filter_search_page.movies') }}</option>
-          <option value="tv">{{ t('filter_search_page.series') }}</option>
-        </select>
-        <select class="select" v-model="genre" @change="onFilterChange">
-          <option value="">{{ t('filter_search_page.all_genres') }}</option>
-          <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
-        </select>
-        <select class="select" v-model="rating" @change="onFilterChange">
-          <option value="all">{{ t('filter_search_page.all_ratings') }}</option>
-          <option value="high">{{ t('filter_search_page.ratings') }} 8+</option>
-          <option value="medium">{{ t('filter_search_page.ratings') }} 5-7</option>
-          <option value="low">{{ t('filter_search_page.ratings') }} 0-5</option>
-        </select>
-        <select class="select" v-model="year" @change="onFilterChange">
-          <option value="">{{ t('filter_search_page.all_years') }}</option>
-          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-        </select>
+      <div class="header-page">
+        <div class="select-container">
+          <select class="select" v-model="filterType" @change="onFilterChange">
+            <option value="movie">{{ t('filter_search_page.movies') }}</option>
+            <option value="tv">{{ t('filter_search_page.series') }}</option>
+          </select>
+          <select class="select" v-model="genre" @change="onFilterChange">
+            <option value="">{{ t('filter_search_page.all_genres') }}</option>
+            <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
+          </select>
+          <select class="select" v-model="rating" @change="onFilterChange">
+            <option value="all">{{ t('filter_search_page.all_ratings') }}</option>
+            <option value="high">{{ t('filter_search_page.ratings') }} 8+</option>
+            <option value="medium">{{ t('filter_search_page.ratings') }} 5-7</option>
+            <option value="low">{{ t('filter_search_page.ratings') }} 0-5</option>
+          </select>
+          <select class="select" v-model="year" @change="onFilterChange">
+            <option value="">{{ t('filter_search_page.all_years') }}</option>
+            <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+          </select>
+        </div>
+
+        <div class="search-bar-container">
+          <SearchBar />
+        </div>
       </div>
 
       <div v-if="results.length">
@@ -44,6 +50,7 @@ import { fetchMovies, fetchTV } from '@/api/tmdb'
 import { useLanguageStore } from '@/stores/language'
 import { useI18n } from 'vue-i18n'
 import IBackground from '@/components/IBackground/IBackground.vue'
+import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
 const loaderStore = useLoaderStore()
 const languageStore = useLanguageStore()
@@ -141,6 +148,9 @@ watch(
   align-items: center;
   padding: 5px;
 }
+.header-page {
+  margin-bottom: 5px;
+}
 .title {
   font-weight: bold;
   text-shadow: 0 0 15px var(--color-shadow);
@@ -152,10 +162,8 @@ watch(
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 5px;
   max-width: 400px;
 }
-
 .select {
   height: 27px;
   width: 170px;
@@ -167,31 +175,36 @@ watch(
   appearance: none;
   cursor: pointer;
 }
-
 .select:hover {
   outline: 1px solid var(--color-hover);
 }
-
 .select option {
   font-size: 16px;
   text-align: center;
   border: none;
 }
-
 .option:checked {
   background-color: var(--color-red);
 }
-
 .result {
   font-weight: bold;
   margin: 10px;
   text-align: center;
   font-size: 16px;
 }
-
+.search-bar-container {
+  display: none;
+}
 @media (min-width: 768px) {
   .filter-search-page {
     display: block;
+  }
+  .header-page {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .title {
     padding-left: 20px;
@@ -200,7 +213,6 @@ watch(
   .select-container {
     justify-content: flex-start;
     max-width: 100%;
-    padding-left: 20px;
     gap: 10px;
   }
   .select {
@@ -215,6 +227,11 @@ watch(
     margin: 15px;
     font-size: 18px;
     text-align: start;
+  }
+}
+@media (min-width: 1024px) {
+  .search-bar-container {
+    display: block;
   }
 }
 @media (min-width: 2560px) {

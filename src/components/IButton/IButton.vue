@@ -62,41 +62,40 @@ const handleClick = (e: Event) => {
   color: var(--color-red);
 }
 /* SearchBar component, search button */
-.search-big-btn {
+.big-search-btn {
   background-color: var(--color-red);
   border-radius: 8px;
   width: 60px;
   height: 39px;
   border: none;
 }
-.search-btn-big:hover {
+.big-search-big:hover {
   background-color: var(--color-hover);
 }
-.search-btn-big:disabled {
+.big-search-btn:disabled {
   background-color: var(--color-grey);
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
-.search-small-btn {
+.small-search-btn {
   background-color: var(--color-red);
   width: 32px;
   height: 32px;
   border-radius: 8px;
   border: none;
 }
-
-.search-small-btn:hover {
+.small-search-btn:hover {
   background-color: var(--color-hover);
 }
-.search-small-btn:disabled {
+.small-search-btn:disabled {
   background-color: var(--color-grey);
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 /* SearchBar component, clear button */
-.clear-btn {
+.big-clean-btn {
   position: absolute;
   right: 0;
   top: 2px;
@@ -108,7 +107,22 @@ const handleClick = (e: Event) => {
   padding: 8px 12px;
   cursor: pointer;
 }
-.clear-btn:hover {
+.big-clean-btn:hover {
+  color: var(--color-hover);
+}
+.small-clean-btn {
+  position: absolute;
+  right: 0;
+  top: 0px;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.small-clean-btn:hover {
   color: var(--color-hover);
 }
 /* LanguageSwitcher component, language buttons */
@@ -195,14 +209,13 @@ const handleClick = (e: Event) => {
 .share-btn:hover {
   background-color: var(--color-hover);
 }
-
 @media (min-width: 768px) {
-  .search-big-btn {
+  .big-search-btn {
     width: 90px;
     height: 48px;
     font-size: 20px;
   }
-  .clear-btn {
+  .big-clean-btn {
     right: 1px;
     top: 6px;
   }
@@ -229,7 +242,7 @@ const handleClick = (e: Event) => {
   .header-link {
     font-size: 30px;
   }
-  .clear-btn {
+  .big-clean-btn {
     top: 7px;
   }
 }
@@ -241,12 +254,15 @@ const handleClick = (e: Event) => {
   }
 }
 @media (min-width: 2560px) {
-  .search-small-btn {
+  .small-search-btn {
     width: 43px;
     height: 43px;
   }
   .categories-btn {
     height: 43px;
+  }
+  .small-clean-btn {
+    top: 4px;
   }
 }
 </style>

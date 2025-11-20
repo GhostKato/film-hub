@@ -3,16 +3,21 @@
     <div class="collection-page">
       <h1 class="title">{{ $t('collection_page.title') }}</h1>
 
-      <div class="tabs">
-        <IButton
-          v-for="tab in tabs"
-          :key="tab.key"
-          variant="categories-btn"
-          :class="{ active: activeTab === tab.key }"
-          @click="changeTab(tab.key)"
-        >
-          {{ tab.label }}
-        </IButton>
+      <div class="header-page">
+        <div class="tabs">
+          <IButton
+            v-for="tab in tabs"
+            :key="tab.key"
+            variant="categories-btn"
+            :class="{ active: activeTab === tab.key }"
+            @click="changeTab(tab.key)"
+          >
+            {{ tab.label }}
+          </IButton>
+        </div>
+        <div class="search-bar-container">
+          <SearchBar />
+        </div>
       </div>
 
       <MediaList :items="paginatedData" />
@@ -39,6 +44,7 @@ import { useLoaderStore } from '@/stores/loader'
 import IButton from '@/components/IButton/IButton.vue'
 import { useI18n } from 'vue-i18n'
 import { MAIN_ACCOUNT_ID } from '@/constants'
+import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
@@ -185,31 +191,46 @@ onMounted(async () => {
   align-items: center;
   padding: 5px;
 }
-
+.header-page {
+  margin-bottom: 5px;
+}
 .title {
   font-weight: bold;
   text-shadow: 0 0 15px var(--color-shadow);
   margin: 0;
   margin-bottom: 10px;
 }
-
 .tabs {
   display: flex;
+  align-items: center;
   gap: 5px;
-  margin-bottom: 5px;
 }
 
+.search-bar-container {
+  display: none;
+}
 @media (min-width: 768px) {
   .collection-page {
     display: block;
+  }
+  .header-page {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .title {
     padding-left: 20px;
     font-size: 40px;
   }
   .tabs {
-    padding-left: 20px;
     gap: 10px;
+  }
+}
+@media (min-width: 1024px) {
+  .search-bar-container {
+    display: block;
   }
 }
 </style>
