@@ -217,4 +217,9 @@ watch(
     text-align: start;
   }
 }
+@media (min-width: 2560px) {
+  .select {
+    height: 43px;
+  }
+}
 </style>

@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 const share = async () => {
-  const shareText = `${props.title}\n{{ $t('share-button.message') }}\n${window.location.href}`
+  const shareText = `${props.title}\n{{ $t('share_button.message') }}\n${window.location.href}`
 
   if (navigator.share) {
     try {

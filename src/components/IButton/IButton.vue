@@ -62,17 +62,34 @@ const handleClick = (e: Event) => {
   color: var(--color-red);
 }
 /* SearchBar component, search button */
-.search-btn {
+.search-big-btn {
   background-color: var(--color-red);
   border-radius: 8px;
   width: 60px;
   height: 39px;
   border: none;
 }
-.search-btn:hover {
+.search-btn-big:hover {
   background-color: var(--color-hover);
 }
-.search-btn:disabled {
+.search-btn-big:disabled {
+  background-color: var(--color-grey);
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.search-small-btn {
+  background-color: var(--color-red);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+}
+
+.search-small-btn:hover {
+  background-color: var(--color-hover);
+}
+.search-small-btn:disabled {
   background-color: var(--color-grey);
   opacity: 0.5;
   cursor: not-allowed;
@@ -180,7 +197,7 @@ const handleClick = (e: Event) => {
 }
 
 @media (min-width: 768px) {
-  .search-btn {
+  .search-big-btn {
     width: 90px;
     height: 48px;
     font-size: 20px;
@@ -215,6 +232,8 @@ const handleClick = (e: Event) => {
   .clear-btn {
     top: 7px;
   }
+}
+@media (min-width: 1920px) {
   .categories-btn {
     padding: none;
     height: 33px;
@@ -222,6 +241,10 @@ const handleClick = (e: Event) => {
   }
 }
 @media (min-width: 2560px) {
+  .search-small-btn {
+    width: 43px;
+    height: 43px;
+  }
   .categories-btn {
     height: 43px;
   }

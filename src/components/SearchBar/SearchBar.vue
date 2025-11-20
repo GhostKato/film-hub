@@ -12,7 +12,7 @@
         </option>
       </select>
       <input
-        class="input"
+        :class="['input', isBigSearchBar ? 'big-search-bar' : 'small-search-bar']"
         v-model="useMultiSearch.query"
         @keyup.enter="search"
         type="text"
@@ -20,9 +20,18 @@
       />
       <IButton v-if="useMultiSearch.query" variant="clear-btn" @click="clearQuery">✖</IButton>
     </div>
-    <IButton variant="search-btn" :disabled="!useMultiSearch.query.trim()" @click="search">{{
-      $t('multi_search_page.button')
-    }}</IButton>
+    <IButton
+      :variant="isBigSearchBar ? 'search-big-btn' : 'search-small-btn'"
+      :disabled="!useMultiSearch.query.trim()"
+      @click="search"
+    >
+      <template v-if="isBigSearchBar">
+        {{ $t('multi_search_page.button') }}
+      </template>
+      <template v-else>
+        <SearchIcon />
+      </template>
+    </IButton>
   </div>
 </template>
 
@@ -32,12 +41,15 @@ import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import IButton from '@/components/IButton/IButton.vue'
 import { useMultiSearchStore } from '@/stores/multi-search'
+import SearchIcon from '../icons/SearchIcon.vue'
 
 const useMultiSearch = useMultiSearchStore()
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const isMultiSearchPage = route.path == '/multi-search'
+const isBigSearchBar = route.path === '/multi-search' || route.path === '/'
+
 const emit = defineEmits<{
   (e: 'search', query: string): void
 }>()
@@ -99,10 +111,8 @@ const filterOptions = [
 }
 
 .input {
-  padding: 10px 35px 10px 10px;
   border-radius: 8px;
   border: none;
-  width: 220px;
   color: var(--color-white);
   background-color: var(--color-dark-grey);
 }
@@ -113,6 +123,15 @@ const filterOptions = [
 
 .input:hover {
   outline: 1px solid var(--color-hover);
+}
+
+.big-search-bar {
+  padding: 10px 35px 10px 10px;
+  width: 220px;
+}
+.small-search-bar {
+  padding: 5px 25px 5px 10px;
+  width: 260px;
 }
 
 .text-search {
@@ -160,9 +179,11 @@ const filterOptions = [
     gap: 10px;
   }
   .input {
+    font-size: 20px;
+  }
+  .big-search-bar {
     height: 48px;
     width: 340px;
-    font-size: 20px;
   }
   .select {
     height: 48px;
@@ -174,8 +195,19 @@ const filterOptions = [
   }
 }
 @media (min-width: 1024px) {
-  .input {
+  .big-search-bar {
     width: 700px;
+  }
+}
+@media (min-width: 1920px) {
+  .small-search-bar {
+    width: 300px;
+  }
+}
+@media (min-width: 2560px) {
+  .small-search-bar {
+    height: 43px;
+    width: 400px;
   }
 }
 </style>

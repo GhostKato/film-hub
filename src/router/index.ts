@@ -10,6 +10,8 @@ import PersonPage from '@/pages/PersonPage/PersonPage.vue'
 import MultiSearchPage from '@/pages/MultiSearchPage/MultiSearchPage.vue'
 import FilterSearchPage from '@/pages/FilterSearchPage/FilterSearchPage.vue'
 
+import { useMultiSearchStore } from '@/stores/multi-search'
+
 const routes = [
   { path: '/', name: 'home', component: HomePage },
   { path: '/movies', name: 'movies', component: MoviesPage },
@@ -25,6 +27,20 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const multiSearchStore = useMultiSearchStore()
+
+  if (from.name === 'home') {
+    multiSearchStore.setType('all')
+  } else if (from.name === 'movies') {
+    multiSearchStore.setType('movie')
+  } else if (from.name === 'series') {
+    multiSearchStore.setType('tv')
+  }
+
+  next()
 })
 
 export default router

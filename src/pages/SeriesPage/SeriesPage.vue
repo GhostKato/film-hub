@@ -3,16 +3,21 @@
     <div class="series-page">
       <h1 class="title">{{ $t('series_page.title') }}</h1>
 
-      <div class="categories">
-        <IButton
-          variant="categories-btn"
-          v-for="cat in categories"
-          :key="cat.key"
-          :class="{ active: activeCategory === cat.key }"
-          @click="changeCategory(cat.key)"
-        >
-          {{ cat.label }}
-        </IButton>
+      <div class="header-page">
+        <div class="categories">
+          <IButton
+            variant="categories-btn"
+            v-for="cat in categories"
+            :key="cat.key"
+            :class="{ active: activeCategory === cat.key }"
+            @click="changeCategory(cat.key)"
+          >
+            {{ cat.label }}
+          </IButton>
+        </div>
+        <div class="search-bar-container">
+          <SearchBar />
+        </div>
       </div>
 
       <MediaList :items="series" />
@@ -33,6 +38,7 @@ import { useLanguageStore } from '@/stores/language'
 import { useI18n } from 'vue-i18n'
 import { useLoaderStore } from '@/stores/loader'
 import IButton from '@/components/IButton/IButton.vue'
+import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -164,6 +170,10 @@ watch(
   padding: 5px;
 }
 
+.header-page {
+  margin-bottom: 5px;
+}
+
 .title {
   font-weight: bold;
   text-shadow: 0 0 15px var(--color-shadow);
@@ -174,20 +184,34 @@ watch(
 .categories {
   display: flex;
   gap: 5px;
-  margin-bottom: 5px;
+}
+
+.search-bar-container {
+  display: none;
 }
 
 @media (min-width: 768px) {
   .series-page {
     display: block;
   }
+  .header-page {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
   .title {
     padding-left: 20px;
     font-size: 40px;
   }
   .categories {
-    padding-left: 20px;
     gap: 10px;
+  }
+}
+@media (min-width: 1024px) {
+  .search-bar-container {
+    display: block;
   }
 }
 </style>
