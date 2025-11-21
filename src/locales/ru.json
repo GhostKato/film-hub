@@ -57,6 +57,7 @@
     "search_result": "Результат поиска:"
   },
   "filters_bar": {
+    "all": "Все",
     "movies": "Фильмы",
     "series": "Сериалы",
     "all_ratings": "Все рейтинги",

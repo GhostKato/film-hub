@@ -1,7 +1,7 @@
 <template>
   <div class="select-container">
     <select class="select" v-model="filterType">
-      <option v-if="isCollectionPage" value="all">All</option>
+      <option v-if="isCollectionPage" value="all">{{ t('filters_bar.all') }}</option>
       <option value="movie">{{ t('filters_bar.movies') }}</option>
       <option value="tv">{{ t('filters_bar.series') }}</option>
     </select>

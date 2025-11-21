@@ -57,6 +57,7 @@
     "search_result": "Search result:"
   },
   "filters_bar": {
+    "all": "All",
     "movies": "Movies",
     "series": "Series",
     "all_ratings": "All ratings",
