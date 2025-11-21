@@ -1,7 +1,7 @@
 <template>
   <div class="media-list">
     <div
-      v-if="!itemsWithPoster.length && useMultiSearch.isSearched && !useMultiSearch.query"
+      v-if="!itemsWithPoster.length && searchStore.isSearched && !searchStore.query"
       class="empty"
     >
       <p>{{ $t('media_list.not_found') }}</p>
@@ -65,9 +65,9 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import CollectionIndicator from './CollectionIndicator.vue'
 import { truncateTitle } from '@/utils/truncateTitle'
-import { useMultiSearchStore } from '@/stores/multi-search'
+import { useSearchStore } from '@/stores/search'
 
-const useMultiSearch = useMultiSearchStore()
+const searchStore = useSearchStore()
 
 interface MediaItem {
   id: number

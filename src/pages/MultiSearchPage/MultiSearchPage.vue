@@ -3,8 +3,8 @@
     <div class="search-page">
       <SearchBar @search="fetchSearchResults" />
 
-      <h3 class="result" v-if="useMultiSearch.query">
-        {{ $t('multi_search_page.search_result') }} "{{ useMultiSearch.query }}"
+      <h3 class="result" v-if="searchStore.query">
+        {{ $t('multi_search_page.search_result') }} "{{ searchStore.query }}"
       </h3>
 
       <div class="media-list-wrapper">
@@ -12,10 +12,10 @@
       </div>
 
       <IPagination
-        v-if="useMultiSearch.query"
+        v-if="searchStore.query"
         :currentPage="currentPage"
         :totalPages="totalPages"
-        @update:page="fetchSearchResults(useMultiSearch.query, $event)"
+        @update:page="fetchSearchResults(searchStore.query, $event)"
       />
     </div>
   </IBackground>
@@ -30,10 +30,10 @@ import IPagination from '@/components/IPagination/IPagination.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
 import { searchMulti } from '@/api/tmdb'
-import { useMultiSearchStore } from '@/stores/multi-search'
+import { useSearchStore } from '@/stores/search'
 
 const loaderStore = useLoaderStore()
-const useMultiSearch = useMultiSearchStore()
+const searchStore = useSearchStore()
 const route = useRoute()
 
 interface MediaItem {
@@ -54,7 +54,7 @@ const totalPages = ref(1)
 const fetchSearchResults = async (q: string, page = 1) => {
   if (!q) return
   loaderStore.showLoader()
-  useMultiSearch.startSearch()
+  searchStore.startSearch()
   try {
     const data = await searchMulti(q, page)
     results.value = data.results.filter((item: MediaItem) => item.poster_path || item.profile_path)
@@ -63,22 +63,22 @@ const fetchSearchResults = async (q: string, page = 1) => {
   } finally {
     loaderStore.hideLoader()
     setTimeout(() => {
-      useMultiSearch.finishSearch()
+      searchStore.finishSearch()
     }, 5000)
   }
 }
 
 const filteredResults = computed(() => {
-  if (useMultiSearch.type === 'all') return results.value
-  return results.value.filter((item) => item.media_type === useMultiSearch.type)
+  if (searchStore.type === 'all') return results.value
+  return results.value.filter((item) => item.media_type === searchStore.type)
 })
 
 onMounted(() => {
-  if (useMultiSearch.query) fetchSearchResults(useMultiSearch.query)
+  if (searchStore.query) fetchSearchResults(searchStore.query)
 })
 
 watch(
-  () => useMultiSearch.query,
+  () => searchStore.query,
   (newQuery) => {
     if (!newQuery.trim()) {
       results.value = []
@@ -87,11 +87,11 @@ watch(
 )
 
 watch(
-  () => useMultiSearch.type,
+  () => searchStore.type,
   () => {
-    if (!useMultiSearch.query.trim()) return
+    if (!searchStore.query.trim()) return
     currentPage.value = 1
-    fetchSearchResults(useMultiSearch.query, 1)
+    fetchSearchResults(searchStore.query, 1)
   },
 )
 </script>
@@ -123,11 +123,6 @@ watch(
   }
 }
 @media (min-width: 1024px) {
-  /* .main-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  } */
   .media-list-wrapper {
     flex: 1;
   }

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useMultiSearchStore = defineStore('search', {
+export const useSearchStore = defineStore('search', {
   state: () => ({
     query: '',
     type: 'all' as 'all' | 'movie' | 'tv',

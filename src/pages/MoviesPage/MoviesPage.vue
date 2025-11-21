@@ -215,7 +215,7 @@ watch(
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .search-bar-container {
     display: block;
   }

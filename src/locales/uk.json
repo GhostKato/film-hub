@@ -50,7 +50,13 @@
     "movies_series_title": "Фільми та серіали"
   },
   "filter_search_page": {
-    "title": "Пошук",
+    "title": "Пошук"
+  },
+  "multi_search_page": {
+    "title": "Текстовий пошук",
+    "search_result": "Результат пошуку:"
+  },
+  "filters_bar": {
     "movies": "Фільми",
     "series": "Серіали",
     "all_ratings": "Всі рейтинги",
@@ -72,16 +78,15 @@
     "western": "Вестерни",
     "romance": "Романтичні",
     "animation": "Анімаційні",
-    "all_years": "Всі роки"
+    "all_years": "Всі роки",
+    "placeholder": "Пошук по каталогу..."
   },
-  "multi_search_page": {
-    "title": "Текстовий пошук",
+  "search_bar": {
     "all": "Всі",
     "movies": "Фільми",
     "series": "Серіали",
-    "placeholder": "Пошук фільмів, серіалів...",
-    "button": "Пошук",
-    "search_result": "Результат пошуку:"
+    "placeholder": "Глобальний пошук...",
+    "button": "Пошук"
   },
   "pagination": {
     "previous": "Попередня",

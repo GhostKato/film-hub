@@ -1,6 +1,6 @@
 <template>
   <button @click="toggleMenu" class="menu-btn">
-    <MenuIcon v-if="!modal.modals.menu" :color="'var(--color-white)'" />
+    <MenuIcon v-if="!modalStore.modals.menu" :color="'var(--color-white)'" />
     <span v-else class="close-icon">✕</span>
   </button>
 </template>
@@ -9,10 +9,10 @@
 import { useModalStore } from '@/stores/modal'
 import MenuIcon from '@/components/icons/MenuIcon.vue'
 
-const modal = useModalStore()
+const modalStore = useModalStore()
 
 function toggleMenu() {
-  modal.toggle('menu')
+  modalStore.toggle('menu')
 }
 </script>
 

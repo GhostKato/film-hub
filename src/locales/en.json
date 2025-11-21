@@ -50,7 +50,13 @@
     "movies_series_title": "Movies and series"
   },
   "filter_search_page": {
-    "title": "Search",
+    "title": "Search"
+  },
+  "multi_search_page": {
+    "title": "Text Search",
+    "search_result": "Search result:"
+  },
+  "filters_bar": {
     "movies": "Movies",
     "series": "Series",
     "all_ratings": "All ratings",
@@ -72,16 +78,15 @@
     "western": "Western",
     "romance": "Romance",
     "animation": "Animation",
-    "all_years": "All years"
+    "all_years": "All years",
+    "placeholder": "Search by catalog..."
   },
-  "multi_search_page": {
-    "title": "Text Search",
+  "search_bar": {
     "all": "All",
     "movies": "Movies",
     "series": "Series",
-    "placeholder": "Search movies, series...",
-    "button": "Search",
-    "search_result": "Search result:"
+    "placeholder": "Global search...",
+    "button": "Search"
   },
   "pagination": {
     "previous": "Previous",

@@ -1,7 +1,7 @@
 <template>
   <div class="search-bar">
     <div class="position">
-      <select class="select" v-if="isMultiSearchPage" v-model="useMultiSearch.type">
+      <select class="select" v-if="isMultiSearchPage" v-model="searchStore.type">
         <option
           class="option"
           v-for="option in filterOptions"
@@ -13,13 +13,13 @@
       </select>
       <input
         :class="['input', isBigSearchBar ? 'big-search-bar' : 'small-search-bar']"
-        v-model="useMultiSearch.query"
+        v-model="searchStore.query"
         @keyup.enter="search"
         type="text"
-        :placeholder="t('multi_search_page.placeholder')"
+        :placeholder="t('search_bar.placeholder')"
       />
       <IButton
-        v-if="useMultiSearch.query"
+        v-if="searchStore.query"
         :variant="isBigSearchBar ? 'big-clean-btn' : 'small-clean-btn'"
         @click="clearQuery"
         >✖</IButton
@@ -27,11 +27,11 @@
     </div>
     <IButton
       :variant="isBigSearchBar ? 'big-search-btn' : 'small-search-btn'"
-      :disabled="!useMultiSearch.query.trim()"
+      :disabled="!searchStore.query.trim()"
       @click="search"
     >
       <template v-if="isBigSearchBar">
-        {{ $t('multi_search_page.button') }}
+        {{ $t('search_bar.button') }}
       </template>
       <template v-else>
         <SearchIcon />
@@ -45,10 +45,10 @@ import { watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import IButton from '@/components/IButton/IButton.vue'
-import { useMultiSearchStore } from '@/stores/multi-search'
+import { useSearchStore } from '@/stores/search'
 import SearchIcon from '../icons/SearchIcon.vue'
 
-const useMultiSearch = useMultiSearchStore()
+const searchStore = useSearchStore()
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
@@ -60,7 +60,7 @@ const emit = defineEmits<{
 }>()
 
 watch(
-  () => useMultiSearch.query,
+  () => searchStore.query,
   (newQuery) => {
     if (!isMultiSearchPage) return
 
@@ -73,7 +73,7 @@ watch(
 )
 
 const search = async () => {
-  const q = useMultiSearch.query.trim()
+  const q = searchStore.query.trim()
   if (!q) return
 
   if (!isMultiSearchPage) {
@@ -91,13 +91,13 @@ const search = async () => {
 }
 
 const clearQuery = () => {
-  useMultiSearch.setQuery('')
+  searchStore.setQuery('')
 }
 
 const filterOptions = [
-  { label: 'multi_search_page.all', value: 'all' },
-  { label: 'multi_search_page.movies', value: 'movie' },
-  { label: 'multi_search_page.series', value: 'tv' },
+  { label: 'search_bar.all', value: 'all' },
+  { label: 'search_bar.movies', value: 'movie' },
+  { label: 'search_bar.series', value: 'tv' },
 ]
 </script>
 

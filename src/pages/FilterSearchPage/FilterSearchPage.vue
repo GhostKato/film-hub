@@ -2,36 +2,19 @@
   <IBackground>
     <div class="filter-search-page">
       <h1 class="title">{{ $t('filter_search_page.title') }}</h1>
+
       <div class="header-page">
-        <div class="select-container">
-          <select class="select" v-model="filterType" @change="onFilterChange">
-            <option value="movie">{{ t('filter_search_page.movies') }}</option>
-            <option value="tv">{{ t('filter_search_page.series') }}</option>
-          </select>
-          <select class="select" v-model="genre" @change="onFilterChange">
-            <option value="">{{ t('filter_search_page.all_genres') }}</option>
-            <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
-          </select>
-          <select class="select" v-model="rating" @change="onFilterChange">
-            <option value="all">{{ t('filter_search_page.all_ratings') }}</option>
-            <option value="high">{{ t('filter_search_page.ratings') }} 8+</option>
-            <option value="medium">{{ t('filter_search_page.ratings') }} 5-7</option>
-            <option value="low">{{ t('filter_search_page.ratings') }} 0-5</option>
-          </select>
-          <select class="select" v-model="year" @change="onFilterChange">
-            <option value="">{{ t('filter_search_page.all_years') }}</option>
-            <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-          </select>
-        </div>
+        <FiltersBar v-model="filters" />
 
         <div class="search-bar-container">
           <SearchBar />
         </div>
       </div>
 
-      <div v-if="results.length">
-        <MediaList :items="results" />
+      <div v-if="filteredMedia.length">
+        <MediaList :items="filteredMedia" />
       </div>
+
       <IPagination
         :currentPage="currentPage"
         :totalPages="totalPages"
@@ -42,24 +25,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
+import { fetchMovies, fetchTV } from '@/api/tmdb'
+import { useLoaderStore } from '@/stores/loader'
+import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
-import { useLoaderStore } from '@/stores/loader'
-import { fetchMovies, fetchTV } from '@/api/tmdb'
-import { useLanguageStore } from '@/stores/language'
-import { useI18n } from 'vue-i18n'
-import IBackground from '@/components/IBackground/IBackground.vue'
+import FiltersBar from '@/components/FiltersBar/FiltersBar.vue'
+import type { FiltersType } from '@/components/FiltersBar/FiltersBar.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
-
-const loaderStore = useLoaderStore()
-const languageStore = useLanguageStore()
-const { t } = useI18n()
-
-const filterType = ref<'movie' | 'tv'>('movie')
-const rating = ref<'all' | 'low' | 'medium' | 'high'>('all')
-const genre = ref<string>('')
-const year = ref<string>('')
 
 interface MediaItem {
   id: number
@@ -67,56 +41,73 @@ interface MediaItem {
   title?: string
   name?: string
   poster_path?: string
-  first_air_date?: string
   release_date?: string
+  first_air_date?: string
+  genre_ids?: number[]
+  vote_average?: number
 }
 
-const results = ref<MediaItem[]>([])
+const loaderStore = useLoaderStore()
+
+const filters = ref<FiltersType>({
+  filterType: 'movie',
+  genre: '',
+  rating: 'all',
+  year: '',
+})
+
+const allMedia = ref<MediaItem[]>([])
 const currentPage = ref(1)
 const totalPages = ref(1)
 
-const genres = ref([
-  { id: 28, name: 'filter_search_page.action' },
-  { id: 35, name: 'filter_search_page.comedy' },
-  { id: 10751, name: 'filter_search_page.family' },
-  { id: 12, name: 'filter_search_page.adventure' },
-  { id: 14, name: 'filter_search_page.fantasy' },
-  { id: 99, name: 'filter_search_page.documentary' },
-  { id: 18, name: 'filter_search_page.drama' },
-  { id: 36, name: 'filter_search_page.history' },
-  { id: 80, name: 'filter_search_page.crime' },
-  { id: 9648, name: 'filter_search_page.mystery' },
-  { id: 27, name: 'filter_search_page.horror' },
-  { id: 53, name: 'filter_search_page.thriller' },
-  { id: 10752, name: 'filter_search_page.war' },
-  { id: 37, name: 'filter_search_page.western' },
-  { id: 10749, name: 'filter_search_page.romance' },
-  { id: 16, name: 'filter_search_page.animation' },
-])
-const years = ref([
-  2028, 2027, 2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014,
-])
+// Фільтрація локально через computed
+const filteredMedia = computed(() => {
+  return allMedia.value.filter((item) => {
+    // жанр
+    if (filters.value.genre && !item.genre_ids?.includes(Number(filters.value.genre))) return false
 
+    // рейтинг
+    if (filters.value.rating !== 'all') {
+      const vote = item.vote_average || 0
+      if (filters.value.rating === 'low' && vote > 5) return false
+      if (filters.value.rating === 'medium' && (vote < 5 || vote > 8)) return false
+      if (filters.value.rating === 'high' && vote < 8) return false
+    }
+
+    // рік
+    if (filters.value.year) {
+      const release = item.release_date || item.first_air_date || ''
+      if (!release.startsWith(filters.value.year)) return false
+    }
+
+    return true
+  })
+})
+
+// Запит до TMDB
 const fetchResults = async (page = 1) => {
   loaderStore.showLoader()
   try {
-    let data
-    if (filterType.value === 'movie') {
-      data = await fetchMovies({
-        rating: rating.value,
-        genre: genre.value,
-        year: year.value,
-        page,
-      })
-    } else {
-      data = await fetchTV({
-        rating: rating.value,
-        genre: genre.value,
-        year: year.value,
-        page,
-      })
-    }
-    results.value = data.results
+    const data =
+      filters.value.filterType === 'movie'
+        ? await fetchMovies({
+            rating: filters.value.rating,
+            genre: filters.value.genre,
+            year: filters.value.year,
+            page,
+          })
+        : await fetchTV({
+            rating: filters.value.rating,
+            genre: filters.value.genre,
+            year: filters.value.year,
+            page,
+          })
+
+    allMedia.value = (data.results || []).map((item: any) => ({
+      ...item,
+      media_type: filters.value.filterType,
+    }))
+
     currentPage.value = data.page
     totalPages.value = data.total_pages
   } finally {
@@ -124,21 +115,19 @@ const fetchResults = async (page = 1) => {
   }
 }
 
-const onFilterChange = () => {
-  currentPage.value = 1
-  fetchResults()
-}
-
-onMounted(() => {
-  fetchResults()
-})
+// Перезапуск запиту при зміні фільтрів
 watch(
-  () => languageStore.lang,
+  filters,
   () => {
     currentPage.value = 1
     fetchResults()
   },
+  { deep: true },
 )
+
+onMounted(() => {
+  fetchResults()
+})
 </script>
 
 <style scoped>
@@ -157,35 +146,7 @@ watch(
   margin: 0;
   margin-bottom: 10px;
 }
-.select-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  max-width: 400px;
-}
-.select {
-  height: 27px;
-  width: 170px;
-  border-radius: 8px;
-  color: var(--color-white);
-  background-color: var(--color-dark-grey);
-  border: none;
-  outline: none;
-  appearance: none;
-  cursor: pointer;
-}
-.select:hover {
-  outline: 1px solid var(--color-hover);
-}
-.select option {
-  font-size: 16px;
-  text-align: center;
-  border: none;
-}
-.option:checked {
-  background-color: var(--color-red);
-}
+
 .result {
   font-weight: bold;
   margin: 10px;
@@ -210,19 +171,7 @@ watch(
     padding-left: 20px;
     font-size: 40px;
   }
-  .select-container {
-    justify-content: flex-start;
-    max-width: 100%;
-    gap: 10px;
-  }
-  .select {
-    height: 33px;
-    width: 140px;
-    font-size: 20px;
-  }
-  .select option {
-    font-size: 20px;
-  }
+
   .result {
     margin: 15px;
     font-size: 18px;
@@ -232,11 +181,6 @@ watch(
 @media (min-width: 1024px) {
   .search-bar-container {
     display: block;
-  }
-}
-@media (min-width: 2560px) {
-  .select {
-    height: 43px;
   }
 }
 </style>

@@ -185,7 +185,7 @@ const handleClick = (e: Event) => {
 }
 /* MoviesPage, SeriesPage, CollectionPage components, categories button */
 .categories-btn {
-  padding: 4px 4px;
+  padding: 4px 3px;
   border: none;
   border-radius: 8px;
   background: var(--color-dark-grey);

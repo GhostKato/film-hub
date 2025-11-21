@@ -1,8 +1,8 @@
 <template>
   <teleport to="body">
-    <div v-if="loader.isGlobalLoading" class="loader-overlay"></div>
+    <div v-if="loaderStore.isGlobalLoading" class="loader-overlay"></div>
 
-    <div v-if="loader.isLoading" class="spinner-container">
+    <div v-if="loaderStore.isLoading" class="spinner-container">
       <div class="spinner"></div>
     </div>
   </teleport>
@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { useLoaderStore } from '@/stores/loader'
 
-const loader = useLoaderStore()
+const loaderStore = useLoaderStore()
 </script>
 
 <style scoped>

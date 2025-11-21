@@ -22,14 +22,20 @@ export interface MediaItem {
   media_type: 'movie' | 'tv' | 'person'
   favorite?: boolean
   watch_later?: boolean
+  genre_ids?: number[]
+  genres?: { id: number; name: string }[]
 }
 
 export const useMediaStore = defineStore('media', () => {
   const media = ref<MediaItem[]>(JSON.parse(localStorage.getItem('media') || '[]'))
-
   const recommended = ref<MediaItem[]>([])
-
   const authStore = useAuthStore()
+
+  const normalizeGenres = (item: any): number[] => {
+    if (item.genre_ids) return item.genre_ids
+    if (item.genres) return item.genres.map((g: { id: number }) => g.id)
+    return []
+  }
 
   const save = async () => {
     if (authStore.user?.uid) {
@@ -45,39 +51,53 @@ export const useMediaStore = defineStore('media', () => {
     const list = media.value.filter((item) => item.favorite)
 
     await saveRecommended(list)
-
     recommended.value = list
   }
+
   const toggleMedia = async (item: MediaItem, key: 'favorite' | 'watch_later') => {
     const existing = media.value.find((m) => m.id === item.id && m.media_type === item.media_type)
 
     if (existing) {
       existing[key] = !existing[key]
 
+      if (!existing.genre_ids) {
+        existing.genre_ids = normalizeGenres(item)
+      }
+
       if (!existing.favorite && !existing.watch_later) {
         media.value = media.value.filter(
           (m) => !(m.id === item.id && m.media_type === item.media_type),
         )
-        if (authStore.user?.uid) await removeMediaItem(authStore.user.uid, existing)
+
+        if (authStore.user?.uid) {
+          await removeMediaItem(authStore.user.uid, existing)
+        }
       } else if (authStore.user?.uid) {
         await updateMediaItem(authStore.user.uid, existing)
       }
     } else {
-      const newItem = {
+      const newItem: MediaItem = {
         ...item,
         favorite: key === 'favorite',
         watch_later: key === 'watch_later',
+
+        genre_ids: normalizeGenres(item),
       }
+
       media.value.push(newItem)
 
-      if (authStore.user?.uid) await updateMediaItem(authStore.user.uid, newItem)
+      if (authStore.user?.uid) {
+        await updateMediaItem(authStore.user.uid, newItem)
+      }
     }
 
     if (authStore.user?.uid === MAIN_ACCOUNT_ID) {
       await updateRecommended()
     }
 
-    if (!authStore.user?.uid) await save()
+    if (!authStore.user?.uid) {
+      await save()
+    }
   }
 
   const load = async () => {
@@ -92,7 +112,12 @@ export const useMediaStore = defineStore('media', () => {
         ),
       ]
 
+      merged.forEach((m) => {
+        m.genre_ids = normalizeGenres(m)
+      })
+
       media.value = merged
+
       await saveMedia(authStore.user.uid, merged)
       localStorage.removeItem('media')
 
@@ -100,11 +125,18 @@ export const useMediaStore = defineStore('media', () => {
         await updateRecommended()
       }
     } else {
-      media.value = JSON.parse(localStorage.getItem('media') || '[]')
+      const stored = JSON.parse(localStorage.getItem('media') || '[]')
+
+      stored.forEach((m: MediaItem) => {
+        m.genre_ids = normalizeGenres(m)
+      })
+
+      media.value = stored
     }
 
     recommended.value = await loadRecommended()
   }
+
   const clear = async () => {
     media.value = []
 

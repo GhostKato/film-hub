@@ -15,8 +15,9 @@
             {{ tab.label }}
           </IButton>
         </div>
-        <div class="search-bar-container">
-          <SearchBar />
+
+        <div class="filter-bar-container">
+          <FiltersBar v-model="filters" />
         </div>
       </div>
 
@@ -38,19 +39,19 @@ import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
+import IButton from '@/components/IButton/IButton.vue'
+import FiltersBar from '@/components/FiltersBar/FiltersBar.vue'
+import type { FiltersType } from '@/components/FiltersBar/FiltersBar.vue'
 import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
 import { useLoaderStore } from '@/stores/loader'
-import IButton from '@/components/IButton/IButton.vue'
 import { useI18n } from 'vue-i18n'
 import { MAIN_ACCOUNT_ID } from '@/constants'
-import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const { t } = useI18n()
-
 const route = useRoute()
 const router = useRouter()
 
@@ -66,14 +67,9 @@ const tabs = computed<Tab[]>(() => {
     { key: 'favorites', label: t('collection_page.favorites') },
     { key: 'watch_later', label: t('collection_page.watch_later') },
   ]
-
   if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
-    baseTabs.unshift({
-      key: 'recommended',
-      label: t('collection_page.recommended'),
-    })
+    baseTabs.unshift({ key: 'recommended', label: t('collection_page.recommended') })
   }
-
   return baseTabs
 })
 
@@ -84,38 +80,16 @@ const activeTab = ref<TabKey>(
 
 const changeTab = (tab: TabKey) => {
   activeTab.value = tab
-  router.replace({
-    query: { category: tab, page: 1 },
-  })
+  router.replace({ query: { category: tab, page: 1 } })
 }
 
-watch(
-  () => route.query.category,
-  (newValue) => {
-    if (['favorites', 'watch_later', 'recommended'].includes(newValue as string)) {
-      activeTab.value = newValue as TabKey
-    }
-  },
-)
-
-watch(
-  () => authStore.user,
-  async (newUser) => {
-    loaderStore.showLoader()
-    await mediaStore.load()
-
-    if (newUser?.uid === MAIN_ACCOUNT_ID) {
-      router.replace({ query: { category: 'favorites', page: 1 } })
-      activeTab.value = 'favorites'
-    } else {
-      router.replace({ query: { category: 'recommended', page: 1 } })
-      activeTab.value = 'recommended'
-      await mediaStore.fetchRecommended()
-    }
-
-    loaderStore.hideLoader()
-  },
-)
+const filters = ref<FiltersType>({
+  filterType: 'all',
+  genre: '',
+  rating: 'all',
+  year: '',
+  query: '',
+})
 
 const currentData = computed(() => {
   switch (activeTab.value) {
@@ -130,21 +104,43 @@ const currentData = computed(() => {
   }
 })
 
-const pageSize = 20
+const filteredData = computed(() => {
+  return currentData.value.filter((item) => {
+    const typeMatch =
+      filters.value.filterType === 'all' || item.media_type === filters.value.filterType
+    if (!typeMatch) return false
 
-const currentPage = computed({
-  get: () => Number(route.query.page) || 1,
-  set: (value: number) => {
-    router.replace({ query: { ...route.query, page: value } })
-  },
+    if (filters.value.genre && !item.genre_ids?.includes(Number(filters.value.genre))) return false
+
+    if (filters.value.rating !== 'all') {
+      const vote = item.vote_average || 0
+      if (filters.value.rating === 'low' && vote > 5) return false
+      if (filters.value.rating === 'medium' && (vote < 5 || vote > 8)) return false
+      if (filters.value.rating === 'high' && vote < 8) return false
+    }
+
+    if (filters.value.year) {
+      const release = item.release_date || item.first_air_date || ''
+      if (!release.startsWith(filters.value.year)) return false
+    }
+
+    if (filters.value.query) {
+      const name = item.title || item.name || ''
+      if (!name.toLowerCase().includes(filters.value.query.toLowerCase())) return false
+    }
+
+    return true
+  })
 })
 
+const pageSize = 20
+const currentPage = ref(Number(route.query.page) || 1)
+
+const totalPages = computed(() => Math.ceil(filteredData.value.length / pageSize))
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize
-  return currentData.value.slice(start, start + pageSize)
+  return filteredData.value.slice(start, start + pageSize)
 })
-
-const totalPages = computed(() => Math.ceil(currentData.value.length / pageSize))
 
 watch(
   () => route.query.page,
@@ -154,32 +150,30 @@ watch(
 )
 
 watch(
-  () => mediaStore.media,
+  () => filteredData.value,
   () => {
-    loaderStore.showLoader()
-    setTimeout(() => loaderStore.hideLoader(), 200)
+    if (currentPage.value > totalPages.value) currentPage.value = 1
   },
-  { deep: true },
+)
+
+watch(
+  () => authStore.user,
+  async () => {
+    loaderStore.showLoader()
+    await mediaStore.load()
+    if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
+      await mediaStore.fetchRecommended()
+    }
+    loaderStore.hideLoader()
+  },
 )
 
 onMounted(async () => {
-  if (!route.query.category || !route.query.page) {
-    router.replace({
-      path: route.path,
-      query: {
-        category: activeTab.value,
-        page: 1,
-      },
-    })
-  }
-
   loaderStore.showLoader()
   await mediaStore.load()
-
   if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
     await mediaStore.fetchRecommended()
   }
-
   loaderStore.hideLoader()
 })
 </script>
@@ -205,8 +199,7 @@ onMounted(async () => {
   align-items: center;
   gap: 5px;
 }
-
-.search-bar-container {
+.filter-bar-container {
   display: none;
 }
 @media (min-width: 768px) {
@@ -227,10 +220,11 @@ onMounted(async () => {
   .tabs {
     gap: 10px;
   }
-}
-@media (min-width: 1024px) {
-  .search-bar-container {
-    display: block;
+
+  @media (min-width: 1280px) {
+    .filter-bar-container {
+      display: block;
+    }
   }
 }
 </style>
