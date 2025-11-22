@@ -2,6 +2,7 @@
   <IBackground>
     <div class="collection-page">
       <h1 class="title">{{ $t('collection_page.title') }}</h1>
+
       <div class="header-page">
         <div class="tabs">
           <IButton
@@ -24,7 +25,7 @@
         v-if="totalPages > 1"
         :currentPage="currentPage"
         :totalPages="totalPages"
-        @update:page="(p) => (currentPage = p)"
+        @update:page="(p) => changePage(p)"
       />
     </div>
   </IBackground>
@@ -68,15 +69,33 @@ const tabs = computed<Tab[]>(() => {
   return baseTabs
 })
 
-const activeTab = ref<TabKey>(
-  (route.query.category as TabKey) ||
-    (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID ? 'recommended' : 'favorites'),
-)
+const activeTab = computed<TabKey>(() => {
+  return (
+    (route.query.category as TabKey) ||
+    (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID ? 'recommended' : 'favorites')
+  )
+})
 
 const changeTab = (tab: TabKey) => {
-  activeTab.value = tab
-  router.replace({ query: { category: tab, page: 1 } })
+  router.replace({
+    query: { ...route.query, category: tab, page: 1 },
+  })
 }
+
+watch(
+  () => authStore.user?.uid,
+  (newUid) => {
+    const isMain = newUid === MAIN_ACCOUNT_ID
+    const newCategory = isMain ? 'favorites' : 'recommended'
+
+    if (route.query.category !== newCategory) {
+      router.replace({
+        query: { ...route.query, category: newCategory, page: 1 },
+      })
+    }
+  },
+  { immediate: true },
+)
 
 const filters = ref<FiltersType>({
   filterType: 'all',
@@ -107,12 +126,10 @@ const filteredData = computed(() => {
 
     if (filters.value.genre && !item.genre_ids?.includes(Number(filters.value.genre))) return false
 
-    if (filters.value.rating !== 'all') {
-      const vote = item.vote_average || 0
-      if (filters.value.rating === 'low' && vote > 5) return false
-      if (filters.value.rating === 'medium' && (vote < 5 || vote > 8)) return false
-      if (filters.value.rating === 'high' && vote < 8) return false
-    }
+    const vote = item.vote_average || 0
+    if (filters.value.rating === 'low' && vote > 5) return false
+    if (filters.value.rating === 'medium' && (vote < 5 || vote > 8)) return false
+    if (filters.value.rating === 'high' && vote < 8) return false
 
     if (filters.value.year) {
       const release = item.release_date || item.first_air_date || ''
@@ -128,10 +145,12 @@ const filteredData = computed(() => {
   })
 })
 
-const pageSize = 20
 const currentPage = ref(Number(route.query.page) || 1)
 
+const pageSize = 20
+
 const totalPages = computed(() => Math.ceil(filteredData.value.length / pageSize))
+
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   return filteredData.value.slice(start, start + pageSize)
@@ -144,12 +163,17 @@ watch(
   },
 )
 
-watch(
-  () => filteredData.value,
-  () => {
-    if (currentPage.value > totalPages.value) currentPage.value = 1
-  },
-)
+watch(filteredData, () => {
+  if (currentPage.value > totalPages.value) {
+    changePage(1)
+  }
+})
+
+const changePage = (p: number) => {
+  router.replace({
+    query: { ...route.query, page: p },
+  })
+}
 </script>
 
 <style scoped>
@@ -177,7 +201,6 @@ watch(
   align-items: center;
   gap: 5px;
 }
-
 @media (min-width: 768px) {
   .collection-page {
     display: block;
