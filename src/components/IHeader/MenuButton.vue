@@ -1,6 +1,6 @@
 <template>
   <button @click="toggleMenu" class="menu-btn">
-    <MenuIcon v-if="!modalStore.modals.menu" :color="'var(--color-white)'" />
+    <MenuIcon v-if="!modalStore.modals.menu" />
     <span v-else class="close-icon">✕</span>
   </button>
 </template>
