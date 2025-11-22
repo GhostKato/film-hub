@@ -2,7 +2,6 @@
   <IBackground>
     <div class="collection-page">
       <h1 class="title">{{ $t('collection_page.title') }}</h1>
-
       <div class="header-page">
         <div class="tabs">
           <IButton
@@ -15,14 +14,12 @@
             {{ tab.label }}
           </IButton>
         </div>
-
+        <!-- delete <div class="filter-bar-container"> -->
         <div class="filter-bar-container">
           <FiltersBar v-model="filters" />
         </div>
       </div>
-
       <MediaList :items="paginatedData" />
-
       <IPagination
         v-if="totalPages > 1"
         :currentPage="currentPage"
@@ -186,6 +183,10 @@ onMounted(async () => {
   padding: 5px;
 }
 .header-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 5px;
 }
 .title {
@@ -199,17 +200,16 @@ onMounted(async () => {
   align-items: center;
   gap: 5px;
 }
-.filter-bar-container {
-  display: none;
-}
+
 @media (min-width: 768px) {
   .collection-page {
     display: block;
   }
   .header-page {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: row;
+    /* add justify-content: space-between */
+    /* justify-content: space-between; */
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -220,11 +220,19 @@ onMounted(async () => {
   .tabs {
     gap: 10px;
   }
-
-  @media (min-width: 1280px) {
-    .filter-bar-container {
-      display: block;
-    }
+  /* delete */
+  .filter-bar-container {
+    display: none;
+  }
+}
+@media (min-width: 1280px) {
+  /* delete justify-content: space-between */
+  .header-page {
+    justify-content: space-between;
+  }
+  /* delete display: block */
+  .filter-bar-container {
+    display: block;
   }
 }
 @media (min-width: 2560px) {

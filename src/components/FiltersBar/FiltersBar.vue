@@ -1,27 +1,29 @@
 <template>
-  <div class="select-container">
-    <select class="select" v-model="filterType">
-      <option v-if="isCollectionPage" value="all">{{ t('filters_bar.all') }}</option>
-      <option value="movie">{{ t('filters_bar.movies') }}</option>
-      <option value="tv">{{ t('filters_bar.series') }}</option>
-    </select>
+  <div class="filter-bar">
+    <div class="select-container">
+      <select class="select" v-model="filterType">
+        <option v-if="isCollectionPage" value="all">{{ t('filters_bar.all') }}</option>
+        <option value="movie">{{ t('filters_bar.movies') }}</option>
+        <option value="tv">{{ t('filters_bar.series') }}</option>
+      </select>
 
-    <select class="select" v-model="genre">
-      <option value="">{{ t('filters_bar.all_genres') }}</option>
-      <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
-    </select>
+      <select class="select" v-model="genre">
+        <option value="">{{ t('filters_bar.all_genres') }}</option>
+        <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
+      </select>
 
-    <select class="select" v-model="rating">
-      <option value="all">{{ t('filters_bar.all_ratings') }}</option>
-      <option value="high">{{ t('filters_bar.ratings') }} 8+</option>
-      <option value="medium">{{ t('filters_bar.ratings') }} 5-7</option>
-      <option value="low">{{ t('filters_bar.ratings') }} 0-5</option>
-    </select>
+      <select class="select" v-model="rating">
+        <option value="all">{{ t('filters_bar.all_ratings') }}</option>
+        <option value="high">{{ t('filters_bar.ratings') }} 8+</option>
+        <option value="medium">{{ t('filters_bar.ratings') }} 5-7</option>
+        <option value="low">{{ t('filters_bar.ratings') }} 0-5</option>
+      </select>
 
-    <select class="select" v-model="year">
-      <option value="">{{ t('filters_bar.all_years') }}</option>
-      <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-    </select>
+      <select class="select" v-model="year">
+        <option value="">{{ t('filters_bar.all_years') }}</option>
+        <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+      </select>
+    </div>
 
     <input
       class="input"
@@ -110,6 +112,12 @@ watch([filterType, genre, rating, year, query], () => {
 </script>
 
 <style scoped>
+.filter-bar {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 10px;
+}
 .select-container {
   display: flex;
   flex-wrap: wrap;
@@ -151,8 +159,10 @@ watch([filterType, genre, rating, year, query], () => {
   outline: 1px solid var(--color-hover);
 }
 @media (min-width: 768px) {
+  .filter-bar {
+    flex-direction: row;
+  }
   .select-container {
-    justify-content: flex-start;
     max-width: 100%;
     gap: 10px;
   }

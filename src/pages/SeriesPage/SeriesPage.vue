@@ -2,7 +2,6 @@
   <IBackground>
     <div class="series-page">
       <h1 class="title">{{ $t('series_page.title') }}</h1>
-
       <div class="header-page">
         <div class="categories">
           <IButton
@@ -15,13 +14,9 @@
             {{ cat.label }}
           </IButton>
         </div>
-        <div class="search-bar-container">
-          <SearchBar />
-        </div>
+        <SearchBar />
       </div>
-
       <MediaList :items="series" />
-
       <IPagination :currentPage="currentPage" :totalPages="totalPages" @update:page="changePage" />
     </div>
   </IBackground>

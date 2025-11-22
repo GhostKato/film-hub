@@ -2,19 +2,13 @@
   <IBackground>
     <div class="filter-search-page">
       <h1 class="title">{{ $t('filter_search_page.title') }}</h1>
-
       <div class="header-page">
         <FiltersBar v-model="filters" />
-
-        <div class="search-bar-container">
-          <SearchBar />
-        </div>
+        <SearchBar />
       </div>
-
       <div v-if="filteredMedia.length">
         <MediaList :items="filteredMedia" />
       </div>
-
       <IPagination
         :currentPage="currentPage"
         :totalPages="totalPages"
@@ -173,6 +167,7 @@ onMounted(() => {
     text-align: start;
   }
 }
+
 @media (min-width: 2560px) {
   .header-page {
     margin-bottom: 15px;

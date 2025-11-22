@@ -14,13 +14,9 @@
             {{ cat.label }}
           </IButton>
         </div>
-        <div class="search-bar-container">
-          <SearchBar />
-        </div>
+        <SearchBar />
       </div>
-
       <MediaList :items="movies" />
-
       <IPagination :currentPage="currentPage" :totalPages="totalPages" @update:page="changePage" />
     </div>
   </IBackground>

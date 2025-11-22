@@ -131,6 +131,7 @@ const filterOptions = [
 }
 .small-search-bar {
   padding: 5px 30px 5px 10px;
+  width: 250px;
 }
 .text-search {
   display: flex;
