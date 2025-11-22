@@ -196,6 +196,7 @@ watch([filterType, genre, rating, year, query], () => {
   }
   .input {
     width: 350px;
+    height: 43px;
   }
 }
 </style>
