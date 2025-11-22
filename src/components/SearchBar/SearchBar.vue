@@ -21,7 +21,7 @@
       <IButton
         v-if="searchStore.query"
         :variant="isBigSearchBar ? 'big-clean-btn' : 'small-clean-btn'"
-        @click="clearQuery"
+        @click="searchStore.clearQuery()"
         >✖</IButton
       >
     </div>
@@ -90,10 +90,6 @@ const search = async () => {
   emit('search', q)
 }
 
-const clearQuery = () => {
-  searchStore.setQuery('')
-}
-
 const filterOptions = [
   { label: 'search_bar.all', value: 'all' },
   { label: 'search_bar.movies', value: 'movie' },
@@ -131,7 +127,7 @@ const filterOptions = [
 }
 .small-search-bar {
   padding: 5px 30px 5px 10px;
-  width: 250px;
+  width: 100%;
 }
 .text-search {
   display: flex;

@@ -11,6 +11,9 @@ export const useSearchStore = defineStore('search', {
     setQuery(value: string) {
       this.query = value
     },
+    clearQuery() {
+      this.query = ''
+    },
     setType(value: 'all' | 'movie' | 'tv') {
       this.type = value
     },

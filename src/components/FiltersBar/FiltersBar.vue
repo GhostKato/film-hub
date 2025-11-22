@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineEmits } from 'vue'
+import { ref, watch, defineEmits, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -109,6 +109,9 @@ watch([filterType, genre, rating, year, query], () => {
     query: query.value,
   })
 })
+onUnmounted(() => {
+  query.value = ''
+})
 </script>
 
 <style scoped>
@@ -150,7 +153,7 @@ watch([filterType, genre, rating, year, query], () => {
   color: var(--color-white);
   background-color: var(--color-dark-grey);
   padding: 5px 25px 5px 10px;
-  width: 200px;
+  width: 87%;
 }
 .input:focus {
   outline: 1px solid var(--color-red);
