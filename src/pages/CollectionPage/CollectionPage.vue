@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
@@ -41,13 +41,11 @@ import FiltersBar from '@/components/FiltersBar/FiltersBar.vue'
 import type { FiltersType } from '@/components/FiltersBar/FiltersBar.vue'
 import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
-import { useLoaderStore } from '@/stores/loader'
 import { useI18n } from 'vue-i18n'
 import { MAIN_ACCOUNT_ID } from '@/constants'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
-const loaderStore = useLoaderStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -152,27 +150,6 @@ watch(
     if (currentPage.value > totalPages.value) currentPage.value = 1
   },
 )
-
-watch(
-  () => authStore.user,
-  async () => {
-    loaderStore.showLoader()
-    await mediaStore.load()
-    if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
-      await mediaStore.fetchRecommended()
-    }
-    loaderStore.hideLoader()
-  },
-)
-
-onMounted(async () => {
-  loaderStore.showLoader()
-  await mediaStore.load()
-  if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
-    await mediaStore.fetchRecommended()
-  }
-  loaderStore.hideLoader()
-})
 </script>
 
 <style scoped>
