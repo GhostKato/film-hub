@@ -80,8 +80,8 @@ const handleClick = (e: Event) => {
 }
 .small-search-btn {
   background-color: var(--color-red);
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
   border: none;
 }
@@ -112,8 +112,8 @@ const handleClick = (e: Event) => {
 }
 .small-clean-btn {
   position: absolute;
-  right: 0;
-  top: 0px;
+  right: -2px;
+  top: -2px;
   background: transparent;
   border: none;
   color: var(--color-white);
@@ -215,9 +215,17 @@ const handleClick = (e: Event) => {
     height: 48px;
     font-size: 20px;
   }
+  .small-search-btn {
+    width: 32px;
+    height: 32px;
+  }
   .big-clean-btn {
     right: 1px;
     top: 6px;
+  }
+  .small-clean-btn {
+    right: 0;
+    top: 0;
   }
   .collection-btn {
     font-size: 20px;

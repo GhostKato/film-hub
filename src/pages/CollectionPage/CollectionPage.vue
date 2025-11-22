@@ -227,4 +227,12 @@ onMounted(async () => {
     }
   }
 }
+@media (min-width: 2560px) {
+  .header-page {
+    margin-bottom: 15px;
+  }
+  .title {
+    margin-bottom: 30px;
+  }
+}
 </style>

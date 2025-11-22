@@ -60,13 +60,10 @@ const allMedia = ref<MediaItem[]>([])
 const currentPage = ref(1)
 const totalPages = ref(1)
 
-// Фільтрація локально через computed
 const filteredMedia = computed(() => {
   return allMedia.value.filter((item) => {
-    // жанр
     if (filters.value.genre && !item.genre_ids?.includes(Number(filters.value.genre))) return false
 
-    // рейтинг
     if (filters.value.rating !== 'all') {
       const vote = item.vote_average || 0
       if (filters.value.rating === 'low' && vote > 5) return false
@@ -74,7 +71,6 @@ const filteredMedia = computed(() => {
       if (filters.value.rating === 'high' && vote < 8) return false
     }
 
-    // рік
     if (filters.value.year) {
       const release = item.release_date || item.first_air_date || ''
       if (!release.startsWith(filters.value.year)) return false
@@ -83,8 +79,6 @@ const filteredMedia = computed(() => {
     return true
   })
 })
-
-// Запит до TMDB
 const fetchResults = async (page = 1) => {
   loaderStore.showLoader()
   try {
@@ -115,7 +109,6 @@ const fetchResults = async (page = 1) => {
   }
 }
 
-// Перезапуск запиту при зміні фільтрів
 watch(
   filters,
   () => {
@@ -138,6 +131,9 @@ onMounted(() => {
   padding: 5px;
 }
 .header-page {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
   margin-bottom: 5px;
 }
 .title {
@@ -153,15 +149,14 @@ onMounted(() => {
   text-align: center;
   font-size: 16px;
 }
-.search-bar-container {
-  display: none;
-}
+
 @media (min-width: 768px) {
   .filter-search-page {
     display: block;
   }
   .header-page {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding-left: 20px;
@@ -178,9 +173,12 @@ onMounted(() => {
     text-align: start;
   }
 }
-@media (min-width: 1024px) {
-  .search-bar-container {
-    display: block;
+@media (min-width: 2560px) {
+  .header-page {
+    margin-bottom: 15px;
+  }
+  .title {
+    margin-bottom: 30px;
   }
 }
 </style>

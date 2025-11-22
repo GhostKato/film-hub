@@ -171,6 +171,9 @@ watch(
 }
 
 .header-page {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
   margin-bottom: 5px;
 }
 
@@ -186,16 +189,13 @@ watch(
   gap: 5px;
 }
 
-.search-bar-container {
-  display: none;
-}
-
 @media (min-width: 768px) {
   .series-page {
     display: block;
   }
   .header-page {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding-left: 20px;
@@ -208,10 +208,16 @@ watch(
   .categories {
     gap: 10px;
   }
-}
-@media (min-width: 1280px) {
   .search-bar-container {
     display: block;
+  }
+}
+@media (min-width: 2560px) {
+  .header-page {
+    margin-bottom: 15px;
+  }
+  .title {
+    margin-bottom: 30px;
   }
 }
 </style>
