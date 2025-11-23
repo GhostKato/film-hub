@@ -55,6 +55,7 @@ interface MovieItem {
   poster_path?: string
   release_date?: string
   vote_average?: number
+  media_type: 'movie' | 'tv' | 'person'
 }
 
 const categories = ref<CategoryMedia[]>([])

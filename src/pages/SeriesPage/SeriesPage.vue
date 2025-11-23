@@ -50,6 +50,7 @@ interface SeriesItem {
   poster_path?: string
   first_air_date?: string
   vote_average?: number
+  media_type: 'movie' | 'tv' | 'person'
 }
 
 const categories = ref<CategoryMedia[]>([])
