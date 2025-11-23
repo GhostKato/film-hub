@@ -6,9 +6,11 @@
         <FiltersBar v-model="filters" />
         <SearchBar />
       </div>
+
       <div v-if="filteredMedia.length">
         <MediaList :items="filteredMedia" />
       </div>
+
       <IPagination
         :currentPage="currentPage"
         :totalPages="totalPages"
@@ -28,6 +30,8 @@ import IPagination from '@/components/IPagination/IPagination.vue'
 import FiltersBar from '@/components/FiltersBar/FiltersBar.vue'
 import type { FiltersType } from '@/components/FiltersBar/FiltersBar.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
+import router from '@/router'
+import { useRoute } from 'vue-router'
 
 interface MediaItem {
   id: number
@@ -42,16 +46,17 @@ interface MediaItem {
 }
 
 const loaderStore = useLoaderStore()
+const route = useRoute()
 
 const filters = ref<FiltersType>({
-  filterType: 'movie',
-  genre: '',
-  rating: 'all',
-  year: '',
+  filterType: (route.query.type as 'movie' | 'tv') || 'movie',
+  genre: (route.query.genre as string) || '',
+  rating: (route.query.rating as 'all' | 'low' | 'medium' | 'high') || 'all',
+  year: (route.query.year as string) || '',
 })
 
 const allMedia = ref<MediaItem[]>([])
-const currentPage = ref(1)
+const currentPage = ref(Number(route.query.page) || 1)
 const totalPages = ref(1)
 
 const filteredMedia = computed(() => {
@@ -73,23 +78,30 @@ const filteredMedia = computed(() => {
     return true
   })
 })
-const fetchResults = async (page = 1) => {
+
+const fetchResults = async (page = currentPage.value) => {
+  router.push({
+    path: '/filter-search',
+    query: {
+      type: filters.value.filterType,
+      genre: filters.value.genre || '',
+      rating: filters.value.rating || 'all',
+      year: filters.value.year || '',
+      page,
+    },
+  })
+
   loaderStore.showLoader()
   try {
+    const params = {
+      ...filters.value,
+      page,
+      genre: filters.value.genre || '',
+      year: filters.value.year || '',
+    }
+
     const data =
-      filters.value.filterType === 'movie'
-        ? await fetchMovies({
-            rating: filters.value.rating,
-            genre: filters.value.genre,
-            year: filters.value.year,
-            page,
-          })
-        : await fetchTV({
-            rating: filters.value.rating,
-            genre: filters.value.genre,
-            year: filters.value.year,
-            page,
-          })
+      filters.value.filterType === 'movie' ? await fetchMovies(params) : await fetchTV(params)
 
     allMedia.value = (data.results || []).map((item: any) => ({
       ...item,
@@ -106,10 +118,32 @@ const fetchResults = async (page = 1) => {
 watch(
   filters,
   () => {
-    currentPage.value = 1
-    fetchResults()
+    router.push({
+      path: '/filter-search',
+      query: {
+        type: filters.value.filterType,
+        genre: filters.value.genre || '',
+        rating: filters.value.rating || 'all',
+        year: filters.value.year || '',
+        page: 1,
+      },
+    })
   },
   { deep: true },
+)
+
+watch(
+  () => route.query,
+  (query) => {
+    filters.value.filterType = (query.type as 'movie' | 'tv') || 'movie'
+    filters.value.genre = (query.genre as string) || ''
+    filters.value.rating = (query.rating as 'all' | 'low' | 'medium' | 'high') || 'all'
+    filters.value.year = (query.year as string) || ''
+    currentPage.value = Number(query.page) || 1
+
+    fetchResults(currentPage.value)
+  },
+  { immediate: true },
 )
 
 onMounted(() => {

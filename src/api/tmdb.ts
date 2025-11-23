@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useLanguageStore } from '@/stores/language'
-import { TMDB_TOKEN } from '@/constants'
+import { TMDB_TOKEN } from '@/constants/env'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
 

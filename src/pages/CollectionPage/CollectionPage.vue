@@ -43,7 +43,7 @@ import type { FiltersType } from '@/components/FiltersBar/FiltersBar.vue'
 import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
-import { MAIN_ACCOUNT_ID } from '@/constants'
+import { MAIN_ACCOUNT_ID } from '@/constants/env'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
@@ -77,7 +77,7 @@ const activeTab = computed<TabKey>(() => {
 })
 
 const changeTab = (tab: TabKey) => {
-  router.replace({
+  router.push({
     query: { ...route.query, category: tab, page: 1 },
   })
 }
@@ -157,6 +157,38 @@ const paginatedData = computed(() => {
 })
 
 watch(
+  filters,
+  (newFilters) => {
+    router.push({
+      query: {
+        ...route.query,
+        category: activeTab.value,
+        page: 1,
+        filterType: newFilters.filterType,
+        genre: newFilters.genre || '',
+        rating: newFilters.rating || 'all',
+        year: newFilters.year || '',
+        query: newFilters.query || '',
+      },
+    })
+  },
+  { deep: true },
+)
+
+watch(
+  () => route.query,
+  (query) => {
+    filters.value.filterType = (query.filterType as FiltersType['filterType']) || 'all'
+    filters.value.genre = (query.genre as string) || ''
+    filters.value.rating = (query.rating as FiltersType['rating']) || 'all'
+    filters.value.year = (query.year as string) || ''
+    filters.value.query = (query.query as string) || ''
+    currentPage.value = Number(query.page) || 1
+  },
+  { immediate: true },
+)
+
+watch(
   () => route.query.page,
   (newVal) => {
     currentPage.value = Number(newVal) || 1
@@ -170,7 +202,7 @@ watch(filteredData, () => {
 })
 
 const changePage = (p: number) => {
-  router.replace({
+  router.push({
     query: { ...route.query, page: p },
   })
 }

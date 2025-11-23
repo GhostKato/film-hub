@@ -9,7 +9,7 @@
 
       <select class="select" v-model="genre">
         <option value="">{{ t('filters_bar.all_genres') }}</option>
-        <option v-for="g in genres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
+        <option v-for="g in selectedGenres" :key="g.id" :value="g.id">{{ t(g.name) }}</option>
       </select>
 
       <select class="select" v-model="rating">
@@ -21,7 +21,7 @@
 
       <select class="select" v-model="year">
         <option value="">{{ t('filters_bar.all_years') }}</option>
-        <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+        <option v-for="y in availableYears" :key="y" :value="y">{{ y }}</option>
       </select>
     </div>
 
@@ -36,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+import { genres, years } from '@/constants/filtersData'
 import { ref, watch, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -62,31 +63,8 @@ const rating = ref<'all' | 'low' | 'medium' | 'high'>(props.modelValue.rating)
 const year = ref<string>(props.modelValue.year)
 const query = ref<string>(props.modelValue.query || '')
 
-const genres = ref([
-  { id: 28, name: 'filters_bar.action' },
-  { id: 35, name: 'filters_bar.comedy' },
-  { id: 10751, name: 'filters_bar.family' },
-  { id: 12, name: 'filters_bar.adventure' },
-  { id: 14, name: 'filters_bar.fantasy' },
-  { id: 99, name: 'filters_bar.documentary' },
-  { id: 18, name: 'filters_bar.drama' },
-  { id: 36, name: 'filters_bar.history' },
-  { id: 80, name: 'filters_bar.crime' },
-  { id: 9648, name: 'filters_bar.mystery' },
-  { id: 27, name: 'filters_bar.horror' },
-  { id: 53, name: 'filters_bar.thriller' },
-  { id: 10752, name: 'filters_bar.war' },
-  { id: 37, name: 'filters_bar.western' },
-  { id: 10749, name: 'filters_bar.romance' },
-  { id: 16, name: 'filters_bar.animation' },
-])
-
-const years = ref<number[]>([
-  2028, 2027, 2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013,
-  2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997,
-  1996, 1995, 1994, 1993, 1992, 1991, 1990, 1989, 1988, 1987, 1986, 1985, 1984, 1983, 1982, 1981,
-  1980,
-])
+const selectedGenres = ref(genres)
+const availableYears = ref(years)
 
 watch(
   () => props.modelValue,

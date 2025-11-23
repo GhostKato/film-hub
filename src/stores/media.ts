@@ -9,7 +9,7 @@ import {
   saveRecommended,
   loadRecommended,
 } from '@/api/firebase'
-import { MAIN_ACCOUNT_ID } from '@/constants'
+import { MAIN_ACCOUNT_ID } from '@/constants/env'
 
 export interface MediaItem {
   id: number

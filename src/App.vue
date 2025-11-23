@@ -18,7 +18,7 @@ import { useAuthStore } from './stores/auth'
 import { onMounted, watch } from 'vue'
 import { useLoaderStore } from './stores/loader'
 import HotKeys from './components/HotKeys/HotKeys.vue'
-import { MAIN_ACCOUNT_ID } from './constants'
+import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import { useMediaStore } from './stores/media'
 
 const authStore = useAuthStore()
