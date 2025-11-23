@@ -17,30 +17,28 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 import { useMediaStore, type MediaItem } from '@/stores/media'
 import IButton from '@/components/IButton/IButton.vue'
 
 const { media } = defineProps<{ media: MediaItem }>()
-const route = useRoute()
+
 const mediaStore = useMediaStore()
 
-const currentType = computed<'movie' | 'tv'>(() => {
-  const type = route.params.type
-  return type === 'tv' ? 'tv' : 'movie'
-})
 const isFavorite = (id: number) => {
-  return mediaStore.favoriteList().some((item) => item.id === id)
+  return mediaStore
+    .favoriteList()
+    .some((item) => item.id === id && item.media_type === media.media_type)
 }
 const isWatchLater = (id: number) => {
-  return mediaStore.watchLaterList().some((item) => item.id === id)
+  return mediaStore
+    .watchLaterList()
+    .some((item) => item.id === id && item.media_type === media.media_type)
 }
 const toggleFavorite = (item: MediaItem) => {
-  mediaStore.toggleMedia({ ...item, media_type: currentType.value }, 'favorite')
+  mediaStore.toggleMedia({ ...item, media_type: media.media_type }, 'favorite')
 }
 const toggleWatchLater = (item: MediaItem) => {
-  mediaStore.toggleMedia({ ...item, media_type: currentType.value }, 'watch_later')
+  mediaStore.toggleMedia({ ...item, media_type: media.media_type }, 'watch_later')
 }
 </script>
 

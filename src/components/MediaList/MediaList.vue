@@ -33,10 +33,7 @@
             {{ item.vote_average }}
           </p>
         </div>
-        <CollectionIndicator
-          v-if="!routePerson.path.startsWith('/person')"
-          :media="{ ...item, media_type: type }"
-        />
+        <CollectionIndicator v-if="!routePerson.path.startsWith('/person')" :media="item" />
 
         <img
           :src="getImageUrl(item.poster_path, 'poster', 'w500')"
@@ -69,12 +66,12 @@ import { useSearchStore } from '@/stores/search'
 
 const searchStore = useSearchStore()
 
-interface MediaItem {
+export interface MediaItem {
   id: number
   title?: string
   name?: string
   poster_path?: string
-  media_type?: 'movie' | 'tv' | 'person'
+  media_type: 'movie' | 'tv' | 'person'
   first_air_date?: string
   vote_average?: number
   release_date?: string
@@ -86,13 +83,8 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
-const routeSeries = useRoute()
 const routePerson = useRoute()
-
 const itemsWithPoster = computed(() => props.items.filter((item) => item.poster_path))
-const isSeriesRoute = routeSeries.path.includes('/series') || routeSeries.name === 'series'
-
-const type = computed(() => (isSeriesRoute ? 'tv' : 'movie'))
 
 const goToMedia = (item: MediaItem) => {
   const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')
@@ -200,6 +192,11 @@ const goToMedia = (item: MediaItem) => {
   }
   .media-card {
     aspect-ratio: 9 / 17;
+    transition: transform 0.3s ease;
+  }
+  .media-card:hover {
+    transform: scale(1.05);
+    z-index: 10;
   }
 }
 @media (min-width: 2560px) {

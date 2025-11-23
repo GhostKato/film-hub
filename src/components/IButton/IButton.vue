@@ -35,6 +35,7 @@ const componentType = computed(() => {
 const buttonType = computed(() => props.type || 'button')
 
 const handleClick = (e: Event) => {
+  e.stopPropagation()
   if (props.disabled) return
   if (!props.to && !props.href) emit('click', e)
 }
@@ -150,6 +151,13 @@ const handleClick = (e: Event) => {
 }
 .collection-btn:hover {
   background-color: var(--color-hover);
+}
+/* CollectionIndicator component*/
+.indicator-btn {
+  background-color: var(--color-transparent);
+  border: none;
+  border-radius: 8px;
+  padding: 2px;
 }
 /* ModalMenu, FormAuth components, auth button */
 .auth-btn {
