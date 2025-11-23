@@ -124,8 +124,6 @@ Film Hub is a website for searching and exploring movies and TV series. The plat
 - Detailed information about media and people involved.
 - Responsive and adaptive design for different devices.
 
-![Media-details](/public/readme/media-details.jpg)
-
 ---
 
 ### Technologies used:
