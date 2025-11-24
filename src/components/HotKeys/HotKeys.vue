@@ -26,7 +26,7 @@ const handleHotkeys = (e: KeyboardEvent) => {
       break
     case '2':
       modalStore.closeAll()
-      router.push('/multi-search')
+      router.push('/filter-search')
       break
     case '3':
       modalStore.closeAll()
