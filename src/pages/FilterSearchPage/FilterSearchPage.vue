@@ -157,6 +157,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   padding: 5px;
+  height: 80vh;
 }
 .header-page {
   display: flex;

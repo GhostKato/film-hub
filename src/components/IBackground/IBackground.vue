@@ -9,8 +9,7 @@
 <style scoped>
 .background {
   width: 100%;
-  overflow-y: auto;
-  min-height: 100vh;
+  height: 80vh;
   background: linear-gradient(
     180deg,
     #000000 10%,
@@ -63,6 +62,7 @@
     opacity: 0.05;
   }
 }
+
 .content {
   position: relative;
   z-index: 2;

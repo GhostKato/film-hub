@@ -84,4 +84,18 @@ onBeforeUnmount(() => {
     font-size: 20px;
   }
 }
+@media (min-width: 1920px) {
+  .pagination {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -72px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .pagination {
+    bottom: -130px;
+  }
+}
 </style>
