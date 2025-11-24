@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
@@ -39,7 +39,9 @@ import { useI18n } from 'vue-i18n'
 import { useLoaderStore } from '@/stores/loader'
 import IButton from '@/components/IButton/IButton.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
+import { useSearchStore } from '@/stores/search'
 
+const searchStore = useSearchStore()
 const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -161,6 +163,9 @@ watch(
   },
   { immediate: true },
 )
+onMounted(() => {
+  searchStore.clearQuery()
+})
 </script>
 
 <style scoped>

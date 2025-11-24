@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
@@ -44,9 +44,11 @@ import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
+import { useSearchStore } from '@/stores/search'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
+const searchStore = useSearchStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -206,6 +208,9 @@ const changePage = (p: number) => {
     query: { ...route.query, page: p },
   })
 }
+onMounted(() => {
+  searchStore.clearQuery()
+})
 </script>
 
 <style scoped>

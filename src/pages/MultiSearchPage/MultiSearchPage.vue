@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed, onUnmounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
@@ -94,9 +94,6 @@ watch(
     fetchSearchResults(searchStore.query, 1)
   },
 )
-onUnmounted(() => {
-  searchStore.clearQuery()
-})
 </script>
 
 <style scoped>
