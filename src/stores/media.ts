@@ -10,7 +10,6 @@ import {
   loadRecommended,
 } from '@/api/firebase'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
-
 export interface MediaItem {
   id: number
   title?: string
@@ -23,7 +22,38 @@ export interface MediaItem {
   favorite?: boolean
   watch_later?: boolean
   genre_ids?: number[]
-  genres?: { id: number; name: string }[]
+}
+type TmdbLikeItem = MediaItem & {
+  genres?: { id: number }[]
+}
+const normalizeGenres = (item: TmdbLikeItem): number[] => {
+  if (Array.isArray(item.genre_ids)) return item.genre_ids
+  if (Array.isArray(item.genres)) return item.genres.map((g) => g.id)
+  return []
+}
+const sanitizeForDb = (item: unknown): MediaItem => {
+  const i = item as Partial<MediaItem>
+
+  const clean: MediaItem = {
+    id: i.id!,
+    media_type: i.media_type!,
+    title: i.title,
+    name: i.name,
+    poster_path: i.poster_path,
+    release_date: i.release_date,
+    first_air_date: i.first_air_date,
+    vote_average: i.vote_average,
+    favorite: i.favorite,
+    watch_later: i.watch_later,
+    genre_ids: i.genre_ids,
+  }
+
+  Object.keys(clean).forEach((key) => {
+    if (clean[key as keyof MediaItem] === undefined) {
+      delete clean[key as keyof MediaItem]
+    }
+  })
+  return clean
 }
 
 export const useMediaStore = defineStore('media', () => {
@@ -31,38 +61,29 @@ export const useMediaStore = defineStore('media', () => {
   const recommended = ref<MediaItem[]>([])
   const authStore = useAuthStore()
 
-  const normalizeGenres = (item: any): number[] => {
-    if (item.genre_ids) return item.genre_ids
-    if (item.genres) return item.genres.map((g: { id: number }) => g.id)
-    return []
-  }
-
   const save = async () => {
     if (authStore.user?.uid) {
-      await saveMedia(authStore.user.uid, media.value)
+      const clean = media.value.map(sanitizeForDb)
+      await saveMedia(authStore.user.uid, clean)
     } else {
       localStorage.setItem('media', JSON.stringify(media.value))
     }
   }
-
   const updateRecommended = async () => {
     if (authStore.user?.uid !== MAIN_ACCOUNT_ID) return
 
     const list = media.value.filter((item) => item.favorite)
+    const clean = list.map(sanitizeForDb)
 
-    await saveRecommended(list)
-    recommended.value = list
+    await saveRecommended(clean)
+    recommended.value = clean
   }
-
-  const toggleMedia = async (item: MediaItem, key: 'favorite' | 'watch_later') => {
+  const toggleMedia = async (item: TmdbLikeItem, key: 'favorite' | 'watch_later') => {
     const existing = media.value.find((m) => m.id === item.id && m.media_type === item.media_type)
 
     if (existing) {
       existing[key] = !existing[key]
-
-      if (!existing.genre_ids) {
-        existing.genre_ids = normalizeGenres(item)
-      }
+      existing.genre_ids = normalizeGenres(item)
 
       if (!existing.favorite && !existing.watch_later) {
         media.value = media.value.filter(
@@ -70,19 +91,18 @@ export const useMediaStore = defineStore('media', () => {
         )
 
         if (authStore.user?.uid) {
-          await removeMediaItem(authStore.user.uid, existing)
+          await removeMediaItem(authStore.user.uid, sanitizeForDb(existing))
         }
       } else if (authStore.user?.uid) {
-        await updateMediaItem(authStore.user.uid, existing)
+        await updateMediaItem(authStore.user.uid, sanitizeForDb(existing))
       }
     } else {
-      const newItem: MediaItem = {
+      const newItem: MediaItem = sanitizeForDb({
         ...item,
         favorite: key === 'favorite',
         watch_later: key === 'watch_later',
-
         genre_ids: normalizeGenres(item),
-      }
+      })
 
       media.value.push(newItem)
 
@@ -99,22 +119,20 @@ export const useMediaStore = defineStore('media', () => {
       await save()
     }
   }
-
   const load = async () => {
     if (authStore.user?.uid) {
-      const serverMedia = await loadMedia(authStore.user.uid)
-      const localMedia: MediaItem[] = JSON.parse(localStorage.getItem('media') || '[]')
+      const serverMedia: MediaItem[] = (await loadMedia(authStore.user.uid)).map(sanitizeForDb)
 
-      const merged = [
+      const localMedia: MediaItem[] = JSON.parse(localStorage.getItem('media') || '[]').map(
+        sanitizeForDb,
+      )
+
+      const merged: MediaItem[] = [
         ...serverMedia,
         ...localMedia.filter(
           (l) => !serverMedia.some((s) => s.id === l.id && s.media_type === l.media_type),
         ),
       ]
-
-      merged.forEach((m) => {
-        m.genre_ids = normalizeGenres(m)
-      })
 
       media.value = merged
 
@@ -125,16 +143,15 @@ export const useMediaStore = defineStore('media', () => {
         await updateRecommended()
       }
     } else {
-      const stored = JSON.parse(localStorage.getItem('media') || '[]')
-
-      stored.forEach((m: MediaItem) => {
-        m.genre_ids = normalizeGenres(m)
-      })
+      const stored: MediaItem[] = JSON.parse(localStorage.getItem('media') || '[]').map(
+        sanitizeForDb,
+      )
 
       media.value = stored
     }
 
-    recommended.value = await loadRecommended()
+    const rec = await loadRecommended()
+    recommended.value = rec.map(sanitizeForDb)
   }
 
   const clear = async () => {
@@ -147,12 +164,12 @@ export const useMediaStore = defineStore('media', () => {
         await updateRecommended()
       }
     } else {
-      localStorage.setItem('media', JSON.stringify([]))
+      localStorage.setItem('media', '[]')
     }
   }
-
   const fetchRecommended = async () => {
-    recommended.value = await loadRecommended()
+    const rec = await loadRecommended()
+    recommended.value = rec.map(sanitizeForDb)
   }
 
   const favoriteList = () => media.value.filter((m) => m.favorite)
