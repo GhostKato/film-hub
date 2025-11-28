@@ -15,10 +15,8 @@
             {{ tab.label }}
           </IButton>
         </div>
-        <!-- delete <div class="filter-bar-container"> -->
-        <div class="filter-bar-container">
-          <FiltersBar v-model="filters" />
-        </div>
+
+        <FiltersBar v-model="filters" />
       </div>
       <MediaList :items="paginatedData" />
       <IPagination
@@ -246,10 +244,9 @@ onMounted(() => {
   .header-page {
     display: flex;
     flex-direction: row;
-    /* add justify-content: space-between */
-    /* justify-content: space-between; */
-    padding-left: 20px;
-    padding-right: 20px;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .title {
     padding-left: 20px;
@@ -258,19 +255,11 @@ onMounted(() => {
   .tabs {
     gap: 10px;
   }
-  /* delete */
-  .filter-bar-container {
-    display: none;
-  }
 }
-@media (min-width: 1280px) {
-  /* delete justify-content: space-between */
+@media (min-width: 1024px) {
   .header-page {
-    justify-content: space-between;
-  }
-  /* delete display: block */
-  .filter-bar-container {
-    display: block;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 @media (min-width: 2560px) {

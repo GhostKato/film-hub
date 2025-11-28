@@ -250,8 +250,7 @@ const handleClick = (e: Event) => {
     font-size: 20px;
   }
   .categories-btn {
-    padding: 5px 10px;
-    font-size: 20px;
+    padding: 5px;
   }
 }
 @media (min-width: 1024px) {
@@ -260,6 +259,9 @@ const handleClick = (e: Event) => {
   }
   .big-clean-btn {
     top: 7px;
+  }
+  .categories-btn {
+    font-size: 20px;
   }
 }
 @media (min-width: 1920px) {

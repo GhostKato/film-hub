@@ -200,8 +200,8 @@ onMounted(() => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .title {
     padding-left: 20px;
@@ -212,6 +212,12 @@ onMounted(() => {
   }
   .search-bar-container {
     display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .header-page {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 @media (min-width: 2560px) {

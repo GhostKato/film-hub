@@ -150,7 +150,14 @@ onUnmounted(() => {
   .select {
     height: auto;
     width: auto;
-    padding: 5px 10px;
+    padding: 5px;
+  }
+  .input {
+    width: 88px;
+  }
+}
+@media (min-width: 1024px) {
+  .select {
     font-size: 20px;
   }
   .select option {
@@ -158,12 +165,13 @@ onUnmounted(() => {
   }
   .input {
     font-size: 20px;
+    width: 190px;
   }
 }
 
 @media (min-width: 1280px) {
   .input {
-    width: 200px;
+    width: 240px;
   }
 }
 @media (min-width: 1920px) {
