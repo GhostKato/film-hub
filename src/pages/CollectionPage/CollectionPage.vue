@@ -244,23 +244,33 @@ onMounted(() => {
   }
   .header-page {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding-left: 10px;
-    padding-right: 10px;
+    align-items: flex-start;
   }
   .title {
     padding-left: 20px;
     font-size: 40px;
   }
   .tabs {
-    gap: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 @media (min-width: 1024px) {
+  .tabs {
+    gap: 10px;
+  }
+}
+@media (min-width: 1280px) {
   .header-page {
+    flex-direction: row;
+    justify-content: space-between;
     padding-left: 20px;
     padding-right: 20px;
+  }
+  .tabs {
+    width: auto;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 @media (min-width: 2560px) {

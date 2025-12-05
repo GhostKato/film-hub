@@ -95,20 +95,21 @@ onUnmounted(() => {
 <style scoped>
 .filter-bar {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .select-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  max-width: 400px;
 }
 .select {
   height: 27px;
-  width: 170px;
+  width: 165px;
   border-radius: 8px;
   color: var(--color-white);
   background-color: var(--color-dark-grey);
@@ -131,7 +132,7 @@ onUnmounted(() => {
   color: var(--color-white);
   background-color: var(--color-dark-grey);
   padding: 5px 25px 5px 10px;
-  width: 87%;
+  width: 100%;
 }
 .input:focus {
   outline: 1px solid var(--color-red);
@@ -153,7 +154,7 @@ onUnmounted(() => {
     padding: 5px;
   }
   .input {
-    width: 88px;
+    width: 220px;
   }
 }
 @media (min-width: 1024px) {
@@ -165,13 +166,13 @@ onUnmounted(() => {
   }
   .input {
     font-size: 20px;
-    width: 190px;
+    width: 260px;
   }
 }
 
 @media (min-width: 1280px) {
   .input {
-    width: 240px;
+    width: 205px;
   }
 }
 @media (min-width: 1920px) {
