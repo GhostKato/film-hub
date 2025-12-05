@@ -165,6 +165,7 @@ watch(
 )
 onMounted(() => {
   searchStore.clearQuery()
+  searchStore.hideNotification()
 })
 </script>
 

@@ -208,6 +208,7 @@ const changePage = (p: number) => {
 }
 onMounted(() => {
   searchStore.clearQuery()
+  searchStore.hideNotification()
 })
 </script>
 

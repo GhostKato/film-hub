@@ -25,7 +25,7 @@
 import { ref, watch, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
-import MediaList from '@/components/MediaList/MediaList.vue'
+import MediaList from '../../components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
@@ -54,17 +54,16 @@ const totalPages = ref(1)
 const fetchSearchResults = async (q: string, page = 1) => {
   if (!q) return
   loaderStore.showLoader()
-  searchStore.startSearch()
   try {
     const data = await searchMulti(q, page)
     results.value = data.results.filter((item: MediaItem) => item.poster_path || item.profile_path)
     currentPage.value = data.page
     totalPages.value = data.total_pages
+    if (results.value.length === 0) {
+      searchStore.showNotification()
+    }
   } finally {
     loaderStore.hideLoader()
-    setTimeout(() => {
-      searchStore.finishSearch()
-    }, 5000)
   }
 }
 

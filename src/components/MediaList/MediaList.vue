@@ -1,7 +1,10 @@
 <template>
   <div class="media-list">
     <div
-      v-if="!itemsWithPoster.length && searchStore.isSearched && !searchStore.query"
+      v-if="
+        (isCollectionPage && !itemsWithPoster.length) ||
+        (searchStore.notification && !itemsWithPoster.length)
+      "
       class="empty"
     >
       <p>{{ $t('media_list.not_found') }}</p>
@@ -65,6 +68,7 @@ import { truncateTitle } from '@/utils/truncateTitle'
 import { useSearchStore } from '@/stores/search'
 
 const searchStore = useSearchStore()
+const route = useRoute()
 
 export interface MediaItem {
   id: number
@@ -93,6 +97,7 @@ const goToMedia = (item: MediaItem) => {
     params: { type, id: item.id },
   })
 }
+const isCollectionPage = route.path == '/collection'
 </script>
 
 <style scoped>

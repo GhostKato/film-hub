@@ -21,7 +21,7 @@
       <IButton
         v-if="searchStore.query"
         :variant="isBigSearchBar ? 'big-clean-btn' : 'small-clean-btn'"
-        @click="searchStore.clearQuery()"
+        @click="clearSearch"
         >✖</IButton
       >
     </div>
@@ -88,6 +88,11 @@ const search = async () => {
   }
 
   emit('search', q)
+}
+
+function clearSearch() {
+  searchStore.clearQuery()
+  searchStore.hideNotification()
 }
 
 const filterOptions = [
