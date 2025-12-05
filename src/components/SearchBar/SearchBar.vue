@@ -145,7 +145,7 @@ const filterOptions = [
   align-items: center;
   text-align-last: center;
   height: 40px;
-  width: 60px;
+  width: 50px;
   border-radius: 8px;
   font-size: 16px;
   color: var(--color-white);
@@ -183,10 +183,6 @@ const filterOptions = [
   .select {
     height: 48px;
     width: 90px;
-    font-size: 20px;
-  }
-  .option {
-    font-size: 20px;
   }
 }
 @media (min-width: 1024px) {
@@ -198,6 +194,12 @@ const filterOptions = [
   }
   .small-search-bar {
     width: 250px;
+  }
+  .select {
+    font-size: 20px;
+  }
+  .option {
+    font-size: 20px;
   }
 }
 @media (min-width: 1920px) {

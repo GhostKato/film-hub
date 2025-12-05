@@ -221,11 +221,10 @@ const handleClick = (e: Event) => {
   .big-search-btn {
     width: 90px;
     height: 48px;
-    font-size: 20px;
   }
   .small-search-btn {
-    width: 32px;
-    height: 32px;
+    width: 29px;
+    height: 29px;
   }
   .big-clean-btn {
     right: 1px;
@@ -252,6 +251,13 @@ const handleClick = (e: Event) => {
 @media (min-width: 1024px) {
   .header-link {
     font-size: 30px;
+  }
+  .big-search-btn {
+    font-size: 20px;
+  }
+  .small-search-btn {
+    width: 32px;
+    height: 32px;
   }
   .big-clean-btn {
     top: 7px;
