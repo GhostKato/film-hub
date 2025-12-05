@@ -113,8 +113,8 @@ const handleClick = (e: Event) => {
 }
 .small-clean-btn {
   position: absolute;
-  right: -2px;
-  top: -2px;
+  right: -3px;
+  top: -3px;
   background: transparent;
   border: none;
   color: var(--color-white);
@@ -231,10 +231,6 @@ const handleClick = (e: Event) => {
     right: 1px;
     top: 6px;
   }
-  .small-clean-btn {
-    right: 0;
-    top: 0;
-  }
   .collection-btn {
     font-size: 20px;
   }
@@ -259,6 +255,10 @@ const handleClick = (e: Event) => {
   }
   .big-clean-btn {
     top: 7px;
+  }
+  .small-clean-btn {
+    right: -2px;
+    top: -1px;
   }
   .categories-btn {
     font-size: 20px;

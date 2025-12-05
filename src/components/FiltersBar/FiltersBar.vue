@@ -25,13 +25,16 @@
       </select>
     </div>
 
-    <input
-      class="input"
-      v-if="isCollectionPage"
-      type="text"
-      :placeholder="t('filters_bar.placeholder')"
-      v-model="query"
-    />
+    <div class="position">
+      <input
+        class="input"
+        v-if="isCollectionPage"
+        type="text"
+        :placeholder="t('filters_bar.placeholder')"
+        v-model="query"
+      />
+      <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery">✖</IButton>
+    </div>
   </div>
 </template>
 
@@ -40,6 +43,7 @@ import { genres, years } from '@/constants/filtersData'
 import { ref, watch, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import IButton from '../IButton/IButton.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -88,8 +92,11 @@ watch([filterType, genre, rating, year, query], () => {
   })
 })
 onUnmounted(() => {
-  query.value = ''
+  clearQuery()
 })
+function clearQuery() {
+  query.value = ''
+}
 </script>
 
 <style scoped>
@@ -100,6 +107,9 @@ onUnmounted(() => {
   gap: 10px;
   padding-left: 10px;
   padding-right: 10px;
+}
+.position {
+  position: relative;
 }
 .select-container {
   display: flex;
@@ -139,6 +149,11 @@ onUnmounted(() => {
 }
 .input:hover {
   outline: 1px solid var(--color-hover);
+}
+@media (max-width: 767px) {
+  .position {
+    width: 100%;
+  }
 }
 @media (min-width: 768px) {
   .filter-bar {
