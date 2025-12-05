@@ -105,8 +105,6 @@ function clearQuery() {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 .position {
   position: relative;
@@ -153,6 +151,10 @@ function clearQuery() {
 @media (max-width: 767px) {
   .position {
     width: 100%;
+  }
+  .filter-bar {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 @media (min-width: 768px) {

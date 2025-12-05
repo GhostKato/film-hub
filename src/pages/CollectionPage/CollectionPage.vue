@@ -245,17 +245,19 @@ onMounted(() => {
   .header-page {
     display: flex;
     align-items: flex-start;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .title {
     padding-left: 20px;
     font-size: 40px;
   }
-  .tabs {
+}
+@media (min-width: 1024px) {
+  .header-page {
     padding-left: 20px;
     padding-right: 20px;
   }
-}
-@media (min-width: 1024px) {
   .tabs {
     gap: 10px;
   }
@@ -264,13 +266,9 @@ onMounted(() => {
   .header-page {
     flex-direction: row;
     justify-content: space-between;
-    padding-left: 20px;
-    padding-right: 20px;
   }
   .tabs {
     width: auto;
-    padding-left: 0;
-    padding-right: 0;
   }
 }
 @media (min-width: 2560px) {
