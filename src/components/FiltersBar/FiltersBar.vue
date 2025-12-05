@@ -191,7 +191,7 @@ function clearQuery() {
     padding: 5px;
   }
   .input {
-    width: 185px;
+    width: 180px;
   }
 }
 @media (min-width: 1024px) {
