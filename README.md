@@ -134,8 +134,7 @@ Film Hub is a website for searching and exploring movies and TV series. The plat
 
 2. **Frameworks and Libraries:**
    - **Vue.js**
-   - **Pinia**
-   - **SASS**
+   - **Pinia**  
 
 3. **Databases & Storage:**
    - **Firebase** (Authentication, Firestore for lists)
