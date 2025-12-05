@@ -80,7 +80,10 @@
     "romance": "Романтичні",
     "animation": "Анімаційні",
     "all_years": "Всі роки",
-    "placeholder": "Пошук по каталогу..."
+    "placeholder": "Пошук по каталогу...",
+    "release": "Реліз",
+    "date_added": "Дата додавання",
+    "alphabet": "А до Я"
   },
   "search_bar": {
     "all": "Всі",

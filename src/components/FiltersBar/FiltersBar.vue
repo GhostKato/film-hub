@@ -35,6 +35,14 @@
       />
       <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery">✖</IButton>
     </div>
+    <select class="select" v-if="isCollectionPage" v-model="sortType">
+      <option :value="1">{{ t('filters_bar.release') }} ↑</option>
+      <option :value="2">{{ t('filters_bar.release') }} ↓</option>
+      <option :value="3">{{ t('filters_bar.date_added') }} ↑</option>
+      <option :value="4">{{ t('filters_bar.date_added') }} ↓</option>
+      <option :value="5">{{ t('filters_bar.alphabet') }} ↑</option>
+      <option :value="6">{{ t('filters_bar.alphabet') }} ↓</option>
+    </select>
   </div>
 </template>
 
@@ -56,6 +64,7 @@ export interface FiltersType {
   rating: 'all' | 'low' | 'medium' | 'high'
   year: string
   query?: string
+  sortType?: '1' | '2' | '3' | '4' | '5' | '6'
 }
 
 const props = defineProps<{ modelValue: FiltersType }>()
@@ -66,6 +75,7 @@ const genre = ref<string>(props.modelValue.genre)
 const rating = ref<'all' | 'low' | 'medium' | 'high'>(props.modelValue.rating)
 const year = ref<string>(props.modelValue.year)
 const query = ref<string>(props.modelValue.query || '')
+const sortType = ref<1 | 2 | 3 | 4>(1)
 
 const selectedGenres = ref(genres)
 const availableYears = ref(years)
@@ -78,17 +88,19 @@ watch(
     rating.value = val.rating
     year.value = val.year
     query.value = val.query || ''
+    sortType.value = Number(val.sortType || '1') as 1 | 2 | 3 | 4
   },
   { deep: true, immediate: true },
 )
 
-watch([filterType, genre, rating, year, query], () => {
+watch([filterType, genre, rating, year, query, sortType], () => {
   emit('update:modelValue', {
     filterType: filterType.value,
     genre: genre.value,
     rating: rating.value,
     year: year.value,
     query: query.value,
+    sortType: String(sortType.value) as '1' | '2' | '3' | '4' | '5' | '6',
   })
 })
 onUnmounted(() => {
@@ -171,7 +183,7 @@ function clearQuery() {
     padding: 5px;
   }
   .input {
-    width: 220px;
+    width: 185px;
   }
 }
 @media (min-width: 1024px) {
@@ -189,7 +201,7 @@ function clearQuery() {
 
 @media (min-width: 1280px) {
   .input {
-    width: 205px;
+    width: 130px;
   }
 }
 @media (min-width: 1920px) {

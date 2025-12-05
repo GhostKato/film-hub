@@ -80,7 +80,10 @@
     "romance": "Romance",
     "animation": "Animation",
     "all_years": "All years",
-    "placeholder": "Search by catalog..."
+    "placeholder": "Search by catalog...",
+    "release": "Release",
+    "date_added": "Date added",
+    "alphabet": "A to Z"
   },
   "search_bar": {
     "all": "All",

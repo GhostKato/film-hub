@@ -80,7 +80,10 @@
     "romance": "Романтичиские",
     "animation": "Анимационные",
     "all_years": "Все года",
-    "placeholder": "Поиск по каталогу..."
+    "placeholder": "Поиск по каталогу...",
+    "release": "Релиз",
+    "date_added": "Дата добавления",
+    "alphabet": "А к Я"
   },
   "search_bar": {
     "all": "Все",

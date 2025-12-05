@@ -43,6 +43,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import { useSearchStore } from '@/stores/search'
+import { sortCollectionArray } from '@/utils/sortCollectionArray'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
@@ -103,6 +104,7 @@ const filters = ref<FiltersType>({
   rating: 'all',
   year: '',
   query: '',
+  sortType: '1',
 })
 
 const currentData = computed(() => {
@@ -153,7 +155,13 @@ const totalPages = computed(() => Math.ceil(filteredData.value.length / pageSize
 
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize
-  return filteredData.value.slice(start, start + pageSize)
+  return sortedMedia.value.slice(start, start + pageSize)
+})
+
+const sortType = computed(() => Number(filters.value.sortType || '1') as 1 | 2 | 3 | 4 | 5 | 6)
+
+const sortedMedia = computed(() => {
+  return sortCollectionArray(filteredData.value, sortType.value)
 })
 
 watch(
