@@ -35,7 +35,7 @@
       />
       <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery">✖</IButton>
     </div>
-    <select class="select" v-if="isCollectionPage" v-model="sortType">
+    <select class="select last" v-if="isCollectionPage" v-model="sortType">
       <option :value="1">{{ t('filters_bar.release') }} ↑</option>
       <option :value="2">{{ t('filters_bar.release') }} ↓</option>
       <option :value="3">{{ t('filters_bar.date_added') }} ↑</option>
@@ -167,6 +167,14 @@ function clearQuery() {
   .filter-bar {
     padding-left: 10px;
     padding-right: 10px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1279px) {
+  .filter-bar {
+    width: 100%;
+  }
+  .last {
+    margin-left: auto;
   }
 }
 @media (min-width: 768px) {
