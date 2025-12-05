@@ -81,9 +81,10 @@
     "animation": "Анимационные",
     "all_years": "Все года",
     "placeholder": "Поиск по каталогу...",
-    "release": "Релиз",
+    "release": "Дата выхода",
     "date_added": "Дата добавления",
-    "alphabet": "А к Я"
+    "a_to_z": "А → Я",
+    "z_to_a": "Я → А"
   },
   "search_bar": {
     "all": "Все",

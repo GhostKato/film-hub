@@ -81,9 +81,10 @@
     "animation": "Animation",
     "all_years": "All years",
     "placeholder": "Search by catalog...",
-    "release": "Release",
+    "release": "Release date",
     "date_added": "Date added",
-    "alphabet": "A to Z"
+    "a_to_z": "A → Z",
+    "z_to_a": "Z → A"
   },
   "search_bar": {
     "all": "All",

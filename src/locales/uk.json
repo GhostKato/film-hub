@@ -81,9 +81,10 @@
     "animation": "Анімаційні",
     "all_years": "Всі роки",
     "placeholder": "Пошук по каталогу...",
-    "release": "Реліз",
+    "release": "Дата виходу",
     "date_added": "Дата додавання",
-    "alphabet": "А до Я"
+    "a_to_z": "А → Я",
+    "z_to_a": "Я → А"
   },
   "search_bar": {
     "all": "Всі",

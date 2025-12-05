@@ -40,8 +40,8 @@
       <option :value="2">{{ t('filters_bar.release') }} ↓</option>
       <option :value="3">{{ t('filters_bar.date_added') }} ↑</option>
       <option :value="4">{{ t('filters_bar.date_added') }} ↓</option>
-      <option :value="5">{{ t('filters_bar.alphabet') }} ↑</option>
-      <option :value="6">{{ t('filters_bar.alphabet') }} ↓</option>
+      <option :value="5">{{ t('filters_bar.a_to_z') }}</option>
+      <option :value="6">{{ t('filters_bar.z_to_a') }}</option>
     </select>
   </div>
 </template>

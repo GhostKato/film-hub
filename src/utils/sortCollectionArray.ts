@@ -25,10 +25,10 @@ export function sortCollectionArray<
       return newArr.sort((a, b) => new Date(getDate(a)).getTime() - new Date(getDate(b)).getTime())
 
     case 3:
-      return newArr
+      return newArr.reverse()
 
     case 4:
-      return newArr.reverse()
+      return newArr
 
     case 5:
       return newArr.sort((a, b) => getTitle(a).localeCompare(getTitle(b), locales))
