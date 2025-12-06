@@ -70,12 +70,12 @@ const handleClick = (e: Event) => {
   height: 39px;
   border: none;
 }
-.big-search-big:hover {
+.big-search-btn:hover {
   background-color: var(--color-hover);
 }
 .big-search-btn:disabled {
   background-color: var(--color-grey);
-  opacity: 0.5;
+  filter: brightness(0.7);
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -91,9 +91,14 @@ const handleClick = (e: Event) => {
 }
 .small-search-btn:disabled {
   background-color: var(--color-grey);
-  opacity: 0.5;
+  filter: brightness(0.7);
   cursor: not-allowed;
   pointer-events: none;
+}
+.small-search-btn:disabled svg,
+.small-search-btn:disabled svg * {
+  opacity: 1 !important;
+  fill: currentColor !important;
 }
 /* SearchBar component, clear button */
 .big-clean-btn {
