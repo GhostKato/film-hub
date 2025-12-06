@@ -4,8 +4,8 @@
       :modules="[Autoplay]"
       :slides-per-view="5"
       :space-between="15"
-      :loop="true"
-      :autoplay="{ delay: 3000, disableOnInteraction: false }"
+      :loop="moviesWithPoster.length > maxSlidesPerView"
+      :autoplay="{ delay: 2000, disableOnInteraction: false }"
       class="mySwiper"
       :breakpoints="breakpoints"
     >
@@ -36,6 +36,11 @@ import { useLanguageStore } from '@/stores/language'
 import { useLoaderStore } from '@/stores/loader'
 
 const loaderStore = useLoaderStore()
+
+const maxSlidesPerView = computed(() => {
+  const values = Object.values(breakpoints).map((b) => b.slidesPerView)
+  return Math.max(...values)
+})
 
 interface Props {
   visibilityTrendingSlider: boolean
