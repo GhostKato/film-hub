@@ -2,7 +2,7 @@
   <div class="media-list">
     <div
       v-if="
-        (isCollectionPage && !itemsWithPoster.length) ||
+        (!isMultiSearchPage && !itemsWithPoster.length) ||
         (searchStore.notification && !itemsWithPoster.length)
       "
       class="empty"
@@ -97,7 +97,7 @@ const goToMedia = (item: MediaItem) => {
     params: { type, id: item.id },
   })
 }
-const isCollectionPage = route.path == '/collection'
+const isMultiSearchPage = route.path == '/multi-search'
 </script>
 
 <style scoped>
@@ -174,9 +174,6 @@ const isCollectionPage = route.path == '/collection'
   .media-card {
     aspect-ratio: 9 / 17;
   }
-  .empty {
-    font-size: 20px;
-  }
 }
 @media (min-width: 1024px) {
   .media-grid {
@@ -184,6 +181,9 @@ const isCollectionPage = route.path == '/collection'
   }
   .media-card {
     aspect-ratio: 9 / 16;
+  }
+  .empty {
+    font-size: 20px;
   }
 }
 @media (min-width: 1280px) {

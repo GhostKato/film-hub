@@ -128,7 +128,7 @@ const filterOptions = [
 }
 .big-search-bar {
   padding: 10px 35px 10px 10px;
-  width: 220px;
+  width: 200px;
 }
 .small-search-bar {
   padding: 5px 30px 5px 10px;
@@ -145,7 +145,7 @@ const filterOptions = [
   align-items: center;
   text-align-last: center;
   height: 40px;
-  width: 50px;
+  width: 70px;
   border-radius: 8px;
   font-size: 16px;
   color: var(--color-white);

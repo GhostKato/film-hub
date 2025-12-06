@@ -118,13 +118,15 @@ watch(
 
   .result {
     margin: 15px;
-    font-size: 20px;
-    text-align: start;
   }
 }
 @media (min-width: 1024px) {
   .media-list-wrapper {
     flex: 1;
+  }
+  .result {
+    font-size: 20px;
+    text-align: start;
   }
 }
 </style>

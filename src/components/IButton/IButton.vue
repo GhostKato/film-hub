@@ -82,18 +82,6 @@ const handleClick = (e: Event) => {
 .small-search-btn:hover {
   background-color: var(--color-hover);
 }
-.is-disabled {
-  background-color: var(--color-grey) !important;
-  filter: brightness(0.7);
-  cursor: not-allowed !important;
-  pointer-events: none;
-}
-
-.is-disabled svg,
-.is-disabled svg * {
-  opacity: 1 !important;
-  fill: currentColor !important;
-}
 /* SearchBar component, clear button */
 .big-clean-btn {
   position: absolute;
@@ -216,6 +204,18 @@ const handleClick = (e: Event) => {
 .share-btn:hover {
   background-color: var(--color-hover);
 }
+.is-disabled {
+  background-color: var(--color-grey) !important;
+  filter: brightness(0.3);
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+.is-disabled svg,
+.is-disabled svg * {
+  opacity: 1 !important;
+  fill: currentColor !important;
+}
 @media (min-width: 768px) {
   .big-search-btn {
     width: 90px;
@@ -255,8 +255,8 @@ const handleClick = (e: Event) => {
     font-size: 20px;
   }
   .small-search-btn {
-    width: 32px;
-    height: 32px;
+    width: 33px;
+    height: 33px;
   }
   .big-clean-btn {
     top: 7px;

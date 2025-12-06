@@ -6,11 +6,7 @@
         <FiltersBar v-model="filters" />
         <SearchBar />
       </div>
-
-      <div v-if="filteredMedia.length">
-        <MediaList :items="filteredMedia" />
-      </div>
-
+      <MediaList :items="filteredMedia" />
       <IPagination
         :currentPage="currentPage"
         :totalPages="totalPages"
