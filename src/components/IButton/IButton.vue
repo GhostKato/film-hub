@@ -4,9 +4,8 @@
     :to="to"
     :href="href"
     :type="buttonType"
-    :class="['base', variant]"
+    :class="['base', variant, { 'is-disabled': disabled }]"
     @click="handleClick"
-    :disabled="disabled"
   >
     <slot />
   </component>
@@ -73,12 +72,6 @@ const handleClick = (e: Event) => {
 .big-search-btn:hover {
   background-color: var(--color-hover);
 }
-.big-search-btn:disabled {
-  background-color: var(--color-grey);
-  filter: brightness(0.7);
-  cursor: not-allowed;
-  pointer-events: none;
-}
 .small-search-btn {
   background-color: var(--color-red);
   width: 30px;
@@ -89,14 +82,15 @@ const handleClick = (e: Event) => {
 .small-search-btn:hover {
   background-color: var(--color-hover);
 }
-.small-search-btn:disabled {
-  background-color: var(--color-grey);
+.is-disabled {
+  background-color: var(--color-grey) !important;
   filter: brightness(0.7);
-  cursor: not-allowed;
+  cursor: not-allowed !important;
   pointer-events: none;
 }
-.small-search-btn:disabled svg,
-.small-search-btn:disabled svg * {
+
+.is-disabled svg,
+.is-disabled svg * {
   opacity: 1 !important;
   fill: currentColor !important;
 }
