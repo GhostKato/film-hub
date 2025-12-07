@@ -178,8 +178,8 @@ const handleClick = (e: Event) => {
 .modal-auth-nav-btn.active {
   background: var(--color-red);
 }
-/* MoviesPage, SeriesPage, CollectionPage components, categories button */
-.categories-btn {
+/* MoviesPage, SeriesPage, CollectionPage components, tab buttons */
+.tab-btn {
   padding: 4px 3px;
   border: none;
   border-radius: 8px;
@@ -187,11 +187,11 @@ const handleClick = (e: Event) => {
   cursor: pointer;
   transition: 0.3s;
 }
-.categories-btn.active {
+.tab-btn.active {
   background: var(--color-red);
   color: var(--color-white);
 }
-.categories-btn:hover {
+.tab-btn:hover {
   background: var(--color-hover);
 }
 /* ShareButton component, share button */
@@ -243,7 +243,7 @@ const handleClick = (e: Event) => {
   .modal-auth-nav-btn {
     font-size: 20px;
   }
-  .categories-btn {
+  .tab-btn {
     padding: 5px;
   }
 }
@@ -265,12 +265,12 @@ const handleClick = (e: Event) => {
     right: -2px;
     top: -1px;
   }
-  .categories-btn {
+  .tab-btn {
     font-size: 20px;
   }
 }
 @media (min-width: 1920px) {
-  .categories-btn {
+  .tab-btn {
     padding: none;
     height: 33px;
     width: 210px;
@@ -281,7 +281,7 @@ const handleClick = (e: Event) => {
     width: 43px;
     height: 43px;
   }
-  .categories-btn {
+  .tab-btn {
     height: 43px;
   }
   .small-clean-btn {

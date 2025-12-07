@@ -1,6 +1,10 @@
 import axios from 'axios'
 import { useLanguageStore } from '@/stores/language'
 import { TMDB_TOKEN } from '@/constants/env'
+import { getVoteAverage } from '@/utils/getVoteAverage'
+import type { ReviewType } from '@/types/review'
+import type { TrailerType } from '@/types/media'
+import type { FetchOptions, MediaType, MovieParams, TVParams } from '@/types/fetchTmdb'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
 
@@ -98,18 +102,8 @@ export async function getPersonCombinedCredits(id: number | string) {
   return data
 }
 
-export type MediaType = 'movie' | 'tv'
-export interface Trailer {
-  id: string
-  key: string
-  name: string
-  site: string
-  type: string
-  iso_639_1: string
-}
-
 interface VideosResponse {
-  results?: Trailer[]
+  results?: TrailerType[]
 }
 // Returns the YouTube trailer for the movie/series.
 export async function getMediaVideos(id: number | string, type: MediaType): Promise<string | null> {
@@ -118,7 +112,7 @@ export async function getMediaVideos(id: number | string, type: MediaType): Prom
     const lang = languageStore.lang
 
     const { data } = await api.get<VideosResponse>(`/${type}/${id}/videos`)
-    const videos: Trailer[] = data.results ?? []
+    const videos: TrailerType[] = data.results ?? []
 
     const trailers = videos.filter((v) => v.site === 'YouTube' && v.type === 'Trailer')
 
@@ -136,20 +130,11 @@ export async function getMediaVideos(id: number | string, type: MediaType): Prom
     return null
   }
 }
-
-export interface Review {
-  id: string
-  author: string
-  content: string
-  created_at: string
-  url: string
-}
-
 interface ReviewsResponse {
-  results?: Review[]
+  results?: ReviewType[]
 }
 // Returns user reviews to a movie or series.
-export async function getMediaReviews(id: number | string, type: MediaType): Promise<Review[]> {
+export async function getMediaReviews(id: number | string, type: MediaType): Promise<ReviewType[]> {
   try {
     const { data } = await api.get<ReviewsResponse>(`/${type}/${id}/reviews`)
     return data.results ?? []
@@ -158,47 +143,6 @@ export async function getMediaReviews(id: number | string, type: MediaType): Pro
     return []
   }
 }
-
-interface FetchOptions {
-  rating?: 'all' | 'low' | 'medium' | 'high'
-  genre?: string
-  year?: number | string
-  page?: number
-}
-
-interface MovieParams {
-  sort_by: string
-  include_adult: boolean
-  include_video: boolean
-  page: number
-  with_genres?: string
-  primary_release_year?: number | string
-  'vote_average.lte'?: number
-  'vote_average.gte'?: number
-}
-
-interface TVParams {
-  sort_by: string
-  page: number
-  with_genres?: string
-  first_air_date_year?: number
-  'vote_average.lte'?: number
-  'vote_average.gte'?: number
-}
-
-const getVoteAverage = (rating?: 'all' | 'low' | 'medium' | 'high') => {
-  switch (rating) {
-    case 'low':
-      return { 'vote_average.lte': 4 }
-    case 'medium':
-      return { 'vote_average.gte': 5, 'vote_average.lte': 7 }
-    case 'high':
-      return { 'vote_average.gte': 8 }
-    default:
-      return {}
-  }
-}
-
 export const fetchMovies = async (options: FetchOptions) => {
   const { rating, genre, year, page = 1 } = options
   const voteFilter = getVoteAverage(rating)

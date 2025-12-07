@@ -34,6 +34,7 @@ import { getTrendingAllDay } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { useLoaderStore } from '@/stores/loader'
+import type { SliderType } from '@/types/slider'
 
 const loaderStore = useLoaderStore()
 
@@ -48,15 +49,7 @@ interface Props {
 
 const { visibilityTrendingSlider } = defineProps<Props>()
 
-interface MediaSlider {
-  id: number
-  title?: string
-  name?: string
-  poster_path?: string
-  media_type: 'movie' | 'tv'
-}
-
-const movies = ref<MediaSlider[]>([])
+const movies = ref<SliderType[]>([])
 const moviesWithPoster = computed(() => movies.value.filter((m) => m.poster_path))
 
 const breakpoints = {
@@ -69,7 +62,7 @@ const breakpoints = {
 
 const fetchTrending = async () => {
   try {
-    const allResults: MediaSlider[] = []
+    const allResults: SliderType[] = []
     for (let page = 1; page <= 3; page++) {
       loaderStore.showLoader()
       const data = await getTrendingAllDay(page)

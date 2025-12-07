@@ -3,9 +3,9 @@
     <div class="movies-page">
       <h1 class="title">{{ $t('movies_page.title') }}</h1>
       <div class="header-page">
-        <div class="categories">
+        <div class="tabs">
           <IButton
-            variant="categories-btn"
+            variant="tab-btn"
             v-for="cat in categories"
             :key="cat.key"
             :class="{ active: activeCategory === cat.key }"
@@ -40,6 +40,7 @@ import { useLoaderStore } from '@/stores/loader'
 import IButton from '@/components/IButton/IButton.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useSearchStore } from '@/stores/search'
+import type { TmdbItemType } from '@/types/media'
 
 const searchStore = useSearchStore()
 const { t, locale } = useI18n()
@@ -49,15 +50,6 @@ const router = useRouter()
 interface CategoryMedia {
   key: string
   label: string
-}
-
-interface MovieItem {
-  id: number
-  title: string
-  poster_path?: string
-  release_date?: string
-  vote_average?: number
-  media_type: 'movie' | 'tv' | 'person'
 }
 
 const categories = ref<CategoryMedia[]>([])
@@ -118,7 +110,7 @@ const currentPage = computed({
   },
 })
 
-const movies = ref<MovieItem[]>([])
+const movies = ref<TmdbItemType[]>([])
 const totalPages = ref(1)
 
 const loaderStore = useLoaderStore()
@@ -143,7 +135,7 @@ const fetchMovies = async (category: string, page = 1) => {
         break
     }
 
-    movies.value = data.results.filter((item: MovieItem) => item.poster_path)
+    movies.value = data.results.filter((item: TmdbItemType) => item.poster_path)
     totalPages.value = data.total_pages
   } finally {
     loaderStore.hideLoader()
@@ -192,7 +184,7 @@ onMounted(() => {
   margin-bottom: 10px;
 }
 
-.categories {
+.tabs {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -214,7 +206,7 @@ onMounted(() => {
     padding-left: 20px;
     font-size: 40px;
   }
-  .categories {
+  .tabs {
     gap: 10px;
   }
   .search-bar-container {

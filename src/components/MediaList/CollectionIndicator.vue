@@ -16,14 +16,14 @@
 
 <script setup lang="ts">
 import { useMediaStore } from '@/stores/media'
-import type { MediaItem } from '@/stores/media'
 import IButton from '@/components/IButton/IButton.vue'
 import FavoriteIcon from '../icons/FavoriteIcon.vue'
 import WatchLaterIcon from '../icons/WatchLaterIcon.vue'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import type { FirebaseItemType } from '@/types/media'
 
-const { media } = defineProps<{ media: MediaItem }>()
+const { media } = defineProps<{ media: FirebaseItemType }>()
 const mediaStore = useMediaStore()
 
 const route = useRoute()
@@ -43,7 +43,7 @@ const isWatchLater = (id: number) => {
     .some((item) => item.id === id && item.media_type === typeToCheck)
 }
 
-const toggleFavorite = (item: MediaItem) => {
+const toggleFavorite = (item: FirebaseItemType) => {
   const docData = {
     ...item,
     media_type: item.media_type ?? currentType.value,
@@ -51,7 +51,7 @@ const toggleFavorite = (item: MediaItem) => {
   mediaStore.toggleMedia(docData, 'favorite')
 }
 
-const toggleWatchLater = (item: MediaItem) => {
+const toggleWatchLater = (item: FirebaseItemType) => {
   const docData = {
     ...item,
     media_type: item.media_type ?? currentType.value,

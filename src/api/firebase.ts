@@ -7,8 +7,8 @@ import {
 } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { db } from '@/firebase'
-import type { MediaItem } from '@/stores/media'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
+import type { FirebaseItemType } from '@/types/media'
 
 // Registration
 export const register = async (
@@ -42,7 +42,7 @@ export const updateUserProfile = async (updates: { displayName?: string; photoUR
 }
 
 // Downloads user media
-export const loadMedia = async (userId: string): Promise<MediaItem[]> => {
+export const loadMedia = async (userId: string): Promise<FirebaseItemType[]> => {
   const ref = doc(db, 'media', userId)
   const snap = await getDoc(ref)
   if (snap.exists()) return snap.data()?.media || []
@@ -50,40 +50,40 @@ export const loadMedia = async (userId: string): Promise<MediaItem[]> => {
 }
 
 // Stores the entire array of user media
-export const saveMedia = async (userId: string, media: MediaItem[]) => {
+export const saveMedia = async (userId: string, media: FirebaseItemType[]) => {
   const ref = doc(db, 'media', userId)
   await setDoc(ref, { media }, { merge: true })
 }
 
 // Updates or adds one media element
-export const updateMediaItem = async (userId: string, item: MediaItem) => {
+export const updateMediaItem = async (userId: string, item: FirebaseItemType) => {
   const ref = doc(db, 'media', userId)
   const snap = await getDoc(ref)
-  const existing: MediaItem[] = snap.exists() ? snap.data()?.media || [] : []
+  const existing: FirebaseItemType[] = snap.exists() ? snap.data()?.media || [] : []
 
   const filtered = existing.filter((m) => !(m.id === item.id && m.media_type === item.media_type))
   await setDoc(ref, { media: [...filtered, item] }, { merge: true })
 }
 
 // Removes a specific media element
-export const removeMediaItem = async (userId: string, item: MediaItem) => {
+export const removeMediaItem = async (userId: string, item: FirebaseItemType) => {
   const ref = doc(db, 'media', userId)
   const snap = await getDoc(ref)
   if (!snap.exists()) return
 
-  const existing: MediaItem[] = snap.data()?.media || []
+  const existing: FirebaseItemType[] = snap.data()?.media || []
   const filtered = existing.filter((m) => !(m.id === item.id && m.media_type === item.media_type))
   await setDoc(ref, { media: filtered }, { merge: true })
 }
 
 //Save recommendations (master account only)
-export const saveRecommended = async (media: MediaItem[]) => {
+export const saveRecommended = async (media: FirebaseItemType[]) => {
   const ref = doc(db, 'recommended', 'mainId')
   await setDoc(ref, { recommended: media })
 }
 
 // //Reads recommendations
-export const loadRecommended = async (): Promise<MediaItem[]> => {
+export const loadRecommended = async (): Promise<FirebaseItemType[]> => {
   const ref = doc(db, 'recommended', 'mainId')
   const snap = await getDoc(ref)
 

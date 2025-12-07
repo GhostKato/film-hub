@@ -31,23 +31,13 @@ import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
 import { searchMulti } from '@/api/tmdb'
 import { useSearchStore } from '@/stores/search'
+import type { TmdbItemType } from '@/types/media'
 
 const loaderStore = useLoaderStore()
 const searchStore = useSearchStore()
 const route = useRoute()
 
-interface MediaItem {
-  id: number
-  media_type: 'movie' | 'tv' | 'person'
-  title?: string
-  name?: string
-  poster_path?: string
-  profile_path?: string
-  first_air_date?: string
-  release_date?: string
-}
-
-const results = ref<MediaItem[]>([])
+const results = ref<TmdbItemType[]>([])
 const currentPage = ref(1)
 const totalPages = ref(1)
 
@@ -56,7 +46,7 @@ const fetchSearchResults = async (q: string, page = 1) => {
   loaderStore.showLoader()
   try {
     const data = await searchMulti(q, page)
-    results.value = data.results.filter((item: MediaItem) => item.poster_path || item.profile_path)
+    results.value = data.results.filter((item: TmdbItemType) => item.poster_path)
     currentPage.value = data.page
     totalPages.value = data.total_pages
     if (results.value.length === 0) {

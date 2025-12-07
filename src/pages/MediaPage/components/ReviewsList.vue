@@ -12,15 +12,16 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { getMediaReviews } from '@/api/tmdb'
-import type { Review, MediaType } from '@/api/tmdb'
 import { useLanguageStore } from '@/stores/language'
+import type { ReviewType } from '@/types/review'
+import type { MediaType } from '@/types/fetchTmdb'
 
 const props = defineProps<{
   mediaId: number
   type: MediaType
 }>()
 
-const reviews = ref<Review[]>([])
+const reviews = ref<ReviewType[]>([])
 const languageStore = useLanguageStore()
 
 const fetchReviews = async () => {

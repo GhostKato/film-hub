@@ -98,46 +98,18 @@ import { useLanguageStore } from '@/stores/language'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
 import ShareButton from './components/ShareButton.vue'
+import type { PersonItemType } from '@/types/person'
+import type { TmdbMediaType } from '@/types/media'
 
 const loaderStore = useLoaderStore()
-
-interface Genre {
-  id: number
-  name: string
-}
-interface ProductionCountry {
-  name: string
-}
-interface Media {
-  id: number
-  title?: string
-  name?: string
-  overview?: string
-  poster_path?: string
-  release_date?: string
-  first_air_date?: string
-  vote_average?: number
-  tagline?: string
-  genres?: Genre[]
-  production_countries?: ProductionCountry[]
-  runtime?: number
-  episode_run_time?: number[]
-}
-interface Person {
-  id: number
-  name: string
-  profile_path?: string
-  character?: string
-  job?: string
-}
 
 const route = useRoute()
 const type = route.params.type as 'movie' | 'tv'
 const id = Number(route.params.id)
 
-const media = ref<Media | null>(null)
-const cast = ref<Person[]>([])
-const crew = ref<Person[]>([])
+const media = ref<TmdbMediaType | null>(null)
+const cast = ref<PersonItemType[]>([])
+const crew = ref<PersonItemType[]>([])
 const trailerId = ref<string | null>(null)
 const languageStore = useLanguageStore()
 
@@ -146,10 +118,12 @@ const fetchMedia = async () => {
     loaderStore.showLoader()
     media.value = await getMediaById(id, type)
     const credits = await getMediaCredits(id, type)
-    cast.value = credits.cast.filter((p: Person) => p.profile_path).slice(0, 15)
+    cast.value = credits.cast.filter((p: PersonItemType) => p.profile_path).slice(0, 15)
     crew.value = credits.crew
-      .filter((p: Person) => ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''))
-      .filter((p: Person) => p.profile_path)
+      .filter((p: PersonItemType) =>
+        ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''),
+      )
+      .filter((p: PersonItemType) => p.profile_path)
     trailerId.value = await getMediaVideos(id, type)
     loaderStore.hideLoader()
   } catch (err) {

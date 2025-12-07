@@ -17,10 +17,11 @@
 </template>
 
 <script setup lang="ts">
-import { useMediaStore, type MediaItem } from '@/stores/media'
+import { useMediaStore } from '@/stores/media'
 import IButton from '@/components/IButton/IButton.vue'
+import type { FirebaseItemType } from '@/types/media'
 
-const { media } = defineProps<{ media: MediaItem }>()
+const { media } = defineProps<{ media: FirebaseItemType }>()
 
 const mediaStore = useMediaStore()
 
@@ -34,10 +35,10 @@ const isWatchLater = (id: number) => {
     .watchLaterList()
     .some((item) => item.id === id && item.media_type === media.media_type)
 }
-const toggleFavorite = (item: MediaItem) => {
+const toggleFavorite = (item: FirebaseItemType) => {
   mediaStore.toggleMedia({ ...item, media_type: media.media_type }, 'favorite')
 }
-const toggleWatchLater = (item: MediaItem) => {
+const toggleWatchLater = (item: FirebaseItemType) => {
   mediaStore.toggleMedia({ ...item, media_type: media.media_type }, 'watch_later')
 }
 </script>

@@ -39,17 +39,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
-
-interface Person {
-  id: number
-  name: string
-  profile_path?: string
-  character?: string
-  job?: string
-}
+import type { PersonItemType } from '@/types/person'
 
 const props = defineProps<{
-  people: Person[]
+  people: PersonItemType[]
 }>()
 
 const peopleWithPhoto = computed(() => props.people.filter((p) => p.profile_path))

@@ -52,20 +52,12 @@ import { ref, watch, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import IButton from '../IButton/IButton.vue'
+import type { FiltersType } from '@/types/filter'
 
 const { t } = useI18n()
 const route = useRoute()
 
 const isCollectionPage = route.path == '/collection'
-
-export interface FiltersType {
-  filterType: 'movie' | 'tv' | 'all'
-  genre: string
-  rating: 'all' | 'low' | 'medium' | 'high'
-  year: string
-  query?: string
-  sortType?: '1' | '2' | '3' | '4' | '5' | '6'
-}
 
 const props = defineProps<{ modelValue: FiltersType }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: FiltersType): void }>()

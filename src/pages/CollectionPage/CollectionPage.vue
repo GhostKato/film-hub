@@ -8,7 +8,7 @@
           <IButton
             v-for="tab in tabs"
             :key="tab.key"
-            variant="categories-btn"
+            variant="tab-btn"
             :class="{ active: activeTab === tab.key }"
             @click="changeTab(tab.key)"
           >
@@ -37,13 +37,13 @@ import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
 import IButton from '@/components/IButton/IButton.vue'
 import FiltersBar from '@/components/FiltersBar/FiltersBar.vue'
-import type { FiltersType } from '@/components/FiltersBar/FiltersBar.vue'
 import { useMediaStore } from '@/stores/media'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import { useSearchStore } from '@/stores/search'
 import { sortCollectionArray } from '@/utils/sortCollectionArray'
+import type { FiltersType } from '@/types/filter'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()

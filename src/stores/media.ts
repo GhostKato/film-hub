@@ -10,20 +10,9 @@ import {
   loadRecommended,
 } from '@/api/firebase'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
-export interface MediaItem {
-  id: number
-  title?: string
-  name?: string
-  poster_path?: string
-  release_date?: string
-  first_air_date?: string
-  vote_average?: number
-  media_type: 'movie' | 'tv' | 'person'
-  favorite?: boolean
-  watch_later?: boolean
-  genre_ids?: number[]
-}
-type TmdbLikeItem = MediaItem & {
+import type { FirebaseItemType } from '@/types/media'
+
+type TmdbLikeItem = FirebaseItemType & {
   genres?: { id: number }[]
 }
 const normalizeGenres = (item: TmdbLikeItem): number[] => {
@@ -31,10 +20,10 @@ const normalizeGenres = (item: TmdbLikeItem): number[] => {
   if (Array.isArray(item.genres)) return item.genres.map((g) => g.id)
   return []
 }
-const sanitizeForDb = (item: unknown): MediaItem => {
-  const i = item as Partial<MediaItem>
+const sanitizeForDb = (item: unknown): FirebaseItemType => {
+  const i = item as Partial<FirebaseItemType>
 
-  const clean: MediaItem = {
+  const clean: FirebaseItemType = {
     id: i.id!,
     media_type: i.media_type!,
     title: i.title,
@@ -49,16 +38,16 @@ const sanitizeForDb = (item: unknown): MediaItem => {
   }
 
   Object.keys(clean).forEach((key) => {
-    if (clean[key as keyof MediaItem] === undefined) {
-      delete clean[key as keyof MediaItem]
+    if (clean[key as keyof FirebaseItemType] === undefined) {
+      delete clean[key as keyof FirebaseItemType]
     }
   })
   return clean
 }
 
 export const useMediaStore = defineStore('media', () => {
-  const media = ref<MediaItem[]>(JSON.parse(localStorage.getItem('media') || '[]'))
-  const recommended = ref<MediaItem[]>([])
+  const media = ref<FirebaseItemType[]>(JSON.parse(localStorage.getItem('media') || '[]'))
+  const recommended = ref<FirebaseItemType[]>([])
   const authStore = useAuthStore()
 
   const save = async () => {
@@ -97,7 +86,7 @@ export const useMediaStore = defineStore('media', () => {
         await updateMediaItem(authStore.user.uid, sanitizeForDb(existing))
       }
     } else {
-      const newItem: MediaItem = sanitizeForDb({
+      const newItem: FirebaseItemType = sanitizeForDb({
         ...item,
         favorite: key === 'favorite',
         watch_later: key === 'watch_later',
@@ -121,13 +110,15 @@ export const useMediaStore = defineStore('media', () => {
   }
   const load = async () => {
     if (authStore.user?.uid) {
-      const serverMedia: MediaItem[] = (await loadMedia(authStore.user.uid)).map(sanitizeForDb)
-
-      const localMedia: MediaItem[] = JSON.parse(localStorage.getItem('media') || '[]').map(
+      const serverMedia: FirebaseItemType[] = (await loadMedia(authStore.user.uid)).map(
         sanitizeForDb,
       )
 
-      const merged: MediaItem[] = [
+      const localMedia: FirebaseItemType[] = JSON.parse(localStorage.getItem('media') || '[]').map(
+        sanitizeForDb,
+      )
+
+      const merged: FirebaseItemType[] = [
         ...serverMedia,
         ...localMedia.filter(
           (l) => !serverMedia.some((s) => s.id === l.id && s.media_type === l.media_type),
@@ -143,7 +134,7 @@ export const useMediaStore = defineStore('media', () => {
         await updateRecommended()
       }
     } else {
-      const stored: MediaItem[] = JSON.parse(localStorage.getItem('media') || '[]').map(
+      const stored: FirebaseItemType[] = JSON.parse(localStorage.getItem('media') || '[]').map(
         sanitizeForDb,
       )
 

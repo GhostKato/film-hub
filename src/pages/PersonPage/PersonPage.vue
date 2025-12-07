@@ -41,51 +41,27 @@ import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLoaderStore } from '@/stores/loader'
+import type { CreditType, PersonType } from '@/types/person'
 
 const loaderStore = useLoaderStore()
 
-interface Person {
-  id: number
-  name: string
-  profile_path?: string
-  birthday?: string
-  place_of_birth?: string
-  biography?: string
-}
-
-interface Credit {
-  id: number
-  title?: string
-  name?: string
-  poster_path?: string
-  media_type: 'movie' | 'tv'
-}
-
-interface CreditResponse {
-  id: number
-  title?: string
-  name?: string
-  poster_path?: string
-  media_type: 'movie' | 'tv'
-}
-
 interface CreditsData {
-  cast: CreditResponse[]
-  crew: CreditResponse[]
+  cast: CreditType[]
+  crew: CreditType[]
 }
 
 const route = useRoute()
 const languageStore = useLanguageStore()
 
-const person = ref<Person | null>(null)
-const credits = ref<Credit[]>([])
+const person = ref<PersonType | null>(null)
+const credits = ref<CreditType[]>([])
 
 const fetchPersonData = async () => {
   loaderStore.showLoader()
   const id = route.params.id as string
   person.value = await getPersonById(id)
   const creditsData: CreditsData = await getPersonCombinedCredits(id)
-  credits.value = creditsData.cast.map((c: CreditResponse) => ({
+  credits.value = creditsData.cast.map((c: CreditType) => ({
     id: c.id,
     title: c.title,
     name: c.name,

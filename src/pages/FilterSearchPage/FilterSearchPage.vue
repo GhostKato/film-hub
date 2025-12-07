@@ -24,22 +24,11 @@ import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
 import FiltersBar from '@/components/FiltersBar/FiltersBar.vue'
-import type { FiltersType } from '@/components/FiltersBar/FiltersBar.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
-
-interface MediaItem {
-  id: number
-  media_type: 'movie' | 'tv'
-  title?: string
-  name?: string
-  poster_path?: string
-  release_date?: string
-  first_air_date?: string
-  genre_ids?: number[]
-  vote_average?: number
-}
+import type { FiltersType } from '@/types/filter'
+import type { TmdbItemType } from '@/types/media'
 
 const loaderStore = useLoaderStore()
 const route = useRoute()
@@ -51,7 +40,7 @@ const filters = ref<FiltersType>({
   year: (route.query.year as string) || '',
 })
 
-const allMedia = ref<MediaItem[]>([])
+const allMedia = ref<TmdbItemType[]>([])
 const currentPage = ref(Number(route.query.page) || 1)
 const totalPages = ref(1)
 

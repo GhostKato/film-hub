@@ -66,23 +66,13 @@ import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import CollectionIndicator from './CollectionIndicator.vue'
 import { truncateTitle } from '@/utils/truncateTitle'
 import { useSearchStore } from '@/stores/search'
+import type { TmdbItemType } from '@/types/media'
 
 const searchStore = useSearchStore()
 const route = useRoute()
 
-export interface MediaItem {
-  id: number
-  title?: string
-  name?: string
-  poster_path?: string
-  media_type: 'movie' | 'tv' | 'person'
-  first_air_date?: string
-  vote_average?: number
-  release_date?: string
-}
-
 const props = defineProps<{
-  items: MediaItem[]
+  items: TmdbItemType[]
   routePath?: string
 }>()
 
@@ -90,7 +80,7 @@ const router = useRouter()
 const routePerson = useRoute()
 const itemsWithPoster = computed(() => props.items.filter((item) => item.poster_path))
 
-const goToMedia = (item: MediaItem) => {
+const goToMedia = (item: TmdbItemType) => {
   const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')
   router.push({
     name: 'media',
