@@ -36,7 +36,7 @@
             {{ item.vote_average }}
           </p>
         </div>
-        <CollectionIndicator v-if="!routePerson.path.startsWith('/person')" :media="item" />
+        <CollectionButtons v-if="!routePerson.path.startsWith('/person')" :media="item" />
 
         <img
           :src="getImageUrl(item.poster_path, 'poster', 'w500')"
@@ -63,7 +63,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
-import CollectionIndicator from './CollectionIndicator.vue'
+import CollectionButtons from '../../components/CollectionButtons/CollectionButtons.vue'
 import { truncateTitle } from '@/utils/truncateTitle'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'

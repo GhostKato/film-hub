@@ -1,13 +1,29 @@
 <template>
-  <div class="indicator-container">
-    <div class="indicator-item">
-      <IButton variant="indicator-btn" @click.stop="toggleFavorite(media)">
+  <div class="big-btn-container" v-if="isMediaPage">
+    <IButton variant="big-btn-collection" @click="toggleFavorite(media)">
+      {{
+        isFavorite(media.id) ? $t('media_page.remove_favorites') : $t('media_page.add_favorites')
+      }}
+    </IButton>
+
+    <IButton variant="big-btn-collection" @click="toggleWatchLater(media)">
+      {{
+        isWatchLater(media.id)
+          ? $t('media_page.remove_watch_later')
+          : $t('media_page.add_watch_later')
+      }}
+    </IButton>
+  </div>
+
+  <div class="small-btn-container" v-else>
+    <div class="small-btn-item">
+      <IButton variant="small-btn-collection" @click.stop="toggleFavorite(media)">
         <FavoriteIcon :class="{ active: isFavorite(media.id) }" />
       </IButton>
     </div>
 
-    <div class="indicator-item">
-      <IButton variant="indicator-btn" @click.stop="toggleWatchLater(media)">
+    <div class="small-btn-item">
+      <IButton variant="small-btn-collection" @click.stop="toggleWatchLater(media)">
         <WatchLaterIcon :class="{ active: isWatchLater(media.id) }" />
       </IButton>
     </div>
@@ -24,12 +40,15 @@ import { computed } from 'vue'
 import type { FirebaseItemType } from '@/types/media'
 
 const { media } = defineProps<{ media: FirebaseItemType }>()
+
 const mediaStore = useMediaStore()
 
 const route = useRoute()
 const currentType = computed<'movie' | 'tv'>(() => {
   return route.path.startsWith('/series') ? 'tv' : 'movie'
 })
+
+const isMediaPage = computed(() => route.name === 'media')
 
 const typeToCheck = media.media_type ?? currentType.value
 
@@ -61,7 +80,13 @@ const toggleWatchLater = (item: FirebaseItemType) => {
 </script>
 
 <style scoped>
-.indicator-container {
+.big-btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.small-btn-container {
   position: absolute;
   top: 3px;
   right: 3px;
@@ -69,20 +94,25 @@ const toggleWatchLater = (item: FirebaseItemType) => {
   flex-direction: column;
   gap: 5px;
 }
-.indicator-item {
+.small-btn-item {
   display: flex;
   align-items: center;
   gap: 5px;
 }
-.indicator-item svg {
+.small-btn-item svg {
   color: var(--color-white);
   transition: color 0.3s ease;
 }
 
-.indicator-item svg.active {
+.small-btn-item svg.active {
   color: var(--color-red);
 }
-.indicator-item:hover svg {
+.small-btn-item:hover svg {
   color: var(--color-hover);
+}
+@media (min-width: 768px) {
+  .big-btn-container {
+    justify-content: flex-start;
+  }
 }
 </style>

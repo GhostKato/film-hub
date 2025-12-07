@@ -130,17 +130,16 @@ const handleClick = (e: Event) => {
   background-color: var(--color-hover);
 }
 /* CollectionButtons component, collection button */
-.collection-btn {
+.big-btn-collection {
   background-color: var(--color-red);
   border: none;
   border-radius: 8px;
   padding: 5px;
 }
-.collection-btn:hover {
+.big-btn-collection:hover {
   background-color: var(--color-hover);
 }
-/* CollectionIndicator component*/
-.indicator-btn {
+.small-btn-collection {
   background-color: var(--color-transparent);
   border: none;
   border-radius: 8px;
@@ -229,7 +228,7 @@ const handleClick = (e: Event) => {
     right: 1px;
     top: 6px;
   }
-  .collection-btn {
+  .big-btn-collection {
     font-size: 20px;
   }
   .share-btn {
