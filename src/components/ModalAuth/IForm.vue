@@ -1,5 +1,10 @@
 <template>
-  <Form class="form-container" :validation-schema="schema" @submit="onSubmit">
+  <Form
+    class="form-container"
+    :validation-schema="schema"
+    :initial-values="initialValues"
+    @submit="onSubmit"
+  >
     <div class="field-container" v-if="authStore.mode !== 'login'">
       <label class="label">{{ $t('form.label_nickname') }}</label>
       <Field class="field" name="nickname" type="text" />
@@ -46,6 +51,13 @@ const { t } = useI18n()
 const authStore = useAuthStore()
 const modalStore = useModalStore()
 const loaderStore = useLoaderStore()
+
+const initialValues = computed(() => ({
+  nickname: authStore.user?.displayName || '',
+  email: authStore.user?.email || '',
+  password: '',
+  currentPassword: '',
+}))
 
 const schema = computed(() => {
   if (authStore.mode === 'register') {
