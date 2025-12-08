@@ -111,13 +111,19 @@
   },
   "modal_auth": {
     "nav_btn_login": "Логизация",
-    "nav_btn_register": "Регистрация",
+    "nav_btn_register": "Регистрация"
+  },
+  "modal_update": {
+    "title": "Обновление пользовательских данных"
+  },
+  "form": {
     "label_nickname": "Прозвище",
     "label_email": "Почта",
     "label_password": "Пароль",
-    "form_btn_register": "Зарегистрироваться",
-    "form_btn_login": "Войти",
-    "form_btn_update": "Обновить"
+    "label_current_password": "Текущий пароль",
+    "btn_register": "Зарегистрироваться",
+    "btn_login": "Войти",
+    "btn_update": "Обновить"
   },
   "share_button": {
     "message": "Посмотри на это!"

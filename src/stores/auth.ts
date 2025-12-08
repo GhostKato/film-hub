@@ -10,6 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const loaderStore = useLoaderStore()
   const error = ref<string | null>(null)
+  const mode = ref<'login' | 'register' | 'update'>('login')
 
   const register = async (nickname: string, email: string, password: string) => {
     loaderStore.showLoader()
@@ -53,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const updateProfile = async (updates: { displayName?: string; photoURL?: string }) => {
+  const updateProfile = async (updates: FirebaseAPI.ProfileUpdates) => {
     if (!user.value) {
       error.value = 'No user logged in'
       return
@@ -71,11 +72,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const setMode = (newMode: 'login' | 'register' | 'update') => {
+    mode.value = newMode
+  }
+
   const initAuthListener = () => {
     onAuthStateChanged(auth, (u) => {
       user.value = u
     })
   }
 
-  return { user, error, register, login, logout, updateProfile, initAuthListener }
+  return { user, error, mode, register, login, logout, updateProfile, setMode, initAuthListener }
 })

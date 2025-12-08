@@ -1,36 +1,37 @@
 <template>
   <div v-if="modalStore.modals.auth" class="modal-backdrop" @click.self="modalStore.close('auth')">
     <div class="modal-content">
-      <div class="switch-buttons">
+      <div class="switch-buttons" v-if="authStore.mode !== 'update'">
         <IButton
           variant="modal-auth-nav-btn"
-          :class="{ active: mode === 'login' }"
-          @click="mode = 'login'"
+          :class="{ active: authStore.mode === 'login' }"
+          @click="authStore.setMode('login')"
         >
           {{ $t('modal_auth.nav_btn_login') }}
         </IButton>
         <IButton
           variant="modal-auth-nav-btn"
-          :class="{ active: mode === 'register' }"
-          @click="mode = 'register'"
+          :class="{ active: authStore.mode === 'register' }"
+          @click="authStore.setMode('register')"
         >
           {{ $t('modal_auth.nav_btn_register') }}
         </IButton>
       </div>
+      <h2 class="title-update" v-else>{{ $t('modal_update.title') }}</h2>
 
-      <FormAuth :mode="mode" />
+      <IForm />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
-import FormAuth from './FormAuth.vue'
+import IForm from './IForm.vue'
 import IButton from '../IButton/IButton.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const modalStore = useModalStore()
-const mode = ref<'login' | 'register'>('login')
+const authStore = useAuthStore()
 </script>
 
 <style scoped>
@@ -43,7 +44,6 @@ const mode = ref<'login' | 'register'>('login')
   align-items: center;
   z-index: 80;
 }
-
 .modal-content {
   background: var(--color-dark-grey);
   padding: 15px;
@@ -51,12 +51,14 @@ const mode = ref<'login' | 'register'>('login')
   width: 320px;
   border: 2px solid var(--color-black);
 }
-
 .switch-buttons {
   display: flex;
   margin-bottom: 10px;
 }
-
+.title-update {
+  text-align: center;
+  margin-bottom: 10px;
+}
 @media (min-width: 768px) {
   .modal-content {
     width: 420px;

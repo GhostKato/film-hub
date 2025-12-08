@@ -111,13 +111,19 @@
   },
   "modal_auth": {
     "nav_btn_login": "Loginization",
-    "nav_btn_register": "Registration",
+    "nav_btn_register": "Registration"
+  },
+  "modal_update": {
+    "title": "User data update"
+  },
+  "form": {
     "label_nickname": "Nickname",
     "label_email": "Email",
     "label_password": "Password",
-    "form_btn_register": "Register",
-    "form_btn_login": "Log in",
-    "form_btn_update": "Update"
+    "label_current_password": "Current password",
+    "btn_register": "Register",
+    "btn_login": "Log in",
+    "btn_update": "Update"
   },
   "share_button": {
     "message": "Look it!"

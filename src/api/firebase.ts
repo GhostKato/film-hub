@@ -4,11 +4,15 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   signOut,
+  verifyBeforeUpdateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { db } from '@/firebase'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import type { FirebaseItemType } from '@/types/media'
+import { updateProfile as fbUpdateProfile, updatePassword } from 'firebase/auth'
 
 // Registration
 export const register = async (
@@ -35,9 +39,29 @@ export const logout = async () => {
 }
 
 // Profile update
-export const updateUserProfile = async (updates: { displayName?: string; photoURL?: string }) => {
-  if (!auth.currentUser) throw new Error('No user logged in')
-  await updateProfile(auth.currentUser, updates)
+export interface ProfileUpdates {
+  displayName?: string
+  email?: string
+  password?: string
+  currentPassword: string
+}
+export const updateUserProfile = async (updates: ProfileUpdates) => {
+  const user = auth.currentUser
+  if (!user) throw new Error('No user logged in')
+  if (!updates.currentPassword) {
+    throw new Error('Current password is required')
+  }
+  const credential = EmailAuthProvider.credential(user.email!, updates.currentPassword)
+  await reauthenticateWithCredential(user, credential)
+  if (updates.displayName) {
+    await fbUpdateProfile(user, { displayName: updates.displayName })
+  }
+  if (updates.email) {
+    await verifyBeforeUpdateEmail(user, updates.email)
+  }
+  if (updates.password) {
+    await updatePassword(user, updates.password)
+  }
   return auth.currentUser
 }
 

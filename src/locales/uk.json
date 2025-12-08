@@ -111,13 +111,19 @@
   },
   "modal_auth": {
     "nav_btn_login": "Логінізація",
-    "nav_btn_register": "Реєстрація",
+    "nav_btn_register": "Реєстрація"
+  },
+  "modal_update": {
+    "title": "Оновлення даних юзера"
+  },
+  "form": {
     "label_nickname": "Псевдонім",
     "label_email": "Пошта",
     "label_password": "Пароль",
-    "form_btn_register": "Зареєструватися",
-    "form_btn_login": "Увійти",
-    "form_btn_update": "Оновити"
+    "label_current_password": "Поточний пароль",
+    "btn_register": "Зареєструватися",
+    "btn_login": "Увійти",
+    "btn_update": "Оновити"
   },
   "share_button": {
     "message": "Подивись це!"

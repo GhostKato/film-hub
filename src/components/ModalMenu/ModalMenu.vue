@@ -8,7 +8,10 @@
       <div class="modal-menu">
         <div class="auth-container">
           <h3 class="user-greeting">{{ $t('modal_menu.title_welcome') }}</h3>
-          <h3 class="user-name">{{ nickname }}</h3>
+          <button @click="authStore.user ? openUpdateModal() : openAuthModal()" class="update-btn">
+            {{ nickname }}
+          </button>
+
           <IButton @click="authStore.user ? handleLogout() : openAuthModal()" variant="auth-btn">
             {{ authStore.user ? $t('modal_menu.logout') : $t('modal_menu.login') }}
           </IButton>
@@ -39,11 +42,17 @@ const { t } = useI18n()
 function openAuthModal() {
   modalStore.close('menu')
   modalStore.open('auth')
+  authStore.setMode('login')
 }
-
 const handleLogout = async () => {
   await authStore.logout()
   modalStore.close('menu')
+}
+
+function openUpdateModal() {
+  modalStore.close('menu')
+  modalStore.open('auth')
+  authStore.setMode('update')
 }
 
 const handleResize = () => {
@@ -75,7 +84,6 @@ const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.dis
   z-index: 50;
   pointer-events: all;
 }
-
 .modal-menu {
   padding: 10px;
   border-radius: 8px;
@@ -84,7 +92,20 @@ const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.dis
   flex-direction: column;
   gap: 15px;
 }
-
+.update-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  color: var(--color-white);
+}
+.update-btn:hover {
+  color: var(--color-hover);
+}
 .auth-container,
 .language-container {
   display: flex;
@@ -96,13 +117,11 @@ const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.dis
   border-radius: 8px;
   border: 2px solid var(--color-black);
 }
-
 .user-name,
 .language-title,
 .user-greeting {
   text-align: center;
 }
-
 .slide-top-enter-active,
 .slide-top-leave-active {
   transition:
@@ -114,7 +133,6 @@ const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.dis
   transform: translateY(-100%);
   opacity: 0;
 }
-
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition:

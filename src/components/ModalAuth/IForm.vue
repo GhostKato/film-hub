@@ -1,27 +1,31 @@
 <template>
   <Form class="form-container" :validation-schema="schema" @submit="onSubmit">
-    <div class="field-container" v-if="mode === 'register'">
-      <label class="label">{{ $t('modal_auth.label_nickname') }}</label>
+    <div class="field-container" v-if="authStore.mode !== 'login'">
+      <label class="label">{{ $t('form.label_nickname') }}</label>
       <Field class="field" name="nickname" type="text" />
       <ErrorMessage name="nickname" class="error" />
     </div>
 
     <div class="field-container">
-      <label class="label">{{ $t('modal_auth.label_email') }}</label>
+      <label class="label">{{ $t('form.label_email') }}</label>
       <Field class="field" name="email" type="email" />
       <ErrorMessage name="email" class="error" />
     </div>
 
     <div class="field-container">
-      <label class="label">{{ $t('modal_auth.label_password') }}</label>
+      <label class="label">{{ $t('form.label_password') }}</label>
       <Field class="field" name="password" type="password" />
       <ErrorMessage name="password" class="error" />
     </div>
 
+    <div class="field-container" v-if="authStore.mode === 'update'">
+      <label class="label">{{ $t('form.label_current_password') }}</label>
+      <Field class="field" name="currentPassword" type="password" />
+      <ErrorMessage name="currentPassword" class="error" />
+    </div>
+
     <IButton variant="auth-btn" type="submit" :disabled="loaderStore.isLoading">
-      {{
-        mode === 'register' ? $t('modal_auth.form_btn_register') : $t('modal_auth.form_btn_login')
-      }}
+      {{ submitBtnText }}
     </IButton>
 
     <p v-if="authStore.error" class="error">{{ authStore.error }}</p>
@@ -36,38 +40,62 @@ import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modal'
 import IButton from '../IButton/IButton.vue'
 import { useLoaderStore } from '@/stores/loader'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
-const props = defineProps<{ mode: 'login' | 'register' }>()
 const authStore = useAuthStore()
 const modalStore = useModalStore()
 const loaderStore = useLoaderStore()
 
 const schema = computed(() => {
-  if (props.mode === 'register') {
+  if (authStore.mode === 'register') {
     return yup.object({
       nickname: yup.string().required('Nickname is required').min(5).max(15),
-      email: yup.string().required('Email is required').email().min(15).max(30),
-      password: yup.string().required('Password is required').min(5).max(30),
+      email: yup.string().required('Email is required').email().min(15).max(40),
+      password: yup.string().required('Password is required').min(6).max(30),
+    })
+  } else if (authStore.mode === 'update') {
+    return yup.object({
+      nickname: yup.string().min(5).max(15),
+      email: yup.string().email().min(15).max(40),
+      password: yup.string().min(6).max(30),
+      currentPassword: yup.string().required('Current password is required').min(6).max(30),
     })
   } else {
     return yup.object({
-      email: yup.string().required('Email is required').email().min(15).max(30),
-      password: yup.string().required('Password is required').min(5).max(30),
+      email: yup.string().required('Email is required').email().min(15).max(40),
+      password: yup.string().required('Password is required').min(6).max(30),
     })
   }
 })
 
 const onSubmit = async (values: any) => {
-  if (props.mode === 'register') {
+  if (authStore.mode === 'register') {
     await authStore.register(values.nickname, values.email, values.password)
+  } else if (authStore.mode === 'update') {
+    await authStore.updateProfile({
+      displayName: values.nickname || undefined,
+      email: values.email || undefined,
+      password: values.password || undefined,
+      currentPassword: values.currentPassword,
+    })
   } else {
     await authStore.login(values.email, values.password)
   }
-
   if (!authStore.error) {
     modalStore.close('auth')
   }
 }
+const submitBtnText = computed(() => {
+  switch (authStore.mode) {
+    case 'register':
+      return t('form.btn_register')
+    case 'update':
+      return t('form.btn_update')
+    default:
+      return t('form.btn_login')
+  }
+})
 </script>
 
 <style scoped>
