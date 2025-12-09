@@ -57,7 +57,7 @@ const handleLogout = async () => {
 function openUpdateModal() {
   modalStore.close('menu')
   modalStore.open('auth')
-  authStore.setMode('update')
+  authStore.setMode('edit')
 }
 
 const handleResize = () => {
