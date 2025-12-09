@@ -105,6 +105,7 @@
   "modal_menu": {
     "title_welcome": "Ласкаво просимо",
     "displayName": "Гість",
+    "edit": "Редагувати профіль",
     "login": "Увійти",
     "logout": "Вийти",
     "title_language_selection": "Вибір мови"
@@ -113,8 +114,8 @@
     "nav_btn_login": "Логінізація",
     "nav_btn_register": "Реєстрація"
   },
-  "modal_update": {
-    "title": "Оновлення даних юзера"
+  "modal_edit": {
+    "title": "Редагувати дані користувача"
   },
   "form": {
     "label_nickname": "Псевдонім",
@@ -123,7 +124,7 @@
     "label_current_password": "Поточний пароль",
     "btn_register": "Зареєструватися",
     "btn_login": "Увійти",
-    "btn_update": "Оновити"
+    "btn_edit": "Редагувати"
   },
   "share_button": {
     "message": "Подивись це!"

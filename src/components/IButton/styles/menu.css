@@ -1,0 +1,55 @@
+.menu-auth-btn {
+  height: 40px;
+  width: 160px;
+  border: none;
+  border-radius: 8px;
+}
+
+.menu-edit-btn {
+  height: 40px;
+  width: 160px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-black);
+  border: 1px solid var(--color-black);
+}
+
+.menu-edit-btn:hover {
+  border-color: var(--color-hover);
+}
+
+.language-btn {
+  width: 50px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  gap: 5px;
+  transition: all 0.3s;
+  background-color: var(--color-black);
+}
+
+@media (min-width: 768px) {
+  .menu-auth-btn,
+  .menu-edit-btn {
+    width: 210px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu-auth-btn {
+    width: 110px;
+  }
+
+  .menu-edit-btn {
+    width: 180px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .menu-auth-btn {
+    width: 210px;
+  }
+}

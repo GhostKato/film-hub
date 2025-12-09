@@ -29,7 +29,7 @@
       <ErrorMessage name="currentPassword" class="error" />
     </div>
 
-    <IButton variant="auth-btn" type="submit" :disabled="loaderStore.isLoading">
+    <IButton variant="form-submit-btn" type="submit" :disabled="loaderStore.isLoading">
       {{ submitBtnText }}
     </IButton>
 
@@ -82,20 +82,27 @@ const schema = computed(() => {
 })
 
 const onSubmit = async (values: any) => {
-  if (authStore.mode === 'register') {
-    await authStore.register(values.nickname, values.email, values.password)
-  } else if (authStore.mode === 'update') {
-    await authStore.updateProfile({
-      displayName: values.nickname || undefined,
-      email: values.email || undefined,
-      password: values.password || undefined,
-      currentPassword: values.currentPassword,
-    })
-  } else {
-    await authStore.login(values.email, values.password)
-  }
-  if (!authStore.error) {
-    modalStore.close('auth')
+  loaderStore.showLoader()
+  try {
+    if (authStore.mode === 'register') {
+      await authStore.register(values.nickname, values.email, values.password)
+    } else if (authStore.mode === 'update') {
+      await authStore.updateProfile({
+        displayName: values.nickname || undefined,
+        email: values.email || undefined,
+        password: values.password || undefined,
+        currentPassword: values.currentPassword,
+      })
+    } else {
+      await authStore.login(values.email, values.password)
+    }
+    if (!authStore.error) {
+      modalStore.close('auth')
+    }
+  } catch (err) {
+    console.error(err)
+  } finally {
+    loaderStore.hideLoader()
   }
 }
 const submitBtnText = computed(() => {
@@ -103,7 +110,7 @@ const submitBtnText = computed(() => {
     case 'register':
       return t('form.btn_register')
     case 'update':
-      return t('form.btn_update')
+      return t('form.btn_edit')
     default:
       return t('form.btn_login')
   }

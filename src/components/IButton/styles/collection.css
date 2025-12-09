@@ -1,0 +1,12 @@
+.big-btn-collection {
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.small-btn-collection {
+  background-color: var(--color-transparent);
+  border: none;
+  border-radius: 8px;
+  padding: 2px;
+}

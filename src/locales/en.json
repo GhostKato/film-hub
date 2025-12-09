@@ -105,6 +105,7 @@
   "modal_menu": {
     "title_welcome": "Welcome",
     "displayName": "Guest",
+    "edit": "Edit profile",
     "login": "Log in",
     "logout": "Log out",
     "title_language_selection": "Language selection"
@@ -113,8 +114,8 @@
     "nav_btn_login": "Loginization",
     "nav_btn_register": "Registration"
   },
-  "modal_update": {
-    "title": "User data update"
+  "modal_edit": {
+    "title": "Edit user data"
   },
   "form": {
     "label_nickname": "Nickname",
@@ -123,7 +124,7 @@
     "label_current_password": "Current password",
     "btn_register": "Register",
     "btn_login": "Log in",
-    "btn_update": "Update"
+    "btn_edit": "Edit"
   },
   "share_button": {
     "message": "Look it!"

@@ -3,21 +3,21 @@
     <div class="modal-content">
       <div class="switch-buttons" v-if="authStore.mode !== 'update'">
         <IButton
-          variant="modal-auth-nav-btn"
+          variant="auth-nav-btn"
           :class="{ active: authStore.mode === 'login' }"
           @click="authStore.setMode('login')"
         >
           {{ $t('modal_auth.nav_btn_login') }}
         </IButton>
         <IButton
-          variant="modal-auth-nav-btn"
+          variant="auth-nav-btn"
           :class="{ active: authStore.mode === 'register' }"
           @click="authStore.setMode('register')"
         >
           {{ $t('modal_auth.nav_btn_register') }}
         </IButton>
       </div>
-      <h2 class="title-update" v-else>{{ $t('modal_update.title') }}</h2>
+      <h2 class="title-edit" v-else>{{ $t('modal_edit.title') }}</h2>
 
       <IForm />
     </div>
@@ -55,7 +55,7 @@ const authStore = useAuthStore()
   display: flex;
   margin-bottom: 10px;
 }
-.title-update {
+.title-edit {
   text-align: center;
   margin-bottom: 10px;
 }

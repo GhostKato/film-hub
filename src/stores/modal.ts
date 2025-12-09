@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type ModalName = 'auth' | 'menu' | 'search'
+export type ModalName = 'auth' | 'menu'
 
 type ModalsState = Record<ModalName, boolean>
 
@@ -9,7 +9,6 @@ export const useModalStore = defineStore('modal', () => {
   const modals = ref<ModalsState>({
     auth: false,
     menu: false,
-    search: false,
   })
 
   function open(name: ModalName) {

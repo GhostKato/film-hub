@@ -8,11 +8,16 @@
       <div class="modal-menu">
         <div class="auth-container">
           <h3 class="user-greeting">{{ $t('modal_menu.title_welcome') }}</h3>
-          <button @click="authStore.user ? openUpdateModal() : openAuthModal()" class="update-btn">
-            {{ nickname }}
-          </button>
+          <h3 class="user-name">{{ nickname }}</h3>
 
-          <IButton @click="authStore.user ? handleLogout() : openAuthModal()" variant="auth-btn">
+          <IButton v-if="authStore.user" @click="openUpdateModal()" variant="menu-edit-btn">
+            {{ $t('modal_menu.edit') }}
+          </IButton>
+
+          <IButton
+            @click="authStore.user ? handleLogout() : openAuthModal()"
+            variant="menu-auth-btn"
+          >
             {{ authStore.user ? $t('modal_menu.logout') : $t('modal_menu.login') }}
           </IButton>
         </div>
@@ -157,12 +162,12 @@ const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.dis
 @media (min-width: 1024px) {
   .modal-menu-wrapper {
     justify-content: center;
-    padding-top: 90px;
+    padding-top: 78px;
   }
   .modal-menu {
     flex-direction: row;
     justify-content: space-between;
-    width: 90%;
+    width: 95%;
   }
   .auth-container,
   .language-container {

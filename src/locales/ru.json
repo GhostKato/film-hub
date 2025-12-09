@@ -105,6 +105,7 @@
   "modal_menu": {
     "title_welcome": "Добро пожаловать",
     "displayName": "Гость",
+    "edit": "Изменить профиль",
     "login": "Войти",
     "logout": "Выйти",
     "title_language_selection": "Выбор языка"
@@ -113,8 +114,8 @@
     "nav_btn_login": "Логизация",
     "nav_btn_register": "Регистрация"
   },
-  "modal_update": {
-    "title": "Обновление пользовательских данных"
+  "modal_edit": {
+    "title": "Редактирование данных пользователя"
   },
   "form": {
     "label_nickname": "Прозвище",
@@ -123,7 +124,7 @@
     "label_current_password": "Текущий пароль",
     "btn_register": "Зарегистрироваться",
     "btn_login": "Войти",
-    "btn_update": "Обновить"
+    "btn_edit": "Редактировать"
   },
   "share_button": {
     "message": "Посмотри на это!"
