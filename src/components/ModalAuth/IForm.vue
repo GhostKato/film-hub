@@ -23,7 +23,7 @@
       <ErrorMessage name="password" class="error" />
     </div>
 
-    <div class="field-container" v-if="authStore.mode === 'update'">
+    <div class="field-container" v-if="authStore.mode === 'edit'">
       <label class="label">{{ $t('form.label_current_password') }}</label>
       <Field class="field" name="currentPassword" type="password" />
       <ErrorMessage name="currentPassword" class="error" />
@@ -66,7 +66,7 @@ const schema = computed(() => {
       email: yup.string().required('Email is required').email().min(15).max(40),
       password: yup.string().required('Password is required').min(6).max(30),
     })
-  } else if (authStore.mode === 'update') {
+  } else if (authStore.mode === 'edit') {
     return yup.object({
       nickname: yup.string().min(5).max(15),
       email: yup.string().email().min(15).max(40),
@@ -86,7 +86,7 @@ const onSubmit = async (values: any) => {
   try {
     if (authStore.mode === 'register') {
       await authStore.register(values.nickname, values.email, values.password)
-    } else if (authStore.mode === 'update') {
+    } else if (authStore.mode === 'edit') {
       await authStore.updateProfile({
         displayName: values.nickname || undefined,
         email: values.email || undefined,
@@ -109,7 +109,7 @@ const submitBtnText = computed(() => {
   switch (authStore.mode) {
     case 'register':
       return t('form.btn_register')
-    case 'update':
+    case 'edit':
       return t('form.btn_edit')
     default:
       return t('form.btn_login')

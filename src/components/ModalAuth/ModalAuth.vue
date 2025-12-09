@@ -1,7 +1,7 @@
 <template>
   <div v-if="modalStore.modals.auth" class="modal-backdrop" @click.self="modalStore.close('auth')">
     <div class="modal-content">
-      <div class="switch-buttons" v-if="authStore.mode !== 'update'">
+      <div class="switch-buttons" v-if="authStore.mode !== 'edit'">
         <IButton
           variant="auth-nav-btn"
           :class="{ active: authStore.mode === 'login' }"

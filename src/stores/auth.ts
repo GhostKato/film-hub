@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const loaderStore = useLoaderStore()
   const error = ref<string | null>(null)
-  const mode = ref<'login' | 'register' | 'update'>('login')
+  const mode = ref<'login' | 'register' | 'edit'>('login')
 
   const register = async (nickname: string, email: string, password: string) => {
     loaderStore.showLoader()
@@ -72,7 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const setMode = (newMode: 'login' | 'register' | 'update') => {
+  const setMode = (newMode: 'login' | 'register' | 'edit') => {
     mode.value = newMode
   }
 
