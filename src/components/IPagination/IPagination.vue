@@ -1,10 +1,10 @@
 <template>
   <div class="pagination" v-if="totalPages > 1">
-    <IButton @click="prev" :disabled="currentPage === 1">
+    <IButton variant="pagination-btn" @click="prev" :disabled="currentPage === 1">
       {{ $t('pagination.previous') }}
     </IButton>
     <span>{{ currentPage }} / {{ totalPages }}</span>
-    <IButton @click="next" :disabled="currentPage === totalPages">
+    <IButton variant="pagination-btn" @click="next" :disabled="currentPage === totalPages">
       {{ $t('pagination.next') }}
     </IButton>
   </div>
@@ -61,29 +61,6 @@ onBeforeUnmount(() => {
   margin-top: 20px;
 }
 
-.pagination button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-dark-grey);
-  color: var(--color-white);
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.pagination button:not(:disabled):hover {
-  background-color: var(--color-hover);
-}
-
-.pagination button:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-@media (min-width: 768px) {
-  .pagination button {
-    font-size: 20px;
-  }
-}
 @media (min-width: 1920px) {
   .pagination {
     position: absolute;

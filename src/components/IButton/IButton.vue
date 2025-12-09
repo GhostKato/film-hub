@@ -113,3 +113,4 @@ const handleClick = (e: Event) => {
 <style scoped src="./styles/menu.css"></style>
 <style scoped src="./styles/auth.css"></style>
 <style scoped src="./styles/pages.css"></style>
+<style scoped src="./styles/pagination.css"></style>
