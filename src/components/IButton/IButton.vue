@@ -98,8 +98,6 @@ const handleClick = (e: Event) => {
   .big-btn-collection,
   .auth-nav-btn,
   .form-submit-btn,
-  .menu-auth-btn,
-  .menu-edit-btn,
   .tab-btn,
   .share-btn,
   .big-search-btn {

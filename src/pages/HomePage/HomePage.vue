@@ -9,6 +9,7 @@
         <h1 class="main-title">{{ $t('home_page.title') }}</h1>
         <SearchBar />
       </div>
+      <IFooter />
     </div>
   </div>
 </template>
@@ -20,6 +21,7 @@ import IProjector from './components/IProjector.vue'
 import IVideo from './components/IVideo.vue'
 import ISlider from './components/ISlider.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
+import IFooter from './components/IFooter.vue'
 
 const isOpen = ref(false)
 const hideProjector = ref(false)
@@ -50,6 +52,7 @@ onMounted(() => {
 .background-image {
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
   height: 100%;
   background-image: url('@/assets/images/background.jpg');
   background-size: cover;

@@ -63,19 +63,19 @@ const schema = computed(() => {
   if (authStore.mode === 'register') {
     return yup.object({
       nickname: yup.string().required('Nickname is required').min(5).max(15),
-      email: yup.string().required('Email is required').email().min(15).max(40),
+      email: yup.string().required('Email is required').email().min(15).max(30),
       password: yup.string().required('Password is required').min(6).max(30),
     })
   } else if (authStore.mode === 'edit') {
     return yup.object({
       nickname: yup.string().min(5).max(15),
-      email: yup.string().email().min(15).max(40),
+      email: yup.string().email().min(15).max(30),
       password: yup.string().min(6).max(30),
       currentPassword: yup.string().required('Current password is required').min(6).max(30),
     })
   } else {
     return yup.object({
-      email: yup.string().required('Email is required').email().min(15).max(40),
+      email: yup.string().required('Email is required').email().min(15).max(30),
       password: yup.string().required('Password is required').min(6).max(30),
     })
   }
