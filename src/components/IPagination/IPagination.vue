@@ -58,7 +58,14 @@ onBeforeUnmount(() => {
   gap: 10px;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  padding-top: 20px;
+}
+
+@media (max-width: 1279px) {
+  .pagination {
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
 }
 
 @media (min-width: 1920px) {
