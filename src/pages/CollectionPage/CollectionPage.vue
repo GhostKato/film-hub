@@ -86,14 +86,12 @@ const changeTab = (tab: TabKey) => {
 watch(
   () => authStore.user?.uid,
   (newUid) => {
+    if (route.query.category) return
     const isMain = newUid === MAIN_ACCOUNT_ID
     const newCategory = isMain ? 'favorites' : 'recommended'
-
-    if (route.query.category !== newCategory) {
-      router.replace({
-        query: { ...route.query, category: newCategory, page: 1 },
-      })
-    }
+    router.replace({
+      query: { ...route.query, category: newCategory, page: 1 },
+    })
   },
   { immediate: true },
 )
