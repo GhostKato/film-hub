@@ -2,11 +2,12 @@
   <IHeader />
   <main>
     <router-view />
-    <ModalMenu />
-    <ModalAuth />
-    <ILoader />
-    <HotKeys />
   </main>
+  <ModalMenu />
+  <ModalAuth />
+  <ILoader />
+  <HotKeys />
+  <INotification />
 </template>
 
 <script setup lang="ts">
@@ -20,6 +21,7 @@ import { useLoaderStore } from './stores/loader'
 import HotKeys from './components/HotKeys/HotKeys.vue'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import { useMediaStore } from './stores/media'
+import INotification from './components/INotification/INotification.vue'
 
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()

@@ -2,8 +2,8 @@
   <div class="media-list">
     <div
       v-if="
-        (!isMultiSearchPage && !itemsWithPoster.length) ||
-        (searchStore.notification && !itemsWithPoster.length)
+        (!isMultiSearchPage && !itemsWithPoster.length && !loaderStore.isLoading) ||
+        (searchStore.notification && !itemsWithPoster.length && !loaderStore.isLoading)
       "
       class="empty"
     >
@@ -67,8 +67,10 @@ import CollectionButtons from '../../components/CollectionButtons/CollectionButt
 import { truncateTitle } from '@/utils/truncateTitle'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
+import { useLoaderStore } from '@/stores/loader'
 
 const searchStore = useSearchStore()
+const loaderStore = useLoaderStore()
 const route = useRoute()
 
 const props = defineProps<{
