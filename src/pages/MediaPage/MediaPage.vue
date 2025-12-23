@@ -41,6 +41,16 @@
               </p>
             </div>
 
+            <div class="info-item" v-if="studios.length">
+              <strong>{{ $t('media_page.studio') }}</strong>
+              <p>
+                <span v-for="(studio, index) in studios" :key="studio.id">
+                  {{ studio.name }}
+                  <span v-if="index < studios.length - 1">, </span>
+                </span>
+              </p>
+            </div>
+
             <div class="info-item" v-if="media.runtime">
               <strong>{{ $t('media_page.duration') }}</strong>
               <p>{{ media.runtime }} {{ $t('media_page.min') }}</p>
@@ -90,7 +100,7 @@ import PersonList from './components/PersonList.vue'
 import YouTubePlayer from './components/YouTubePlayer.vue'
 import ReviewsList from './components/ReviewsList.vue'
 import CollectionButtons from '../../components/CollectionButtons/CollectionButtons.vue'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
@@ -112,6 +122,10 @@ const cast = ref<PersonItemType[]>([])
 const crew = ref<PersonItemType[]>([])
 const trailerId = ref<string | null>(null)
 const languageStore = useLanguageStore()
+
+const studios = computed(() => {
+  return media.value?.production_companies ?? []
+})
 
 const fetchMedia = async () => {
   try {

@@ -17,6 +17,13 @@ export interface TmdbGenreType {
 export interface TmdbProductionCountryType {
   name: string
 }
+
+export interface ProductionCompanyType {
+  id: number
+  name: string
+  logo_path: string | null
+  origin_country: string
+}
 export interface TmdbMediaType {
   id: number
   title?: string
@@ -29,6 +36,7 @@ export interface TmdbMediaType {
   tagline?: string
   genres?: TmdbGenreType[]
   production_countries?: TmdbProductionCountryType[]
+  production_companies?: ProductionCompanyType[]
   runtime?: number
   episode_run_time?: number[]
 }
