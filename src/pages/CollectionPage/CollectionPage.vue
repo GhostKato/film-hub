@@ -44,6 +44,7 @@ import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import { useSearchStore } from '@/stores/search'
 import { sortCollectionArray } from '@/utils/sortCollectionArray'
 import type { FiltersType } from '@/types/filter'
+import { getSortTypeFromLS, saveSortTypeToLS } from '@/utils/sortTypeStorage'
 
 const mediaStore = useMediaStore()
 const authStore = useAuthStore()
@@ -102,7 +103,7 @@ const filters = ref<FiltersType>({
   rating: 'all',
   year: '',
   query: '',
-  sortType: 1,
+  sortType: getSortTypeFromLS(),
 })
 
 const currentData = computed(() => {
@@ -206,6 +207,13 @@ watch(filteredData, () => {
     changePage(1)
   }
 })
+
+watch(
+  () => filters.value.sortType,
+  (val) => {
+    saveSortTypeToLS(val)
+  },
+)
 
 const changePage = (p: number) => {
   router.push({
