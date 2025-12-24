@@ -36,6 +36,7 @@ import IButton from '@/components/IButton/IButton.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
+import { notificationStore } from '@/stores/notifications'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -132,6 +133,8 @@ const fetchSeries = async (category: string, page = 1) => {
 
     series.value = data.results.filter((item: TmdbItemType) => item.poster_path)
     totalPages.value = data.total_pages
+  } catch {
+    notificationStore.error(t('notification_message.series_error'))
   } finally {
     loaderStore.hideLoader()
   }

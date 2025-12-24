@@ -143,7 +143,7 @@ export async function getMediaReviews(id: number | string, type: MediaType): Pro
     return []
   }
 }
-export const fetchMovies = async (options: FetchOptions) => {
+export const fetchDiscoverMovies = async (options: FetchOptions) => {
   const { rating, genre, year, page = 1 } = options
   const voteFilter = getVoteAverage(rating)
 
@@ -161,7 +161,7 @@ export const fetchMovies = async (options: FetchOptions) => {
   return data
 }
 
-export const fetchTV = async (options: FetchOptions) => {
+export const fetchDiscoverTV = async (options: FetchOptions) => {
   const { rating, genre, year, page = 1 } = options
   const voteFilter = getVoteAverage(rating)
 

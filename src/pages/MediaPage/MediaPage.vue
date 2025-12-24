@@ -87,6 +87,8 @@ import ShareButton from './components/ShareButton.vue'
 import type { PersonItemType } from '@/types/person'
 import type { TmdbMediaType } from '@/types/media'
 import MediaInfo from '@/components/MediaInfo/MediaInfo.vue'
+import { notificationStore } from '@/stores/notifications'
+import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
 
@@ -99,6 +101,7 @@ const cast = ref<PersonItemType[]>([])
 const crew = ref<PersonItemType[]>([])
 const trailerId = ref<string | null>(null)
 const languageStore = useLanguageStore()
+const { t } = useI18n()
 
 const studios = computed(() => {
   return media.value?.production_companies ?? []
@@ -116,9 +119,10 @@ const fetchMedia = async () => {
       )
       .filter((p: PersonItemType) => p.profile_path)
     trailerId.value = await getMediaVideos(id, type)
+  } catch {
+    notificationStore.error(t('notification_message.media_error'))
+  } finally {
     loaderStore.hideLoader()
-  } catch (err) {
-    console.error('Error fetching media:', err)
   }
 }
 

@@ -131,6 +131,12 @@
   "notification_message": {
     "collection_success": "Collections downloaded successfully!",
     "collection_error": "Failed to download collections!",
-    "slider_trending_error": "Failed to download popular movies!"
+    "slider_trending_error": "Failed to download popular movies!",
+    "media_error": "Error loading media data!",
+    "multi_search_error": "Search error!",
+    "movies_error": "Error loading movies!",
+    "series_error": "Error loading series!",
+    "person_error": "Error loading person data!",
+    "review_error": "Error loading review data!"
   }
 }

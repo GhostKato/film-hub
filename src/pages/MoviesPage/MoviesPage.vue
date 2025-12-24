@@ -41,6 +41,7 @@ import IButton from '@/components/IButton/IButton.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
+import { notificationStore } from '@/stores/notifications'
 
 const searchStore = useSearchStore()
 const { t, locale } = useI18n()
@@ -137,6 +138,8 @@ const fetchMovies = async (category: string, page = 1) => {
 
     movies.value = data.results.filter((item: TmdbItemType) => item.poster_path)
     totalPages.value = data.total_pages
+  } catch {
+    notificationStore.error(t('notification_message.movies_error'))
   } finally {
     loaderStore.hideLoader()
   }

@@ -32,9 +32,12 @@ import { useLoaderStore } from '@/stores/loader'
 import { searchMulti } from '@/api/tmdb'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
+import { notificationStore } from '@/stores/notifications'
+import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
 const searchStore = useSearchStore()
+const { t } = useI18n()
 const route = useRoute()
 
 const results = ref<TmdbItemType[]>([])
@@ -52,6 +55,8 @@ const fetchSearchResults = async (q: string, page = 1) => {
     if (results.value.length === 0) {
       searchStore.showNotification()
     }
+  } catch {
+    notificationStore.error(t('notification_message.multi_search_error'))
   } finally {
     loaderStore.hideLoader()
   }

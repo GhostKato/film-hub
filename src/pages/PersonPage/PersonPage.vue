@@ -42,8 +42,11 @@ import MediaList from '@/components/MediaList/MediaList.vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLoaderStore } from '@/stores/loader'
 import type { CreditType, PersonType } from '@/types/person'
+import { notificationStore } from '@/stores/notifications'
+import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
+const { t } = useI18n()
 
 interface CreditsData {
   cast: CreditType[]
@@ -57,18 +60,23 @@ const person = ref<PersonType | null>(null)
 const credits = ref<CreditType[]>([])
 
 const fetchPersonData = async () => {
-  loaderStore.showLoader()
-  const id = route.params.id as string
-  person.value = await getPersonById(id)
-  const creditsData: CreditsData = await getPersonCombinedCredits(id)
-  credits.value = creditsData.cast.map((c: CreditType) => ({
-    id: c.id,
-    title: c.title,
-    name: c.name,
-    poster_path: c.poster_path,
-    media_type: c.media_type,
-  }))
-  loaderStore.hideLoader()
+  try {
+    loaderStore.showLoader()
+    const id = route.params.id as string
+    person.value = await getPersonById(id)
+    const creditsData: CreditsData = await getPersonCombinedCredits(id)
+    credits.value = creditsData.cast.map((c: CreditType) => ({
+      id: c.id,
+      title: c.title,
+      name: c.name,
+      poster_path: c.poster_path,
+      media_type: c.media_type,
+    }))
+  } catch {
+    notificationStore.error(t('notification_message.person_error'))
+  } finally {
+    loaderStore.hideLoader()
+  }
 }
 
 onMounted(fetchPersonData)

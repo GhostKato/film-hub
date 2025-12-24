@@ -15,6 +15,12 @@ import { getMediaReviews } from '@/api/tmdb'
 import { useLanguageStore } from '@/stores/language'
 import type { ReviewType } from '@/types/review'
 import type { MediaType } from '@/types/fetchTmdb'
+import { notificationStore } from '@/stores/notifications'
+import { useLoaderStore } from '@/stores/loader'
+import { useI18n } from 'vue-i18n'
+
+const loaderStore = useLoaderStore()
+const { t } = useI18n()
 
 const props = defineProps<{
   mediaId: number
@@ -26,10 +32,12 @@ const languageStore = useLanguageStore()
 
 const fetchReviews = async () => {
   try {
+    loaderStore.showLoader()
     reviews.value = await getMediaReviews(props.mediaId, props.type)
-  } catch (error) {
-    console.error('Error loading reviews:', error)
+  } catch {
+    notificationStore.error(t('notification_message.reviews_error'))
   } finally {
+    loaderStore.hideLoader()
   }
 }
 

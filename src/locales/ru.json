@@ -131,6 +131,12 @@
   "notification_message": {
     "collection_success": "Коллекции успешно загружены!",
     "collection_error": "Не удалось загрузить коллекции!",
-    "slider_trending_error": "Не удалось загрузить популярные фильмы!"
+    "slider_trending_error": "Не удалось загрузить популярные фильмы!",
+    "media_error": "Ошибка загрузки данных медиа!",
+    "multi_search_error": "Ошибка поиска!",
+    "movies_error": "Ошибка загрузки фильмов!",
+    "series_error": "Ошибка загрузки сериалов!",
+    "person_error": "Ошибка загрузки данных персоны!",
+    "review_error": "Ошибка загрузки данных отзывов!"
   }
 }

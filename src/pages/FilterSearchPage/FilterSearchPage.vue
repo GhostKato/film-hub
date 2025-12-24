@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue'
-import { fetchMovies, fetchTV } from '@/api/tmdb'
+import { fetchDiscoverMovies, fetchDiscoverTV } from '@/api/tmdb'
 import { useLoaderStore } from '@/stores/loader'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '@/components/MediaList/MediaList.vue'
@@ -29,9 +29,12 @@ import router from '@/router'
 import { useRoute } from 'vue-router'
 import type { FiltersType } from '@/types/filter'
 import type { TmdbItemType } from '@/types/media'
+import { notificationStore } from '@/stores/notifications'
+import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
 const route = useRoute()
+const { t } = useI18n()
 
 const filters = ref<FiltersType>({
   filterType: (route.query.type as 'movie' | 'tv') || 'movie',
@@ -86,7 +89,9 @@ const fetchResults = async (page = currentPage.value) => {
     }
 
     const data =
-      filters.value.filterType === 'movie' ? await fetchMovies(params) : await fetchTV(params)
+      filters.value.filterType === 'movie'
+        ? await fetchDiscoverMovies(params)
+        : await fetchDiscoverTV(params)
 
     allMedia.value = (data.results || []).map((item: any) => ({
       ...item,
@@ -95,6 +100,12 @@ const fetchResults = async (page = currentPage.value) => {
 
     currentPage.value = data.page
     totalPages.value = data.total_pages
+  } catch {
+    const key =
+      filters.value.filterType === 'movie'
+        ? 'notification_message.movies_error'
+        : 'notification_message.series_error'
+    notificationStore.error(t(key))
   } finally {
     loaderStore.hideLoader()
   }
