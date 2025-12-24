@@ -102,7 +102,7 @@ const filters = ref<FiltersType>({
   rating: 'all',
   year: '',
   query: '',
-  sortType: '1',
+  sortType: 1,
 })
 
 const currentData = computed(() => {
@@ -156,7 +156,7 @@ const paginatedData = computed(() => {
   return sortedMedia.value.slice(start, start + pageSize)
 })
 
-const sortType = computed(() => Number(filters.value.sortType || '1') as 1 | 2 | 3 | 4 | 5 | 6)
+const sortType = computed(() => filters.value.sortType ?? 1)
 
 const sortedMedia = computed(() => {
   return sortCollectionArray(filteredData.value, sortType.value)

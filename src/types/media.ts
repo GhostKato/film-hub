@@ -63,3 +63,9 @@ export interface TrailerType {
   type: string
   iso_639_1: string
 }
+
+export interface MediaInfoType {
+  release_date?: string
+  first_air_date?: string
+  vote_average?: number
+}

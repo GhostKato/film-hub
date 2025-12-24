@@ -67,7 +67,7 @@ const genre = ref<string>(props.modelValue.genre)
 const rating = ref<'all' | 'low' | 'medium' | 'high'>(props.modelValue.rating)
 const year = ref<string>(props.modelValue.year)
 const query = ref<string>(props.modelValue.query || '')
-const sortType = ref<1 | 2 | 3 | 4>(1)
+const sortType = ref<1 | 2 | 3 | 4 | 5 | 6>(1)
 
 const selectedGenres = ref(genres)
 const availableYears = ref(years)
@@ -80,7 +80,7 @@ watch(
     rating.value = val.rating
     year.value = val.year
     query.value = val.query || ''
-    sortType.value = Number(val.sortType || '1') as 1 | 2 | 3 | 4
+    sortType.value = val.sortType ?? 1
   },
   { deep: true, immediate: true },
 )
@@ -92,7 +92,7 @@ watch([filterType, genre, rating, year, query, sortType], () => {
     rating: rating.value,
     year: year.value,
     query: query.value,
-    sortType: String(sortType.value) as '1' | '2' | '3' | '4' | '5' | '6',
+    sortType: sortType.value,
   })
 })
 onUnmounted(() => {

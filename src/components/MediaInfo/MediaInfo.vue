@@ -1,5 +1,5 @@
 <template>
-  <div class="release-vote-container" v-for="item in normalizedItems" :key="item.id">
+  <div class="release-vote-container">
     <p
       v-if="item.release_date || item.first_air_date"
       class="release"
@@ -22,25 +22,11 @@
 
 <script setup lang="ts">
 import { getRatingColor, getReleaseColor } from '@/utils/getColors'
-import type { TmdbItemType, TmdbMediaType } from '@/types/media'
-import { computed } from 'vue'
+import type { MediaInfoType } from '@/types/media'
 
-const props = defineProps<{
-  items?: TmdbItemType[]
-  item?: TmdbMediaType
+defineProps<{
+  item: MediaInfoType
 }>()
-
-const normalizedItems = computed<TmdbItemType[]>(() => {
-  if (props.items?.length) {
-    return props.items
-  }
-
-  if (props.item) {
-    return [props.item as TmdbItemType]
-  }
-
-  return []
-})
 </script>
 
 <style scoped>

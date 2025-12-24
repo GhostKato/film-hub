@@ -17,7 +17,7 @@
         class="media-card"
         @click="goToMedia(item)"
       >
-        <MediaInfo :items="items" />
+        <MediaInfo :item="item" />
         <CollectionButtons v-if="!routePerson.path.startsWith('/person')" :media="item" />
 
         <img
