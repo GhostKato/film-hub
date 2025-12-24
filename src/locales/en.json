@@ -127,5 +127,10 @@
   },
   "share_button": {
     "message": "Look it!"
+  },
+  "notification_message": {
+    "collection_success": "Collections downloaded successfully!",
+    "collection_error": "Failed to download collections!",
+    "slider_trending_error": "Failed to download popular movies!"
   }
 }

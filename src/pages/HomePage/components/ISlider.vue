@@ -35,8 +35,11 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { useLoaderStore } from '@/stores/loader'
 import type { SliderType } from '@/types/slider'
+import { notificationStore } from '@/stores/notifications'
+import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
+const { t } = useI18n()
 
 const maxSlidesPerView = computed(() => {
   const values = Object.values(breakpoints).map((b) => b.slidesPerView)
@@ -61,17 +64,18 @@ const breakpoints = {
 }
 
 const fetchTrending = async () => {
+  const allResults: SliderType[] = []
   try {
-    const allResults: SliderType[] = []
     for (let page = 1; page <= 3; page++) {
       loaderStore.showLoader()
       const data = await getTrendingAllDay(page)
-      loaderStore.hideLoader()
       allResults.push(...data.results)
     }
     movies.value = allResults
-  } catch (err) {
-    console.error('Failed to fetch trending movies:', err)
+  } catch {
+    notificationStore.error(t('notification_message.slide_trending_error'))
+  } finally {
+    loaderStore.hideLoader()
   }
 }
 

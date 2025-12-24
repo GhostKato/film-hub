@@ -127,5 +127,10 @@
   },
   "share_button": {
     "message": "Подивись це!"
+  },
+  "notification_message": {
+    "collection_success": "Колекції успішно завантажено!",
+    "collection_error": "Не вдалося завантажити колекції!",
+    "slider_trending_error": "Не вдалося завантажити популярні фільми!"
   }
 }
