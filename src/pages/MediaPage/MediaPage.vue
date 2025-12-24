@@ -10,36 +10,13 @@
               :src="getImageUrl(media.poster_path, 'poster', 'w342')"
               alt="Poster"
             />
+            <MediaInfo :item="media" />
           </div>
 
           <div class="info-cont">
             <h1 class="title">{{ media.title || media.name }}</h1>
             <p class="tagline" v-if="media.tagline">{{ media.tagline }}</p>
             <p class="overview">{{ media.overview }}</p>
-
-            <div class="info-item" v-if="media.vote_average">
-              <strong>{{ $t('media_page.rating') }}</strong>
-              <p
-                class="rating"
-                :style="{ backgroundColor: getRatingColor(Number(media.vote_average)) }"
-              >
-                {{ media.vote_average }}/10
-              </p>
-            </div>
-
-            <div class="info-item" v-if="media.release_date || media.first_air_date">
-              <strong>{{ $t('media_page.release') }}</strong>
-              <p
-                class="release"
-                :style="{
-                  backgroundColor: getReleaseColor(
-                    (media.release_date ?? media.first_air_date) || '',
-                  ),
-                }"
-              >
-                {{ media.release_date || media.first_air_date }}
-              </p>
-            </div>
 
             <div class="info-item" v-if="studios.length">
               <strong>{{ $t('media_page.studio') }}</strong>
@@ -105,11 +82,11 @@ import { useRoute } from 'vue-router'
 import { getMediaById, getMediaCredits, getMediaVideos } from '@/api/tmdb'
 import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
-import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import { useLoaderStore } from '@/stores/loader'
 import ShareButton from './components/ShareButton.vue'
 import type { PersonItemType } from '@/types/person'
 import type { TmdbMediaType } from '@/types/media'
+import MediaInfo from '@/components/MediaInfo/MediaInfo.vue'
 
 const loaderStore = useLoaderStore()
 
@@ -171,14 +148,10 @@ watch(
   align-items: center;
   gap: 15px;
 }
-.rating,
-.release {
-  padding: 3px 5px;
-  border-radius: 8px;
-}
 .poster-cont {
   display: flex;
   justify-content: center;
+  position: relative;
 }
 .poster {
   border-radius: 8px;

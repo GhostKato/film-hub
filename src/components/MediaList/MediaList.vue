@@ -17,25 +17,7 @@
         class="media-card"
         @click="goToMedia(item)"
       >
-        <div class="release-vote-container">
-          <p
-            v-if="item.release_date || item.first_air_date"
-            class="release"
-            :style="{
-              backgroundColor: getReleaseColor((item.release_date ?? item.first_air_date) || ''),
-            }"
-          >
-            {{ item.release_date || item.first_air_date }}
-          </p>
-
-          <p
-            v-if="item.vote_average"
-            class="rating"
-            :style="{ backgroundColor: getRatingColor(Number(item.vote_average)) }"
-          >
-            {{ item.vote_average }}
-          </p>
-        </div>
+        <MediaInfo :items="items" />
         <CollectionButtons v-if="!routePerson.path.startsWith('/person')" :media="item" />
 
         <img
@@ -62,12 +44,12 @@
 import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
-import { getRatingColor, getReleaseColor } from '@/utils/getColors'
 import CollectionButtons from '../../components/CollectionButtons/CollectionButtons.vue'
 import { truncateTitle } from '@/utils/truncateTitle'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
 import { useLoaderStore } from '@/stores/loader'
+import MediaInfo from '../MediaInfo/MediaInfo.vue'
 
 const searchStore = useSearchStore()
 const loaderStore = useLoaderStore()
@@ -115,25 +97,6 @@ const isMultiSearchPage = route.path == '/multi-search'
   height: auto;
   object-fit: cover;
   display: block;
-}
-.release-vote-container {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.release {
-  padding: 3px;
-  border-radius: 8px;
-  font-size: 15px;
-}
-.rating {
-  padding: 3px;
-  border-radius: 8px;
-  font-size: 15px;
-  margin-right: auto;
 }
 .info {
   padding: 5px;

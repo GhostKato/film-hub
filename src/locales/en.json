@@ -29,8 +29,6 @@
   },
   "media_page": {
     "studio": "Studios:",
-    "rating": "Rating:",
-    "release": "Release:",
     "duration": "Duration:",
     "episode_length": "Episode length:",
     "min": "min:",
