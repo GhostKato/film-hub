@@ -5,10 +5,13 @@ import * as FirebaseAPI from '@/api/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '@/firebase'
 import { useLoaderStore } from '@/stores/loader'
+import { notificationStore } from './notifications'
+import { useI18n } from 'vue-i18n'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const loaderStore = useLoaderStore()
+  const { t } = useI18n()
   const error = ref<string | null>(null)
   const mode = ref<'login' | 'register' | 'edit'>('login')
 
@@ -18,9 +21,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const u = await FirebaseAPI.register(nickname, email, password)
       user.value = u
-    } catch (err: unknown) {
-      if (err instanceof Error) error.value = err.message
-      else error.value = String(err)
+      notificationStore.success(t('notification_message.register_success'))
+      notificationStore.info(t('notification_message.register_info'))
+    } catch {
+      notificationStore.error(t('notification_message.register_error'))
     } finally {
       loaderStore.hideLoader()
     }
@@ -32,9 +36,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const u = await FirebaseAPI.login(email, password)
       user.value = u
-    } catch (err: unknown) {
-      if (err instanceof Error) error.value = err.message
-      else error.value = String(err)
+      notificationStore.success(t('notification_message.login_success'))
+      notificationStore.info(t('notification_message.login_info'))
+    } catch {
+      notificationStore.error(t('notification_message.login_error'))
     } finally {
       loaderStore.hideLoader()
     }
@@ -46,9 +51,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await FirebaseAPI.logout()
       user.value = null
-    } catch (err: unknown) {
-      if (err instanceof Error) error.value = err.message
-      else error.value = String(err)
+      notificationStore.success(t('notification_message.logout_success'))
+      notificationStore.info(t('notification_message.logout_info'))
+    } catch {
+      notificationStore.error(t('notification_message.logout_error'))
     } finally {
       loaderStore.hideLoader()
     }
@@ -64,9 +70,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const updatedUser = await FirebaseAPI.updateUserProfile(updates)
       user.value = updatedUser
-    } catch (err: unknown) {
-      if (err instanceof Error) error.value = err.message
-      else error.value = String(err)
+      notificationStore.success(t('notification_message.updated_profile_success'))
+      notificationStore.info(t('notification_message.updated_profile_info'))
+    } catch {
+      notificationStore.error(t('notification_message.updated_profile_error'))
     } finally {
       loaderStore.hideLoader()
     }

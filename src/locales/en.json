@@ -137,6 +137,18 @@
     "movies_error": "Error loading movies!",
     "series_error": "Error loading series!",
     "person_error": "Error loading person data!",
-    "review_error": "Error loading review data!"
+    "review_error": "Error loading review data!",
+    "register_success": "Registration and entry was successful!",
+    "register_info": "All local data has been transferred to the server!",
+    "register_error": "Error registering!",
+    "login_success": "Entrance is successful!",
+    "login_info": "All local data has been transferred to the server!",
+    "login_error": "An error occurred upon login!",
+    "logout_success": "The exit was completed successfully!",
+    "logout_info": "New data will be stored locally! To save on the server, enter the account!",
+    "logout_error": "There was an error when exiting!",
+    "updated_profile_success": "User data has been successfully updated!",
+    "updated_profile_info": "Changes to any field must be supported by a current password! When changing the mail, you must specify the real mail, as a letter will be sent to support the changes!",
+    "updated_profile_error": "An error occurred while updating user data!"
   }
 }

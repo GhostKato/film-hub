@@ -14,7 +14,7 @@ export const notificationStore = reactive({
     const id = Date.now()
     this.list.push({ id, ...notification })
 
-    setTimeout(() => this.remove(id), notification.duration || 3500)
+    setTimeout(() => this.remove(id), notification.duration || 8000)
   },
 
   remove(id: number) {
