@@ -11,6 +11,8 @@ import {
 } from '@/api/firebase'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import type { FirebaseItemType } from '@/types/media'
+import { notificationStore } from './notifications'
+import { i18n } from '@/i18n'
 
 type TmdbLikeItem = FirebaseItemType & {
   genres?: { id: number }[]
@@ -82,6 +84,13 @@ export const useMediaStore = defineStore('media', () => {
         if (authStore.user?.uid) {
           await removeMediaItem(authStore.user.uid, sanitizeForDb(existing))
         }
+        notificationStore.success(
+          i18n.global.t(
+            key === 'favorite'
+              ? 'notification_message.removed_favorite_success'
+              : 'notification_message.removed_watch_later_success',
+          ),
+        )
       } else if (authStore.user?.uid) {
         await updateMediaItem(authStore.user.uid, sanitizeForDb(existing))
       }
@@ -98,6 +107,13 @@ export const useMediaStore = defineStore('media', () => {
       if (authStore.user?.uid) {
         await updateMediaItem(authStore.user.uid, newItem)
       }
+      notificationStore.success(
+        i18n.global.t(
+          key === 'favorite'
+            ? 'notification_message.added_favorite_success'
+            : 'notification_message.added_watch_later_success',
+        ),
+      )
     }
 
     if (authStore.user?.uid === MAIN_ACCOUNT_ID) {

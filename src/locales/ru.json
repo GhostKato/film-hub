@@ -131,6 +131,10 @@
   "notification_message": {
     "user_collection_info": "Новые и локальные данные будут сохранены на сервере!",
     "guest_collection_info": "Новые данные будут храниться локально! Чтобы сохранить на сервере, войдите в учетную запись!",
+    "added_favorite_success": "Медиа добавлено в избранные!",
+    "removed_favorite_success": "Медиа удалено с избранных!",
+    "added_watch_later_success": "Медиа добавлено в посмотреть позже!",
+    "removed_watch_later_success": "Медиа удалено с посмотреть позже!",
     "user_collection_error": "Помилка завантаження колекції користувача!",
     "recommended_collection_error": "Помилка завантаження колекції рекомендовані!",
     "slider_data_error": "Не удалось загрузить данные слайдера!",

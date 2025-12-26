@@ -131,6 +131,10 @@
   "notification_message": {
     "user_collection_info": "New and local data will be saved on the server!",
     "guest_collection_info": "New data will be stored locally! To save on the server, enter the account!",
+    "added_favorite_success": "Media added to favorites!",
+    "removed_favorite_success": "Media removed from favorites!",
+    "added_watch_later_success": "Media added to watch later!",
+    "removed_watch_later_success": "Media removed from watch later!",
     "user_collection_error": "Error loading user collection!",
     "recommended_collection_error": "Error loading collection recommended!",
     "slider_data_error": "Failed to load slider data!",
