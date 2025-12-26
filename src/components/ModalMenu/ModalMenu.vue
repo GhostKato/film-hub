@@ -38,6 +38,7 @@ import IButton from '../IButton/IButton.vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
+import { notificationStore } from '@/stores/notifications'
 
 const modalStore = useModalStore()
 const authStore = useAuthStore()
@@ -58,6 +59,7 @@ function openUpdateModal() {
   modalStore.close('menu')
   modalStore.open('auth')
   authStore.setMode('edit')
+  notificationStore.info(t('notification_message.updated_profile_info'))
 }
 
 const handleResize = () => {

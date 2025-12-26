@@ -103,8 +103,8 @@ const fetchResults = async (page = currentPage.value) => {
   } catch {
     const key =
       filters.value.filterType === 'movie'
-        ? 'notification_message.movies_error'
-        : 'notification_message.series_error'
+        ? 'notification_message.filter_movies_error'
+        : 'notification_message.filter_series_error'
     notificationStore.error(t(key))
   } finally {
     loaderStore.hideLoader()

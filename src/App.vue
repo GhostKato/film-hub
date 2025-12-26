@@ -32,20 +32,37 @@ const { t } = useI18n()
 authStore.initAuthListener()
 const mediaStore = useMediaStore()
 
+const loadRecommendedSafe = async () => {
+  if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
+    try {
+      await mediaStore.fetchRecommended()
+    } catch {
+      notificationStore.error(t('notification_message.recommended_collection_error'))
+    }
+  }
+}
+const showCollectionInfo = () => {
+  if (authStore.user) {
+    notificationStore.info(t('notification_message.user_collection_info'))
+  } else {
+    notificationStore.info(t('notification_message.guest_collection_info'))
+  }
+}
+
 onMounted(async () => {
   loaderStore.showGlobalLoader()
   try {
     await mediaStore.load()
     if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
-      await mediaStore.fetchRecommended()
+      await loadRecommendedSafe()
     }
-    notificationStore.success(t('notification_message.collection_success'))
   } catch {
-    notificationStore.error(t('notification_message.collection_error'))
+    notificationStore.error(t('notification_message.user_collection_error'))
   } finally {
     setTimeout(() => {
       loaderStore.hideGlobalLoader()
     }, 500)
+    showCollectionInfo()
   }
 })
 
@@ -56,10 +73,10 @@ watch(
     try {
       await mediaStore.load()
       if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
-        await mediaStore.fetchRecommended()
+        await loadRecommendedSafe()
       }
     } catch {
-      notificationStore.error(t('notification_message.collection_error'))
+      notificationStore.error(t('notification_message.user_collection_error'))
     } finally {
       loaderStore.hideLoader()
     }

@@ -73,7 +73,7 @@ const fetchTrending = async () => {
     }
     movies.value = allResults
   } catch {
-    notificationStore.error(t('notification_message.slide_trending_error'))
+    notificationStore.error(t('notification_message.slider_data_error'))
   } finally {
     loaderStore.hideLoader()
   }

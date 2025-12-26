@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
       const u = await FirebaseAPI.register(nickname, email, password)
       user.value = u
       notificationStore.success(t('notification_message.register_success'))
-      notificationStore.info(t('notification_message.register_info'))
+      notificationStore.info(t('notification_message.user_collection_info'))
     } catch {
       notificationStore.error(t('notification_message.register_error'))
     } finally {
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
       const u = await FirebaseAPI.login(email, password)
       user.value = u
       notificationStore.success(t('notification_message.login_success'))
-      notificationStore.info(t('notification_message.login_info'))
+      notificationStore.info(t('notification_message.user_collection_info'))
     } catch {
       notificationStore.error(t('notification_message.login_error'))
     } finally {
@@ -52,7 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
       await FirebaseAPI.logout()
       user.value = null
       notificationStore.success(t('notification_message.logout_success'))
-      notificationStore.info(t('notification_message.logout_info'))
+      notificationStore.info(t('notification_message.guest_collection_info'))
     } catch {
       notificationStore.error(t('notification_message.logout_error'))
     } finally {
