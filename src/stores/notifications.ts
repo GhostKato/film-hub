@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 
 type NotificationItem = {
   message: string
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'info' | 'added' | 'removed' | 'error'
   icon?: string
   duration?: number
 }
@@ -10,14 +10,14 @@ type NotificationItem = {
 export const notificationStore = reactive({
   list: [] as Array<NotificationItem & { id: number }>,
 
-  push(notification: NotificationItem) {
+  pushNotification(notification: NotificationItem) {
     const id = Date.now()
     this.list.push({ id, ...notification })
 
-    setTimeout(() => this.remove(id), notification.duration ?? 3000)
+    setTimeout(() => this.removeNotification(id), notification.duration ?? 3000)
   },
 
-  remove(id: number) {
+  removeNotification(id: number) {
     const index = this.list.findIndex((n) => n.id === id)
     if (index !== -1) {
       this.list.splice(index, 1)
@@ -25,7 +25,7 @@ export const notificationStore = reactive({
   },
 
   success(message: string, duration?: number) {
-    this.push({
+    this.pushNotification({
       message,
       type: 'success',
       icon: '✔',
@@ -33,20 +33,38 @@ export const notificationStore = reactive({
     })
   },
 
-  error(message: string, duration?: number) {
-    this.push({
+  info(message: string, duration: number = 12000) {
+    this.pushNotification({
       message,
-      type: 'error',
-      icon: '❌',
+      type: 'info',
+      icon: 'ℹ',
       duration,
     })
   },
 
-  info(message: string, duration: number = 12000) {
-    this.push({
+  added(message: string, duration?: number) {
+    this.pushNotification({
       message,
-      type: 'info',
-      icon: 'ℹ',
+      type: 'added',
+      icon: '+',
+      duration,
+    })
+  },
+
+  removed(message: string, duration?: number) {
+    this.pushNotification({
+      message,
+      type: 'removed',
+      icon: '−',
+      duration,
+    })
+  },
+
+  error(message: string, duration?: number) {
+    this.pushNotification({
+      message,
+      type: 'error',
+      icon: '❌',
       duration,
     })
   },

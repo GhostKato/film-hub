@@ -88,7 +88,7 @@ export const useMediaStore = defineStore('media', () => {
           await removeMediaItem(uid, sanitizeForDb(existing))
         }
 
-        notificationStore.success(
+        notificationStore.removed(
           i18n.global.t(
             key === 'favorite'
               ? 'notification_message.removed_favorite_success'
@@ -103,17 +103,23 @@ export const useMediaStore = defineStore('media', () => {
         await updateMediaItem(uid, sanitizeForDb(existing))
       }
 
-      notificationStore.success(
-        i18n.global.t(
-          newValue
-            ? key === 'favorite'
+      if (newValue) {
+        notificationStore.added(
+          i18n.global.t(
+            key === 'favorite'
               ? 'notification_message.added_favorite_success'
-              : 'notification_message.added_watch_later_success'
-            : key === 'favorite'
+              : 'notification_message.added_watch_later_success',
+          ),
+        )
+      } else {
+        notificationStore.removed(
+          i18n.global.t(
+            key === 'favorite'
               ? 'notification_message.removed_favorite_success'
               : 'notification_message.removed_watch_later_success',
-        ),
-      )
+          ),
+        )
+      }
     } else {
       const newItem: FirebaseItemType = sanitizeForDb({
         ...item,
@@ -128,7 +134,7 @@ export const useMediaStore = defineStore('media', () => {
         await updateMediaItem(uid, newItem)
       }
 
-      notificationStore.success(
+      notificationStore.added(
         i18n.global.t(
           key === 'favorite'
             ? 'notification_message.added_favorite_success'

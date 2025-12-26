@@ -1,11 +1,11 @@
 <template>
   <transition-group name="pop" tag="div" class="noti-wrapper">
     <div
-      v-for="item in store.list"
+      v-for="item in notificationStore.list"
       :key="item.id"
       class="noti"
       :class="item.type"
-      @click="store.remove(item.id)"
+      @click="notificationStore.removeNotification(item.id)"
     >
       <div class="icon">{{ item.icon }}</div>
       <div class="text">{{ item.message }}</div>
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { notificationStore as store } from '@/stores/notifications'
+import { notificationStore } from '@/stores/notifications'
 </script>
 
 <style scoped>
@@ -39,9 +39,13 @@ import { notificationStore as store } from '@/stores/notifications'
   max-width: 350px;
   background: rgba(25, 25, 25, 0.88);
   backdrop-filter: blur(14px) saturate(160%);
-  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.05);
   transform-origin: right center;
+  cursor: pointer;
+}
+.icon {
+  font-size: 40px;
+  opacity: 0.9;
 }
 .success {
   box-shadow: 0 0 12px rgba(60, 255, 120, 0.4);
@@ -49,19 +53,30 @@ import { notificationStore as store } from '@/stores/notifications'
 .success .icon {
   color: rgb(60, 255, 120);
 }
-.error {
-  box-shadow: 0 0 12px rgba(255, 60, 60, 0.4);
-  color: rgb(255, 60, 60);
-}
 .info {
   box-shadow: 0 0 12px rgba(77, 163, 255, 0.4);
 }
 .info .icon {
   color: rgb(77, 163, 255);
 }
-.icon {
-  font-size: 22px;
-  opacity: 0.9;
+.added {
+  box-shadow: 0 0 12px rgba(60, 255, 120, 0.4);
+}
+.added .icon {
+  color: rgb(60, 255, 120);
+}
+.removed {
+  box-shadow: 0 0 12px rgba(255, 60, 60, 0.4);
+}
+.removed .icon {
+  color: rgb(255, 60, 60);
+}
+.error {
+  box-shadow: 0 0 12px rgba(255, 60, 60, 0.4);
+  color: rgb(255, 60, 60);
+}
+.error .icon {
+  font-size: 20px;
 }
 .pop-enter-from {
   opacity: 0;
