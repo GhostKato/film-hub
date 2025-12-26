@@ -14,34 +14,40 @@ export const notificationStore = reactive({
     const id = Date.now()
     this.list.push({ id, ...notification })
 
-    setTimeout(() => this.remove(id), notification.duration || 8000)
+    setTimeout(() => this.remove(id), notification.duration ?? 3000)
   },
 
   remove(id: number) {
-    this.list = this.list.filter((n) => n.id !== id)
+    const index = this.list.findIndex((n) => n.id === id)
+    if (index !== -1) {
+      this.list.splice(index, 1)
+    }
   },
 
-  success(message: string) {
+  success(message: string, duration?: number) {
     this.push({
       message,
       type: 'success',
       icon: '✔',
+      duration,
     })
   },
 
-  error(message: string) {
+  error(message: string, duration?: number) {
     this.push({
       message,
       type: 'error',
-      icon: '⛔',
+      icon: '❌',
+      duration,
     })
   },
 
-  info(message: string) {
+  info(message: string, duration: number = 12000) {
     this.push({
       message,
       type: 'info',
       icon: 'ℹ',
+      duration,
     })
   },
 })

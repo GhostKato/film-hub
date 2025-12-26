@@ -70,10 +70,13 @@ export const useMediaStore = defineStore('media', () => {
     recommended.value = clean
   }
   const toggleMedia = async (item: TmdbLikeItem, key: 'favorite' | 'watch_later') => {
+    const uid = authStore.user?.uid
     const existing = media.value.find((m) => m.id === item.id && m.media_type === item.media_type)
 
     if (existing) {
-      existing[key] = !existing[key]
+      const newValue = !existing[key]
+
+      existing[key] = newValue
       existing.genre_ids = normalizeGenres(item)
 
       if (!existing.favorite && !existing.watch_later) {
@@ -81,9 +84,10 @@ export const useMediaStore = defineStore('media', () => {
           (m) => !(m.id === item.id && m.media_type === item.media_type),
         )
 
-        if (authStore.user?.uid) {
-          await removeMediaItem(authStore.user.uid, sanitizeForDb(existing))
+        if (uid) {
+          await removeMediaItem(uid, sanitizeForDb(existing))
         }
+
         notificationStore.success(
           i18n.global.t(
             key === 'favorite'
@@ -91,9 +95,25 @@ export const useMediaStore = defineStore('media', () => {
               : 'notification_message.removed_watch_later_success',
           ),
         )
-      } else if (authStore.user?.uid) {
-        await updateMediaItem(authStore.user.uid, sanitizeForDb(existing))
+
+        return
       }
+
+      if (uid) {
+        await updateMediaItem(uid, sanitizeForDb(existing))
+      }
+
+      notificationStore.success(
+        i18n.global.t(
+          newValue
+            ? key === 'favorite'
+              ? 'notification_message.added_favorite_success'
+              : 'notification_message.added_watch_later_success'
+            : key === 'favorite'
+              ? 'notification_message.removed_favorite_success'
+              : 'notification_message.removed_watch_later_success',
+        ),
+      )
     } else {
       const newItem: FirebaseItemType = sanitizeForDb({
         ...item,
@@ -104,9 +124,10 @@ export const useMediaStore = defineStore('media', () => {
 
       media.value.push(newItem)
 
-      if (authStore.user?.uid) {
-        await updateMediaItem(authStore.user.uid, newItem)
+      if (uid) {
+        await updateMediaItem(uid, newItem)
       }
+
       notificationStore.success(
         i18n.global.t(
           key === 'favorite'
@@ -116,14 +137,15 @@ export const useMediaStore = defineStore('media', () => {
       )
     }
 
-    if (authStore.user?.uid === MAIN_ACCOUNT_ID) {
+    if (uid === MAIN_ACCOUNT_ID) {
       await updateRecommended()
     }
 
-    if (!authStore.user?.uid) {
+    if (!uid) {
       await save()
     }
   }
+
   const load = async () => {
     if (authStore.user?.uid) {
       const serverMedia: FirebaseItemType[] = (await loadMedia(authStore.user.uid)).map(

@@ -1,6 +1,12 @@
 <template>
   <transition-group name="pop" tag="div" class="noti-wrapper">
-    <div v-for="item in store.list" :key="item.id" class="noti" :class="item.type">
+    <div
+      v-for="item in store.list"
+      :key="item.id"
+      class="noti"
+      :class="item.type"
+      @click="store.remove(item.id)"
+    >
       <div class="icon">{{ item.icon }}</div>
       <div class="text">{{ item.message }}</div>
     </div>
@@ -45,8 +51,6 @@ import { notificationStore as store } from '@/stores/notifications'
 }
 .error {
   box-shadow: 0 0 12px rgba(255, 60, 60, 0.4);
-}
-.error .icon {
   color: rgb(255, 60, 60);
 }
 .info {
