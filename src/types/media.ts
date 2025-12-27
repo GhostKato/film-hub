@@ -53,6 +53,7 @@ export interface FirebaseItemType {
   favorite?: boolean
   watch_later?: boolean
   genre_ids?: number[]
+  release?: boolean
 }
 
 export interface TrailerType {
