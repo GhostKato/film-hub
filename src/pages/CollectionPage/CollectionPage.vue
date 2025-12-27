@@ -243,7 +243,7 @@ onMounted(() => {
 }
 .title {
   font-weight: bold;
-  text-shadow: 0 0 15px var(--color-shadow);
+  text-shadow: 0 0 15px var(--color-shadow-black);
   margin: 0;
   margin-bottom: 10px;
 }

@@ -14,6 +14,6 @@ h1 {
   font-size: 40px;
   font-weight: bold;
   z-index: 2;
-  text-shadow: 0 0 15px var(--color-shadow);
+  text-shadow: 0 0 15px var(--color-shadow-black);
 }
 </style>

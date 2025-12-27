@@ -86,7 +86,7 @@ const isMultiSearchPage = route.path == '/multi-search'
 .media-card {
   aspect-ratio: 9 / 17;
   position: relative;
-  background: var(--color-transparent);
+  background: var(--color-transparent-grey);
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;

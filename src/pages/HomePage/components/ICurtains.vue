@@ -20,7 +20,7 @@ const { isOpen } = defineProps<Props>()
   width: 50%;
   height: 100%;
   background: repeating-linear-gradient(90deg, #8b0000 0%, #a00000 10%, #8b0000 20%);
-  box-shadow: inset 0 0 40px var(--color-shadow);
+  box-shadow: inset 0 0 40px var(--color-shadow-black);
   transition: transform 2.5s ease-in-out;
   z-index: 30;
 }

@@ -34,49 +34,51 @@ import { notificationStore } from '@/stores/notifications'
   padding: 14px 18px;
   border-radius: 14px;
   font-size: 15px;
-  color: white;
   min-width: 260px;
   max-width: 350px;
-  background: rgba(25, 25, 25, 0.88);
+  background: var(--color-transparent-grey);
   backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-grey);
   transform-origin: right center;
   cursor: pointer;
 }
 .icon {
-  font-size: 40px;
+  font-size: 20px;
   opacity: 0.9;
 }
 .success {
-  box-shadow: 0 0 12px rgba(60, 255, 120, 0.4);
+  box-shadow: 0 0 12px var(--color-shadow-green);
 }
 .success .icon {
-  color: rgb(60, 255, 120);
+  font-size: 30px;
+  color: var(--color-green);
 }
 .info {
-  box-shadow: 0 0 12px rgba(77, 163, 255, 0.4);
+  box-shadow: 0 0 12px var(--color-shadow-blue);
 }
 .info .icon {
-  color: rgb(77, 163, 255);
+  font-size: 40px;
+  color: var(--color-blue);
 }
 .added {
-  box-shadow: 0 0 12px rgba(60, 255, 120, 0.4);
+  box-shadow: 0 0 12px var(--color-shadow-green);
 }
 .added .icon {
-  color: rgb(60, 255, 120);
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--color-green);
 }
 .removed {
-  box-shadow: 0 0 12px rgba(255, 60, 60, 0.4);
+  box-shadow: 0 0 12px var(--color-shadow-red);
 }
 .removed .icon {
-  color: rgb(255, 60, 60);
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--color-red);
 }
 .error {
-  box-shadow: 0 0 12px rgba(255, 60, 60, 0.4);
-  color: rgb(255, 60, 60);
-}
-.error .icon {
-  font-size: 20px;
+  box-shadow: 0 0 12px var(--color-shadow-red);
+  color: var(--color-red);
 }
 .pop-enter-from {
   opacity: 0;
