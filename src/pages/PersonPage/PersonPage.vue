@@ -71,6 +71,9 @@ const fetchPersonData = async () => {
       name: c.name,
       poster_path: c.poster_path,
       media_type: c.media_type,
+      vote_average: c.vote_average,
+      release_date: c.release_date,
+      first_air_date: c.first_air_date,
     }))
   } catch {
     notificationStore.error(t('notification_message.person_error'))

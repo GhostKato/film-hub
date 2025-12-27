@@ -18,7 +18,7 @@
         @click="goToMedia(item)"
       >
         <MediaInfo :item="item" />
-        <CollectionButtons v-if="!routePerson.path.startsWith('/person')" :media="item" />
+        <CollectionButtons :media="item" />
 
         <img
           :src="getImageUrl(item.poster_path, 'poster', 'w500')"
@@ -61,7 +61,7 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
-const routePerson = useRoute()
+
 const itemsWithPoster = computed(() => props.items.filter((item) => item.poster_path))
 
 const goToMedia = (item: TmdbItemType) => {
