@@ -45,6 +45,7 @@ function selectLang(code: 'en' | 'uk' | 'ru') {
 
 .language-switcher .active {
   background: var(--color-red);
+  border: 1px solid var(--color-red);
   font-weight: bold;
 }
 </style>

@@ -38,18 +38,19 @@ const authStore = useAuthStore()
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: var(--color-transparent-black);
+  background-color: var(--color-transparent-black);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 80;
 }
 .modal-content {
-  background: var(--color-dark-grey);
+  background-color: var(--color-transparent-black);
+  backdrop-filter: blur(14px) saturate(160%);
   padding: 15px;
   border-radius: 8px;
   width: 320px;
-  border: 2px solid var(--color-black);
+  border: 1px solid var(--color-grey);
 }
 .switch-buttons {
   display: flex;

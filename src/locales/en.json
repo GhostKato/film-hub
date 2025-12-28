@@ -116,6 +116,9 @@
   "modal_edit": {
     "title": "Edit user data"
   },
+  "modal_release": {
+    "empty": "New media has not been released!"
+  },
   "form": {
     "label_nickname": "Nickname",
     "label_email": "Email",

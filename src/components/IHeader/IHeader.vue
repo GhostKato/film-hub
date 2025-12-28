@@ -15,6 +15,9 @@
     <div class="menu-btn-container">
       <MenuButton />
     </div>
+    <div class="release-btn-container">
+      <ReleaseButton />
+    </div>
   </header>
 </template>
 
@@ -23,6 +26,7 @@ import ILogo from './ILogo.vue'
 import IButton from '../IButton/IButton.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 import MenuButton from './MenuButton.vue'
+import ReleaseButton from './ReleaseButton.vue'
 </script>
 
 <style scoped>
@@ -48,6 +52,12 @@ import MenuButton from './MenuButton.vue'
 
 .icon:hover {
   fill: var(--color-hover);
+}
+.release-btn-container {
+  position: absolute;
+  right: 22px;
+  top: 120px;
+  z-index: 50;
 }
 
 @media (min-width: 768px) {

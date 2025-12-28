@@ -36,7 +36,7 @@ import { notificationStore } from '@/stores/notifications'
   font-size: 15px;
   min-width: 260px;
   max-width: 350px;
-  background: var(--color-transparent-grey);
+  background-color: var(--color-transparent-grey);
   backdrop-filter: blur(14px) saturate(160%);
   border: 1px solid var(--color-grey);
   transform-origin: right center;

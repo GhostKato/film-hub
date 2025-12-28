@@ -133,7 +133,7 @@ const submitBtnText = computed(() => {
   position: relative;
 }
 .field {
-  background: var(--color-black);
+  background-color: var(--color-black);
   border: none;
   width: 100%;
   border-radius: 8px;

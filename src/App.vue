@@ -1,10 +1,11 @@
 <template>
   <IHeader />
   <main>
-    <router-view />
+    <router-view :key="$route.fullPath" />
   </main>
   <ModalMenu />
   <ModalAuth />
+  <ModalRelease />
   <ILoader />
   <HotKeys />
   <INotification />
@@ -24,6 +25,7 @@ import { useMediaStore } from './stores/media'
 import INotification from './components/INotification/INotification.vue'
 import { notificationStore } from './stores/notifications'
 import { useI18n } from 'vue-i18n'
+import ModalRelease from './components/ModalRelease/ModalRelease.vue'
 
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()

@@ -116,6 +116,9 @@
   "modal_edit": {
     "title": "Редагувати дані користувача"
   },
+  "modal_release": {
+    "empty": "Нові медіа не вийшли!"
+  },
   "form": {
     "label_nickname": "Псевдонім",
     "label_email": "Пошта",

@@ -119,10 +119,11 @@ const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.dis
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  background-color: var(--color-dark-grey);
+  background-color: var(--color-transparent-black);
+  backdrop-filter: blur(14px) saturate(160%);
   padding: 10px;
   border-radius: 8px;
-  border: 2px solid var(--color-black);
+  border: 1px solid var(--color-grey);
 }
 .user-name,
 .language-title,

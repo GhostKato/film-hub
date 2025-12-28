@@ -116,6 +116,9 @@
   "modal_edit": {
     "title": "Редактирование данных пользователя"
   },
+  "modal_release": {
+    "empty": "Новые медиа не выпущены!"
+  },
   "form": {
     "label_nickname": "Прозвище",
     "label_email": "Почта",
