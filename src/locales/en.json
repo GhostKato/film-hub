@@ -117,6 +117,7 @@
     "title": "Edit user data"
   },
   "modal_release": {
+    "clear_all": "Clear all",
     "empty": "New media has not been released!"
   },
   "form": {
@@ -134,6 +135,7 @@
   "notification_message": {
     "user_collection_info": "New and local data will be saved on the server!",
     "guest_collection_info": "New data will be stored locally! To save on the server, enter the account!",
+    "user_release_info": "New media has been released!",
     "added_favorite_success": "Media added to favorites!",
     "removed_favorite_success": "Media removed from favorites!",
     "added_watch_later_success": "Media added to watch later!",

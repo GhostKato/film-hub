@@ -58,7 +58,8 @@ const handleClick = (e: Event) => {
 .auth-nav-btn.active,
 .tab-btn.active,
 .big-search-btn,
-.small-search-btn {
+.small-search-btn,
+.release-clear-all-btn {
   background-color: var(--color-red);
 }
 
@@ -77,7 +78,8 @@ const handleClick = (e: Event) => {
 .tab-btn:hover,
 .share-btn:hover,
 .big-search-btn:hover,
-.small-search-btn:hover {
+.small-search-btn:hover,
+.release-clear-all-btn:hover {
   background-color: var(--color-hover);
 }
 
@@ -112,3 +114,4 @@ const handleClick = (e: Event) => {
 <style scoped src="./styles/auth.css"></style>
 <style scoped src="./styles/pages.css"></style>
 <style scoped src="./styles/pagination.css"></style>
+<style scoped src="./styles/release.css"></style>

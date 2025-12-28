@@ -117,6 +117,7 @@
     "title": "Редагувати дані користувача"
   },
   "modal_release": {
+    "clear_all": "Очистити все",
     "empty": "Нові медіа не вийшли!"
   },
   "form": {
@@ -134,6 +135,7 @@
   "notification_message": {
     "user_collection_info": "Нові та локальні дані зберігатимуться на сервері!",
     "guest_collection_info": "Нові данні будуть зберігатись на пистрої локально! Для збереження на сервері, увійдіть в аккаунт!",
+    "user_release_info": "Вийшли нові медіа!",
     "added_favorite_success": "Медіа додано до улюблених!",
     "removed_favorite_success": "Медіа видалено з улюблених!",
     "added_watch_later_success": "Медіа додано до подивитись пізніше!",

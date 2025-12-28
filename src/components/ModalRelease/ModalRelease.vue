@@ -34,6 +34,9 @@
               </p>
             </div>
           </div>
+          <IButton class="close" @click="clearAllReleases" variant="release-clear-all-btn">
+            {{ $t('modal_release.clear_all') }}
+          </IButton>
         </div>
       </div>
     </div>
@@ -47,6 +50,7 @@ import type { TmdbItemType } from '@/types/media'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { useMediaStore } from '@/stores/media'
+import IButton from '../IButton/IButton.vue'
 const modalStore = useModalStore()
 const mediaStore = useMediaStore()
 const router = useRouter()
@@ -55,11 +59,17 @@ const releaseList = computed(() => mediaStore.releaseList())
 
 const goToMedia = (item: TmdbItemType) => {
   modalStore.close('release')
+  mediaStore.removeRelease(item)
   const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')
   router.push({
     name: 'media',
     params: { type, id: item.id },
   })
+}
+
+function clearAllReleases() {
+  mediaStore.removeAllRelease()
+  modalStore.close('release')
 }
 </script>
 
@@ -125,9 +135,5 @@ const goToMedia = (item: TmdbItemType) => {
 .slide-right-leave-to {
   transform: translateX(100%);
   opacity: 0;
-}
-@media (min-width: 768px) {
-}
-@media (min-width: 1024px) {
 }
 </style>
