@@ -14,8 +14,8 @@
 
 .big-clean-btn {
   position: absolute;
-  right: 0;
-  top: 2px;
+  right: -3px;
+  top: -1px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -26,8 +26,8 @@
 
 .small-clean-btn {
   position: absolute;
-  right: -3px;
-  top: -3px;
+  right: -7px;
+  top: -7px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -48,8 +48,11 @@
   }
 
   .big-clean-btn {
-    right: 1px;
-    top: 6px;
+    right: -3px;
+    top: 4px;
+  }
+  .small-clean-btn {
+    top: -6px;
   }
 }
 
@@ -59,13 +62,8 @@
     height: 33px;
   }
 
-  .big-clean-btn {
-    top: 7px;
-  }
-
   .small-clean-btn {
-    right: -2px;
-    top: -1px;
+    top: -4px;
   }
 }
 
@@ -76,6 +74,6 @@
   }
 
   .small-clean-btn {
-    top: 4px;
+    top: 1px;
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <div v-if="modalStore.modals.auth" class="modal-backdrop" @click.self="modalStore.close('auth')">
     <div class="modal-content">
+      <IButton @click="modalStore.close('auth')" variant="close"><XIcon /></IButton>
       <div class="switch-buttons" v-if="authStore.mode !== 'edit'">
         <IButton
           variant="auth-nav-btn"
@@ -29,6 +30,7 @@ import { useModalStore } from '@/stores/modal'
 import IForm from './IForm.vue'
 import IButton from '../IButton/IButton.vue'
 import { useAuthStore } from '@/stores/auth'
+import XIcon from '../icons/XIcon.vue'
 
 const modalStore = useModalStore()
 const authStore = useAuthStore()

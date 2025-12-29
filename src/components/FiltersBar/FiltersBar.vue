@@ -33,7 +33,7 @@
         :placeholder="t('filters_bar.placeholder')"
         v-model="query"
       />
-      <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery">✖</IButton>
+      <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery"><XIcon /></IButton>
     </div>
     <select class="select last" v-if="isCollectionPage" v-model="sortType">
       <option :value="1">{{ t('filters_bar.release') }} ↑</option>
@@ -53,6 +53,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import IButton from '../IButton/IButton.vue'
 import type { FiltersType } from '@/types/filter'
+import XIcon from '../icons/XIcon.vue'
 
 const { t } = useI18n()
 const route = useRoute()

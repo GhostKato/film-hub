@@ -117,6 +117,7 @@
     "title": "Edit user data"
   },
   "modal_release": {
+    "title": "Media that were released:",
     "clear_all": "Clear all",
     "empty": "New media has not been released!"
   },

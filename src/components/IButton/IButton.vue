@@ -65,7 +65,8 @@ const handleClick = (e: Event) => {
 
 .big-clean-btn:hover,
 .small-clean-btn:hover,
-.header-link:hover {
+.header-link:hover,
+.close:hover {
   color: var(--color-hover);
 }
 
@@ -94,6 +95,15 @@ const handleClick = (e: Event) => {
 .is-disabled svg * {
   opacity: 1 !important;
   fill: currentColor !important;
+}
+
+.close {
+  position: absolute;
+  top: 8px;
+  right: 4px;
+  border-radius: 8px;
+  border: none;
+  background-color: transparent;
 }
 
 @media (min-width: 1024px) {

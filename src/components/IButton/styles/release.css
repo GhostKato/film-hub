@@ -3,4 +3,9 @@
   border-radius: 8px;
   cursor: pointer;
   height: 30px;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+.removeRelease-btn {
 }

@@ -22,8 +22,8 @@
         v-if="searchStore.query"
         :variant="isBigSearchBar ? 'big-clean-btn' : 'small-clean-btn'"
         @click="clearSearch"
-        >✖</IButton
-      >
+        ><XIcon
+      /></IButton>
     </div>
     <IButton
       :variant="isBigSearchBar ? 'big-search-btn' : 'small-search-btn'"
@@ -47,6 +47,7 @@ import { useI18n } from 'vue-i18n'
 import IButton from '@/components/IButton/IButton.vue'
 import { useSearchStore } from '@/stores/search'
 import SearchIcon from '../icons/SearchIcon.vue'
+import XIcon from '../icons/XIcon.vue'
 
 const searchStore = useSearchStore()
 const { t } = useI18n()
