@@ -171,12 +171,12 @@ const clearAllReleases = () => {
     right: 20px;
   }
   .release-scroll {
-    --max-items: 8;
+    --max-items: 7;
   }
 }
 @media (min-width: 2560px) {
   .release-scroll {
-    --max-items: 12;
+    --max-items: 11;
   }
 }
 </style>

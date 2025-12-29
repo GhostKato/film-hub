@@ -15,7 +15,7 @@
     <div class="menu-btn-container">
       <MenuButton />
     </div>
-    <div class="release-btn-container">
+    <div :class="releaseStyle">
       <ReleaseButton />
     </div>
   </header>
@@ -27,6 +27,15 @@ import IButton from '../IButton/IButton.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 import MenuButton from './MenuButton.vue'
 import ReleaseButton from './ReleaseButton.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const isHomePage = computed(() => route.path === '/')
+
+const releaseStyle = computed(
+  () => 'release-base ' + (isHomePage.value ? 'release-home' : 'release-other'),
+)
 </script>
 
 <style scoped>
@@ -53,11 +62,18 @@ import ReleaseButton from './ReleaseButton.vue'
 .icon:hover {
   fill: var(--color-hover);
 }
-.release-btn-container {
+.release-base {
   position: absolute;
-  right: 22px;
-  top: 120px;
   z-index: 50;
+}
+.release-home {
+  right: 1px;
+  top: 85px;
+}
+
+.release-other {
+  right: -3px;
+  top: 100px;
 }
 
 @media (min-width: 768px) {
@@ -70,6 +86,10 @@ import ReleaseButton from './ReleaseButton.vue'
     justify-content: flex-end;
     width: 200px;
   }
+  .release-other {
+    right: 8px;
+    top: 120px;
+  }
 }
 @media (min-width: 1024px) {
   .menu-btn-container {
@@ -78,6 +98,32 @@ import ReleaseButton from './ReleaseButton.vue'
   .icon {
     width: 35px;
     height: 35px;
+  }
+  .release-home {
+    right: 12px;
+    top: 85px;
+  }
+  .release-other {
+    right: 18px;
+  }
+}
+@media (min-width: 1280px) {
+  .release-home {
+    right: 55px;
+  }
+}
+@media (min-width: 1920px) {
+  .release-home,
+  .release-other {
+    right: 55px;
+    top: 35px;
+  }
+}
+@media (min-width: 2560px) {
+  .release-home,
+  .release-other {
+    right: 75px;
+    top: 40px;
   }
 }
 </style>
