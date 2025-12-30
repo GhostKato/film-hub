@@ -66,7 +66,8 @@ const handleClick = (e: Event) => {
 .big-clean-btn:hover,
 .small-clean-btn:hover,
 .header-link:hover,
-.close:hover {
+.close:hover,
+.remove-release-btn:hover {
   color: var(--color-hover);
 }
 

@@ -35,6 +35,19 @@
                       : $t('media_list.type_movie')
                   }}
                 </p>
+                <div class="icons-info-cont">
+                  <div class="icons-info-item">
+                    <FavoriteIcon :class="{ active: isFavorite(item) }" />
+                  </div>
+                  <div class="icons-info-item">
+                    <WatchLaterIcon :class="{ active: isWatchLater(item) }" />
+                  </div>
+                </div>
+                <div class="remove-cont">
+                  <IButton @click="mediaStore.removeRelease(item)" variant="remove-release-btn"
+                    ><XIcon />
+                  </IButton>
+                </div>
               </div>
             </div>
           </div>
@@ -54,9 +67,11 @@ import { useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modal'
 import { useMediaStore } from '@/stores/media'
 import { getImageUrl } from '@/utils/getImageUrl'
-import type { TmdbItemType } from '@/types/media'
+import type { FirebaseItemType } from '@/types/media'
 import IButton from '../IButton/IButton.vue'
 import XIcon from '../icons/XIcon.vue'
+import FavoriteIcon from '../icons/FavoriteIcon.vue'
+import WatchLaterIcon from '../icons/WatchLaterIcon.vue'
 
 const modalStore = useModalStore()
 const mediaStore = useMediaStore()
@@ -64,9 +79,8 @@ const router = useRouter()
 
 const releaseList = computed(() => mediaStore.releaseList())
 
-const goToMedia = (item: TmdbItemType) => {
+const goToMedia = (item: FirebaseItemType) => {
   modalStore.close('release')
-  mediaStore.removeRelease(item)
 
   const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')
 
@@ -74,6 +88,18 @@ const goToMedia = (item: TmdbItemType) => {
     name: 'media',
     params: { type, id: item.id },
   })
+}
+
+const isFavorite = (item: FirebaseItemType) => {
+  const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')
+
+  return mediaStore.favoriteList().some((i) => i.id === item.id && i.media_type === type)
+}
+
+const isWatchLater = (item: FirebaseItemType) => {
+  const type = item.media_type || (item.first_air_date ? 'tv' : 'movie')
+
+  return mediaStore.watchLaterList().some((i) => i.id === item.id && i.media_type === type)
 }
 
 const clearAllReleases = () => {
@@ -95,6 +121,9 @@ const clearAllReleases = () => {
 .release-list {
   pointer-events: all;
 }
+.empty {
+  text-align: center;
+}
 .release-container,
 .empty-container {
   display: flex;
@@ -105,6 +134,12 @@ const clearAllReleases = () => {
   border-radius: 8px;
   border: 1px solid var(--color-grey);
   width: 355px;
+}
+.main-title {
+  margin: 0;
+  font-size: 20px;
+  text-shadow: 0 0 15px var(--color-shadow-black);
+  margin-bottom: 10px;
 }
 .release-scroll {
   display: flex;
@@ -130,6 +165,10 @@ const clearAllReleases = () => {
   padding: 5px;
   border: 1px solid var(--color-grey);
   cursor: pointer;
+  position: relative;
+}
+.release-card:hover {
+  border-color: var(--color-hover);
 }
 .img {
   width: 50px;
@@ -141,19 +180,26 @@ const clearAllReleases = () => {
   flex-direction: column;
   gap: 5px;
 }
-.main-title {
-  margin: 0;
-  font-size: 20px;
-  text-shadow: 0 0 15px var(--color-shadow-black);
-  margin-bottom: 10px;
-}
 .title {
   margin: 0;
   font-size: 20px;
   text-shadow: 0 0 15px var(--color-shadow-black);
 }
-.empty {
-  text-align: center;
+.icons-info-cont {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  position: absolute;
+  bottom: 2px;
+  right: 50px;
+}
+.icons-info-item svg.active {
+  color: var(--color-red);
+}
+.remove-cont {
+  position: absolute;
+  bottom: 5px;
+  right: 2px;
 }
 .slide-right-enter-active,
 .slide-right-leave-active {
