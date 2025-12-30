@@ -72,6 +72,7 @@ import IButton from '../IButton/IButton.vue'
 import XIcon from '../icons/XIcon.vue'
 import FavoriteIcon from '../icons/FavoriteIcon.vue'
 import WatchLaterIcon from '../icons/WatchLaterIcon.vue'
+import { autoClose } from '@/utils/autoClose'
 
 const modalStore = useModalStore()
 const mediaStore = useMediaStore()
@@ -106,6 +107,8 @@ const clearAllReleases = () => {
   mediaStore.removeAllRelease()
   modalStore.close('release')
 }
+
+autoClose('release')
 </script>
 
 <style scoped>

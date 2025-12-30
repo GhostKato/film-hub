@@ -31,9 +31,12 @@ import IForm from './IForm.vue'
 import IButton from '../IButton/IButton.vue'
 import { useAuthStore } from '@/stores/auth'
 import XIcon from '../icons/XIcon.vue'
+import { autoClose } from '@/utils/autoClose'
 
 const modalStore = useModalStore()
 const authStore = useAuthStore()
+
+autoClose('auth', 30000)
 </script>
 
 <style scoped>

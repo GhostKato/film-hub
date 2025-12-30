@@ -39,6 +39,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { notificationStore } from '@/stores/notifications'
+import { autoClose } from '@/utils/autoClose'
 
 const modalStore = useModalStore()
 const authStore = useAuthStore()
@@ -77,6 +78,8 @@ onUnmounted(() => {
 const transitionName = computed(() => (width.value > 1023 ? 'slide-top' : 'slide-right'))
 
 const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.displayName'))
+
+autoClose('menu')
 </script>
 
 <style scoped>
