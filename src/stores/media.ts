@@ -40,6 +40,7 @@ const sanitizeForDb = (item: unknown): FirebaseItemType => {
     watch_later: i.watch_later,
     genre_ids: i.genre_ids,
     release_hidden: i.release_hidden ?? false,
+    release: i.release ?? false,
   }
 
   Object.keys(clean).forEach((key) => {
@@ -48,6 +49,15 @@ const sanitizeForDb = (item: unknown): FirebaseItemType => {
     }
   })
   return clean
+}
+
+const calculateRelease = (item: FirebaseItemType): boolean => {
+  const todayStr = new Date().toDateString()
+  const releaseDateStr = item.release_date || item.first_air_date
+  if (!item.release_hidden && releaseDateStr) {
+    return new Date(releaseDateStr).toDateString() === todayStr
+  }
+  return false
 }
 
 export const useMediaStore = defineStore('media', () => {
@@ -78,21 +88,20 @@ export const useMediaStore = defineStore('media', () => {
     const existing = media.value.find((m) => m.id === item.id && m.media_type === item.media_type)
     const today = new Date()
     const releaseDateStr = item.release_date || item.first_air_date
-    const releaseDate = releaseDateStr ? new Date(releaseDateStr) : today
-    const release_hidden = releaseDate < today
+    const release_hidden = releaseDateStr ? new Date(releaseDateStr) < today : false
+
     if (existing) {
       const newValue = !existing[key]
       existing[key] = newValue
       existing.genre_ids = normalizeGenres(item)
+      existing.release = calculateRelease(existing)
+
       if (!existing.favorite && !existing.watch_later) {
         media.value = media.value.filter(
           (m) => !(m.id === item.id && m.media_type === item.media_type),
         )
-        if (uid) {
-          await removeMediaItem(uid, sanitizeForDb(existing))
-        } else {
-          await save()
-        }
+        if (uid) await removeMediaItem(uid, sanitizeForDb(existing))
+        else await save()
         if (isMain) await updateRecommended()
         notificationStore.removed(
           i18n.global.t(
@@ -103,12 +112,11 @@ export const useMediaStore = defineStore('media', () => {
         )
         return
       }
-      if (uid) {
-        await updateMediaItem(uid, sanitizeForDb(existing))
-      } else {
-        await save()
-      }
+
+      if (uid) await updateMediaItem(uid, sanitizeForDb(existing))
+      else await save()
       if (isMain && key === 'favorite') await updateRecommended()
+
       if (newValue) {
         notificationStore.added(
           i18n.global.t(
@@ -128,20 +136,24 @@ export const useMediaStore = defineStore('media', () => {
       }
       return
     }
+
     const newItem: FirebaseItemType = sanitizeForDb({
       ...item,
       favorite: key === 'favorite',
       watch_later: key === 'watch_later',
       genre_ids: normalizeGenres(item),
       release_hidden,
+      release:
+        !release_hidden &&
+        releaseDateStr &&
+        new Date(releaseDateStr).toDateString() === today.toDateString(),
     })
+
     media.value.push(newItem)
-    if (uid) {
-      await updateMediaItem(uid, newItem)
-    } else {
-      await save()
-    }
+    if (uid) await updateMediaItem(uid, newItem)
+    else await save()
     if (isMain && key === 'favorite') await updateRecommended()
+
     notificationStore.added(
       i18n.global.t(
         key === 'favorite'
@@ -153,29 +165,53 @@ export const useMediaStore = defineStore('media', () => {
 
   const load = async () => {
     const uid = authStore.user?.uid
+
     if (uid) {
       const serverMedia: FirebaseItemType[] = (await loadMedia(uid)).map(sanitizeForDb)
       const localMedia: FirebaseItemType[] = JSON.parse(localStorage.getItem('media') || '[]').map(
         sanitizeForDb,
       )
+
       const merged: FirebaseItemType[] = [
         ...serverMedia,
         ...localMedia.filter(
           (l) => !serverMedia.some((s) => s.id === l.id && s.media_type === l.media_type),
         ),
       ]
-      media.value = merged
+
+      const todayStr = new Date().toDateString()
+      media.value = merged.map((m) => {
+        const releaseDateStr = m.release_date || m.first_air_date
+        const release: boolean = !!(
+          !m.release_hidden &&
+          releaseDateStr &&
+          new Date(releaseDateStr).toDateString() === todayStr
+        )
+
+        return { ...m, release }
+      })
+
       await saveMedia(uid, media.value)
       localStorage.removeItem('media')
-      if (uid === MAIN_ACCOUNT_ID) {
-        await updateRecommended()
-      }
+
+      if (uid === MAIN_ACCOUNT_ID) await updateRecommended()
     } else {
       const stored: FirebaseItemType[] = JSON.parse(localStorage.getItem('media') || '[]').map(
         sanitizeForDb,
       )
-      media.value = stored
+
+      media.value = stored.map((m) => {
+        const releaseDateStr = m.release_date || m.first_air_date
+        const release: boolean = !!(
+          !m.release_hidden &&
+          releaseDateStr &&
+          new Date(releaseDateStr).toDateString() === new Date().toDateString()
+        )
+
+        return { ...m, release }
+      })
     }
+
     const rec = await loadRecommended()
     recommended.value = rec.map(sanitizeForDb)
   }
@@ -184,9 +220,7 @@ export const useMediaStore = defineStore('media', () => {
     media.value = []
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, [])
-      if (authStore.user?.uid === MAIN_ACCOUNT_ID) {
-        await updateRecommended()
-      }
+      if (authStore.user?.uid === MAIN_ACCOUNT_ID) await updateRecommended()
     } else {
       localStorage.setItem('media', '[]')
     }
@@ -201,19 +235,16 @@ export const useMediaStore = defineStore('media', () => {
     const existing = media.value.find((m) => m.id === item.id && m.media_type === item.media_type)
     if (existing) {
       existing.release_hidden = true
+      existing.release = false
       await save()
     }
   }
 
   const removeAllRelease = async () => {
-    media.value.forEach((m) => {
-      m.release_hidden = true
-    })
+    media.value.forEach((m) => (m.release_hidden = true))
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, media.value)
-      if (authStore.user?.uid === MAIN_ACCOUNT_ID) {
-        await updateRecommended()
-      }
+      if (authStore.user?.uid === MAIN_ACCOUNT_ID) await updateRecommended()
     } else {
       localStorage.setItem('media', JSON.stringify(media.value))
     }
@@ -222,13 +253,7 @@ export const useMediaStore = defineStore('media', () => {
   const favoriteList = () => media.value.filter((m) => m.favorite)
   const watchLaterList = () => media.value.filter((m) => m.watch_later)
   const recommendedList = () => recommended.value
-  const releaseList = () =>
-    media.value.filter((m) => {
-      if (m.release_hidden) return false
-      const releaseDateStr = m.release_date || m.first_air_date
-      if (!releaseDateStr) return false
-      return new Date(releaseDateStr).toDateString() >= new Date().toDateString()
-    })
+  const releaseList = () => media.value.filter((m) => m.release)
 
   return {
     media,

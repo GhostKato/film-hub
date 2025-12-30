@@ -54,6 +54,7 @@ export interface FirebaseItemType {
   watch_later?: boolean
   genre_ids?: number[]
   release_hidden?: boolean
+  release?: boolean
 }
 
 export interface TrailerType {
