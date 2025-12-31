@@ -27,8 +27,6 @@
         <MediaList :items="credits" />
       </div>
     </div>
-
-    <div v-else>Loading...</div>
   </IBackground>
 </template>
 
