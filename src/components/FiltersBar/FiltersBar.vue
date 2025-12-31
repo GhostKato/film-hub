@@ -35,6 +35,7 @@
       />
       <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery"><XIcon /></IButton>
     </div>
+
     <select class="select last" v-if="isCollectionPage" v-model="sortType">
       <option :value="1">{{ t('filters_bar.release') }} ↑</option>
       <option :value="2">{{ t('filters_bar.release') }} ↓</option>
@@ -63,12 +64,22 @@ const isCollectionPage = route.path == '/collection'
 const props = defineProps<{ modelValue: FiltersType }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: FiltersType): void }>()
 
-const filterType = ref<'movie' | 'tv' | 'all'>(props.modelValue.filterType)
-const genre = ref<string>(props.modelValue.genre)
-const rating = ref<'all' | 'low' | 'medium' | 'high'>(props.modelValue.rating)
-const year = ref<string>(props.modelValue.year)
-const query = ref<string>(props.modelValue.query || '')
-const sortType = ref<1 | 2 | 3 | 4 | 5 | 6>(1)
+const filterType = ref(props.modelValue.filterType)
+const genre = ref(props.modelValue.genre)
+const rating = ref(props.modelValue.rating)
+const year = ref(props.modelValue.year)
+const sortType = ref<1 | 2 | 3 | 4 | 5 | 6>(props.modelValue.sortType || 1)
+
+const query = ref(props.modelValue.query || '')
+const debouncedQuery = ref(props.modelValue.query || '')
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null
+
+watch(query, (newVal) => {
+  if (debounceTimeout) clearTimeout(debounceTimeout)
+  debounceTimeout = setTimeout(() => {
+    debouncedQuery.value = newVal
+  }, 500)
+})
 
 const selectedGenres = ref(genres)
 const availableYears = ref(years)
@@ -80,27 +91,32 @@ watch(
     genre.value = val.genre
     rating.value = val.rating
     year.value = val.year
+    sortType.value = val.sortType || 1
     query.value = val.query || ''
-    sortType.value = val.sortType ?? 1
+    debouncedQuery.value = val.query || ''
   },
-  { deep: true, immediate: true },
+  { deep: true },
 )
 
-watch([filterType, genre, rating, year, query, sortType], () => {
+watch([filterType, genre, rating, year, debouncedQuery, sortType], () => {
   emit('update:modelValue', {
     filterType: filterType.value,
     genre: genre.value,
     rating: rating.value,
     year: year.value,
-    query: query.value,
+    query: debouncedQuery.value,
     sortType: sortType.value,
   })
 })
+
 onUnmounted(() => {
-  clearQuery()
+  if (debounceTimeout) clearTimeout(debounceTimeout)
 })
+
 function clearQuery() {
+  if (debounceTimeout) clearTimeout(debounceTimeout)
   query.value = ''
+  debouncedQuery.value = ''
 }
 </script>
 

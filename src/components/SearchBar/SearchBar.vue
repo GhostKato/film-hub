@@ -11,6 +11,7 @@
           {{ t(option.label) }}
         </option>
       </select>
+
       <input
         :class="['input', isBigSearchBar ? 'big-search-bar' : 'small-search-bar']"
         v-model="searchStore.query"
@@ -18,13 +19,16 @@
         type="text"
         :placeholder="t('search_bar.placeholder')"
       />
+
       <IButton
         v-if="searchStore.query"
         :variant="isBigSearchBar ? 'big-clean-btn' : 'small-clean-btn'"
         @click="clearSearch"
-        ><XIcon
-      /></IButton>
+      >
+        <XIcon />
+      </IButton>
     </div>
+
     <IButton
       :variant="isBigSearchBar ? 'big-search-btn' : 'small-search-btn'"
       :disabled="!searchStore.query.trim()"
@@ -41,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import IButton from '@/components/IButton/IButton.vue'
@@ -53,43 +57,33 @@ const searchStore = useSearchStore()
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
-const isMultiSearchPage = route.path == '/multi-search'
+
+const isMultiSearchPage = route.path === '/multi-search'
 const isBigSearchBar = route.path === '/multi-search' || route.path === '/'
 
 const emit = defineEmits<{
   (e: 'search', query: string): void
 }>()
 
-watch(
-  () => searchStore.query,
-  (newQuery) => {
-    if (!isMultiSearchPage) return
-
-    router.push({
-      path: '/multi-search',
-      query: newQuery.trim() ? { query: newQuery } : undefined,
-    })
-  },
-  { immediate: true },
-)
-
 const search = async () => {
   const q = searchStore.query.trim()
   if (!q) return
 
-  if (!isMultiSearchPage) {
-    await router.push({
-      path: '/multi-search',
-      query: { query: q },
-    })
-  } else {
-    await router.push({
-      query: { query: q },
-    })
-  }
+  await router.push({
+    path: '/multi-search',
+    query: { query: q },
+  })
 
   emit('search', q)
 }
+
+onMounted(() => {
+  const queryFromUrl = route.query.query as string
+  if (isMultiSearchPage && queryFromUrl) {
+    searchStore.query = queryFromUrl
+    emit('search', queryFromUrl)
+  }
+})
 
 function clearSearch() {
   searchStore.clearQuery()
