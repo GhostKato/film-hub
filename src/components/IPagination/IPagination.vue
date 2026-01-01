@@ -143,6 +143,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyDown))
 }
 @media (min-width: 1024px) {
   .page-item {
+    height: 39px;
     font-size: 20px;
   }
 }
