@@ -44,7 +44,7 @@ function openUpdateModal() {
   modalStore.close('menu')
   modalStore.open('auth')
   authStore.setMode('edit')
-  notificationStore.info(t('notification_message.updated_profile_info'))
+  notificationStore.info(t('notification_message.updated_profile_user_info'))
 }
 
 function showGuestNotification() {
