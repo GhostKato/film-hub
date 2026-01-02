@@ -10,6 +10,8 @@ import { useModalStore } from '@/stores/modal'
 import { useMediaStore } from '@/stores/media'
 import IButton from '@/components/IButton/IButton.vue'
 import ReleaseIcon from '../icons/ReleaseIcon.vue'
+import { notificationStore } from '@/stores/notifications'
+import { useI18n } from 'vue-i18n'
 
 const modalStore = useModalStore()
 const mediaStore = useMediaStore()
@@ -17,8 +19,14 @@ const mediaStore = useMediaStore()
 const releaseList = computed(() => mediaStore.releaseList())
 const hasReleases = computed(() => releaseList.value.length > 0)
 
+const { t } = useI18n()
+
 function toggleMenu() {
-  modalStore.toggle('release')
+  if (hasReleases.value) {
+    modalStore.toggle('release')
+  } else {
+    notificationStore.info(t('notification_message.release_empty_info'))
+  }
 }
 </script>
 

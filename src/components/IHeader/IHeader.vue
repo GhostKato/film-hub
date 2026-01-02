@@ -12,11 +12,15 @@
       </IButton>
     </nav>
 
-    <div class="menu-btn-container">
-      <MenuButton />
+    <div v-if="isLargeScreen" class="desktop-bar">
+      <UserBar />
     </div>
-    <div :class="releaseStyle">
-      <ReleaseButton />
+
+    <div v-else class="mobile-bar">
+      <div class="release-container">
+        <ReleaseButton />
+      </div>
+      <MenuButton />
     </div>
   </header>
 </template>
@@ -27,15 +31,24 @@ import IButton from '../IButton/IButton.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 import MenuButton from './MenuButton.vue'
 import ReleaseButton from './ReleaseButton.vue'
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import UserBar from './UserBar.vue'
 
-const route = useRoute()
-const isHomePage = computed(() => route.path === '/')
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1920)
+const isLargeScreen = computed(() => windowWidth.value >= 1920)
 
-const releaseStyle = computed(
-  () => 'release-base ' + (isHomePage.value ? 'release-home' : 'release-other'),
-)
+const updateWidth = () => {
+  windowWidth.value = window.innerWidth
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth)
+  updateWidth()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth)
+})
 </script>
 
 <style scoped>
@@ -48,7 +61,6 @@ const releaseStyle = computed(
   height: 100px;
   position: relative;
 }
-
 .nav {
   display: flex;
   gap: 10px;
@@ -62,18 +74,11 @@ const releaseStyle = computed(
 .icon:hover {
   fill: var(--color-hover);
 }
-.release-base {
-  position: absolute;
-  z-index: 50;
-}
-.release-home {
-  right: 1px;
-  top: 85px;
-}
 
-.release-other {
-  right: -3px;
-  top: 100px;
+@media (max-width: 767px) {
+  .release-container {
+    display: none;
+  }
 }
 
 @media (min-width: 768px) {
@@ -81,49 +86,19 @@ const releaseStyle = computed(
     flex-direction: row;
     justify-content: space-around;
   }
-  .menu-btn-container {
+  .mobile-bar {
     display: flex;
     justify-content: flex-end;
     width: 200px;
   }
-  .release-other {
-    right: 8px;
-    top: 120px;
-  }
 }
 @media (min-width: 1024px) {
-  .menu-btn-container {
+  .mobile-bar {
     width: 250px;
   }
   .icon {
     width: 35px;
     height: 35px;
-  }
-  .release-home {
-    right: 12px;
-    top: 85px;
-  }
-  .release-other {
-    right: 18px;
-  }
-}
-@media (min-width: 1280px) {
-  .release-home {
-    right: 55px;
-  }
-}
-@media (min-width: 1920px) {
-  .release-home,
-  .release-other {
-    right: 55px;
-    top: 35px;
-  }
-}
-@media (min-width: 2560px) {
-  .release-home,
-  .release-other {
-    right: 75px;
-    top: 40px;
   }
 }
 </style>

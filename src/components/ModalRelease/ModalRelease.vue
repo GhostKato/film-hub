@@ -6,11 +6,7 @@
       @click.self="modalStore.close('release')"
     >
       <div class="release-list">
-        <div v-if="!releaseList.length" class="empty-container">
-          <p class="empty">{{ $t('modal_release.empty') }}</p>
-        </div>
-
-        <div v-else class="release-container">
+        <div class="release-container">
           <h2 class="main-title">{{ $t('modal_release.title') }}</h2>
           <IButton @click="modalStore.close('release')" variant="close"><XIcon /></IButton>
           <div class="release-scroll">
@@ -123,9 +119,6 @@ autoClose('release')
 }
 .release-list {
   pointer-events: all;
-}
-.empty {
-  text-align: center;
 }
 .release-container,
 .empty-container {

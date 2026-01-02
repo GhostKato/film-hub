@@ -1,7 +1,7 @@
 <template>
   <div class="logo-wrapper">
     <div class="gradient-bg"></div>
-    <img :src="logo" alt="Логотип" class="logo" />
+    <img :src="logo" alt="Logo" class="logo" />
   </div>
 </template>
 
@@ -61,6 +61,16 @@ import logo from '@/assets/images/logo.png'
   }
   100% {
     background-position: 100% 50%;
+  }
+}
+@media (min-width: 1920px) {
+  .logo-wrapper {
+    margin-right: 220px;
+  }
+}
+@media (min-width: 2560px) {
+  .logo-wrapper {
+    margin-right: 250px;
   }
 }
 </style>

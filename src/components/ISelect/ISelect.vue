@@ -100,6 +100,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   border-radius: 8px;
   z-index: 100;
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: 265px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   scrollbar-width: none;
@@ -140,7 +141,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 @media (min-width: 768px) {
   .custom-select {
     width: max-content;
-    min-width: 100px;
+    min-width: 65px;
   }
   .select-trigger {
     height: auto;
@@ -165,7 +166,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 }
 @media (min-width: 2560px) {
   .custom-select {
-    min-width: 200px;
+    min-width: 80px;
   }
   .select-trigger {
     height: 43px;

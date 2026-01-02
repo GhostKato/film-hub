@@ -1,5 +1,5 @@
 <template>
-  <Transition :name="transitionName">
+  <Transition name="slide-right">
     <div
       v-if="modalStore.modals.menu"
       class="modal-menu-wrapper"
@@ -60,7 +60,7 @@ function openUpdateModal() {
   modalStore.close('menu')
   modalStore.open('auth')
   authStore.setMode('edit')
-  notificationStore.info(t('notification_message.updated_profile_info'))
+  notificationStore.info(t('notification_message.updated_profile_user_info'))
 }
 
 const handleResize = () => {
@@ -74,8 +74,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
 })
-
-const transitionName = computed(() => (width.value > 1023 ? 'slide-top' : 'slide-right'))
 
 const nickname = computed(() => authStore.user?.displayName ?? t('modal_menu.displayName'))
 
@@ -133,17 +131,6 @@ autoClose('menu')
 .user-greeting {
   text-align: center;
 }
-.slide-top-enter-active,
-.slide-top-leave-active {
-  transition:
-    transform 0.35s ease,
-    opacity 0.35s ease;
-}
-.slide-top-enter-from,
-.slide-top-leave-to {
-  transform: translateY(-100%);
-  opacity: 0;
-}
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition:
@@ -163,21 +150,6 @@ autoClose('menu')
   .language-title,
   .user-greeting {
     font-size: 20px;
-  }
-}
-@media (min-width: 1024px) {
-  .modal-menu-wrapper {
-    justify-content: center;
-    padding-top: 78px;
-  }
-  .modal-menu {
-    flex-direction: row;
-    justify-content: space-between;
-    width: 95%;
-  }
-  .auth-container,
-  .language-container {
-    flex-direction: row;
   }
 }
 </style>

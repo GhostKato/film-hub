@@ -118,8 +118,7 @@
   },
   "modal_release": {
     "title": "Media that were released:",
-    "clear_all": "Clear all",
-    "empty": "New media has not been released!"
+    "clear_all": "Clear all"
   },
   "form": {
     "label_nickname": "Nickname",
@@ -136,7 +135,7 @@
   "notification_message": {
     "user_collection_info": "New and local data will be saved on the server!",
     "guest_collection_info": "New data will be stored locally! To save on the server, enter the account!",
-    "user_release_info": "New media has been released!",
+    "release_empty_info": "New media has not been released!",
     "added_favorite_success": "Media added to favorites!",
     "removed_favorite_success": "Media removed from favorites!",
     "added_watch_later_success": "Media added to watch later!",
@@ -159,7 +158,8 @@
     "logout_success": "The exit was completed successfully!",
     "logout_error": "There was an error when exiting!",
     "updated_profile_success": "User data has been successfully updated!",
-    "updated_profile_info": "Changes to any field must be supported by a current password! When changing the mail, you must specify the real mail, as a letter will be sent to support the changes!",
+    "updated_profile_user_info": "Changes to any field must be supported by a current password! When changing the mail, you must specify the real mail, as a letter will be sent to support the changes!",
+    "updated_profile_guest_info": "To change your profile data, you need to go to your account!",
     "updated_profile_error": "An error occurred while updating user data!"
   }
 }
