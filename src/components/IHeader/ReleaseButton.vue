@@ -1,5 +1,5 @@
 <template>
-  <IButton v-if="!modalStore.modals.release" @click="toggleMenu" variant="menu-btn">
+  <IButton @click="toggleMenu" variant="menu-btn">
     <ReleaseIcon class="bell-icon" :class="{ 'animate-bell': hasReleases }" />
   </IButton>
 </template>

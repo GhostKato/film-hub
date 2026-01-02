@@ -36,7 +36,7 @@ import { autoClose } from '@/utils/autoClose'
 const modalStore = useModalStore()
 const authStore = useAuthStore()
 
-autoClose('auth', 30000)
+autoClose('auth', 50000)
 </script>
 
 <style scoped>
@@ -52,7 +52,7 @@ autoClose('auth', 30000)
 .modal-content {
   background-color: var(--color-transparent-black);
   backdrop-filter: blur(14px) saturate(160%);
-  padding: 15px;
+  padding: 40px 15px 15px 15px;
   border-radius: 8px;
   width: 320px;
   border: 1px solid var(--color-grey);

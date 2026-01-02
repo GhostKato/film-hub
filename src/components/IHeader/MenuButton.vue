@@ -1,7 +1,6 @@
 <template>
-  <IButton v-if="!modalStore.modals.release" @click="toggleMenu" variant="menu-btn">
-    <MenuIcon v-if="!modalStore.modals.menu" />
-    <span v-else class="close-icon">✕</span>
+  <IButton @click="toggleMenu" variant="menu-btn">
+    <MenuIcon />
   </IButton>
 </template>
 

@@ -7,6 +7,7 @@
     >
       <div class="modal-menu">
         <div class="auth-container">
+          <IButton @click="modalStore.close('menu')" variant="close"><XIcon /></IButton>
           <h3 class="user-greeting">{{ $t('modal_menu.title_welcome') }}</h3>
           <h3 class="user-name">{{ nickname }}</h3>
 
@@ -40,6 +41,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { notificationStore } from '@/stores/notifications'
 import { autoClose } from '@/utils/autoClose'
+import XIcon from '../icons/XIcon.vue'
 
 const modalStore = useModalStore()
 const authStore = useAuthStore()
@@ -125,6 +127,9 @@ autoClose('menu')
   padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--color-grey);
+}
+.auth-container {
+  padding-top: 30px;
 }
 .user-name,
 .language-title,

@@ -3,7 +3,7 @@ import { useModalStore } from '@/stores/modal'
 
 export function autoClose(
   modalName: keyof ReturnType<typeof useModalStore>['modals'],
-  delay = 5000,
+  delay = 10000,
 ) {
   const modalStore = useModalStore()
   let timer: ReturnType<typeof setTimeout> | null = null

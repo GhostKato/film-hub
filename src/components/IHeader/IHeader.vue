@@ -15,11 +15,8 @@
     <div v-if="isLargeScreen" class="desktop-bar">
       <UserBar />
     </div>
-
     <div v-else class="mobile-bar">
-      <div class="release-container">
-        <ReleaseButton />
-      </div>
+      <ReleaseButton />
       <MenuButton />
     </div>
   </header>
@@ -59,13 +56,18 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   height: 100px;
-  position: relative;
 }
 .nav {
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
+.mobile-bar {
+  display: flex;
+  position: absolute;
+  top: 17px;
+  right: 1px;
+}
 .icon {
   width: 25px;
   height: 25px;
@@ -74,19 +76,13 @@ onUnmounted(() => {
 .icon:hover {
   fill: var(--color-hover);
 }
-
-@media (max-width: 767px) {
-  .release-container {
-    display: none;
-  }
-}
-
 @media (min-width: 768px) {
   .container {
     flex-direction: row;
     justify-content: space-around;
   }
   .mobile-bar {
+    position: static;
     display: flex;
     justify-content: flex-end;
     width: 200px;

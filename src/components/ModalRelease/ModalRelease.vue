@@ -104,7 +104,7 @@ const clearAllReleases = () => {
   modalStore.close('release')
 }
 
-autoClose('release')
+autoClose('release', 20000)
 </script>
 
 <style scoped>
