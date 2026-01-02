@@ -22,7 +22,9 @@ Film Hub is a website for searching and exploring movies and TV series. The plat
    - Search field available for quick navigation.
    - Accessed via the search icon.
 
-![Search](/public/readme/search-page.png)
+![Search](/public/readme/multi-search-page.png)
+
+![Search](/public/readme/filter-search-page.png)
 
 3. **Movies page:**
    - Lists of popular movies, top-rated, currently in theaters, and upcoming.
@@ -67,8 +69,6 @@ Film Hub is a website for searching and exploring movies and TV series. The plat
    - Authenticated users sync data with the cloud.
    - Language change updates both UI and API data, including trailer audio.
 
-![Menu](/public/readme/menu.png)
-
 ---
 
 ### Color coding:
@@ -81,8 +81,6 @@ Film Hub is a website for searching and exploring movies and TV series. The plat
   - Green — 8–10
   - Orange — 5–7
   - Red — 0–4
-
-![Color-coding](/public/readme/rating-release-colors.png)
 
 ---
 
@@ -134,7 +132,7 @@ Film Hub is a website for searching and exploring movies and TV series. The plat
 
 2. **Frameworks and Libraries:**
    - **Vue.js**
-   - **Pinia**  
+   - **Pinia**
 
 3. **Databases & Storage:**
    - **Firebase** (Authentication, Firestore for lists)
