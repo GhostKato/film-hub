@@ -98,11 +98,11 @@ watch(
 )
 
 const filters = ref<FiltersType>({
-  filterType: 'all',
-  genre: '',
-  rating: 'all',
-  year: '',
-  query: '',
+  filterType: (route.query.filterType as FiltersType['filterType']) || 'all',
+  genre: (route.query.genre as string) || '',
+  rating: (route.query.rating as FiltersType['rating']) || 'all',
+  year: (route.query.year as string) || '',
+  query: (route.query.query as string) || '',
   sortType: getSortTypeFromLS(),
 })
 
@@ -128,8 +128,8 @@ const filteredData = computed(() => {
     if (filters.value.genre && !item.genre_ids?.includes(Number(filters.value.genre))) return false
 
     const vote = item.vote_average || 0
-    if (filters.value.rating === 'low' && vote > 5) return false
-    if (filters.value.rating === 'medium' && (vote < 5 || vote > 8)) return false
+    if (filters.value.rating === 'low' && vote >= 5) return false
+    if (filters.value.rating === 'medium' && (vote < 5 || vote >= 8)) return false
     if (filters.value.rating === 'high' && vote < 8) return false
 
     if (filters.value.year) {
@@ -152,58 +152,79 @@ const pageSize = 20
 
 const totalPages = computed(() => Math.ceil(filteredData.value.length / pageSize))
 
-const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * pageSize
-  return sortedMedia.value.slice(start, start + pageSize)
-})
-
 const sortType = computed(() => filters.value.sortType ?? 1)
 
 const sortedMedia = computed(() => {
   return sortCollectionArray(filteredData.value, sortType.value)
 })
 
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return sortedMedia.value.slice(start, start + pageSize)
+})
+
 watch(
-  filters,
-  (newFilters) => {
+  () => [
+    filters.value.filterType,
+    filters.value.genre,
+    filters.value.rating,
+    filters.value.year,
+    filters.value.query,
+  ],
+  ([filterType, genre, rating, year, query]) => {
+    const nextFilterType = filterType || 'all'
+    const nextGenre = genre || ''
+    const nextRating = rating || 'all'
+    const nextYear = year || ''
+    const nextQuery = query || ''
+
+    if (
+      (route.query.filterType || 'all') === nextFilterType &&
+      (route.query.genre || '') === nextGenre &&
+      (route.query.rating || 'all') === nextRating &&
+      (route.query.year || '') === nextYear &&
+      (route.query.query || '') === nextQuery
+    ) {
+      return
+    }
+
     router.push({
       query: {
         ...route.query,
         category: activeTab.value,
         page: 1,
-        filterType: newFilters.filterType,
-        genre: newFilters.genre || '',
-        rating: newFilters.rating || 'all',
-        year: newFilters.year || '',
-        query: newFilters.query || '',
+        filterType: nextFilterType,
+        genre: nextGenre,
+        rating: nextRating,
+        year: nextYear,
+        query: nextQuery,
       },
     })
   },
-  { deep: true },
 )
 
 watch(
   () => route.query,
   (query) => {
-    filters.value.filterType = (query.filterType as FiltersType['filterType']) || 'all'
-    filters.value.genre = (query.genre as string) || ''
-    filters.value.rating = (query.rating as FiltersType['rating']) || 'all'
-    filters.value.year = (query.year as string) || ''
-    filters.value.query = (query.query as string) || ''
+    const nextFilterType = (query.filterType as FiltersType['filterType']) || 'all'
+    const nextGenre = (query.genre as string) || ''
+    const nextRating = (query.rating as FiltersType['rating']) || 'all'
+    const nextYear = (query.year as string) || ''
+    const nextQuery = (query.query as string) || ''
+
+    if (filters.value.filterType !== nextFilterType) filters.value.filterType = nextFilterType
+    if (filters.value.genre !== nextGenre) filters.value.genre = nextGenre
+    if (filters.value.rating !== nextRating) filters.value.rating = nextRating
+    if (filters.value.year !== nextYear) filters.value.year = nextYear
+    if (filters.value.query !== nextQuery) filters.value.query = nextQuery
+
     currentPage.value = Number(query.page) || 1
   },
   { immediate: true },
 )
 
-watch(
-  () => route.query.page,
-  (newVal) => {
-    currentPage.value = Number(newVal) || 1
-  },
-)
-
 watch(filteredData, () => {
-  if (currentPage.value > totalPages.value) {
+  if (totalPages.value > 0 && currentPage.value > totalPages.value) {
     changePage(1)
   }
 })
@@ -216,10 +237,12 @@ watch(
 )
 
 const changePage = (p: number) => {
+  if (p === currentPage.value) return
   router.push({
     query: { ...route.query, page: p },
   })
 }
+
 onMounted(() => {
   searchStore.clearQuery()
   searchStore.hideNotification()

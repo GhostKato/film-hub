@@ -102,7 +102,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 265px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px var(--color-transparent-black);
   scrollbar-width: none;
   -ms-overflow-style: none;
 }

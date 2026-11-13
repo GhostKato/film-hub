@@ -23,7 +23,8 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = u
       notificationStore.success(t('notification_message.register_success'))
       notificationStore.info(t('notification_message.user_collection_info'))
-    } catch {
+    } catch (e: unknown) {
+      error.value = e instanceof Error ? e.message : t('notification_message.register_error')
       notificationStore.error(t('notification_message.register_error'))
     } finally {
       loaderStore.hideLoader()
@@ -38,7 +39,8 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = u
       notificationStore.success(t('notification_message.login_success'))
       notificationStore.info(t('notification_message.user_collection_info'))
-    } catch {
+    } catch (e: unknown) {
+      error.value = e instanceof Error ? e.message : t('notification_message.login_error')
       notificationStore.error(t('notification_message.login_error'))
     } finally {
       loaderStore.hideLoader()
@@ -53,7 +55,8 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null
       notificationStore.success(t('notification_message.logout_success'))
       notificationStore.info(t('notification_message.guest_collection_info'))
-    } catch {
+    } catch (e: unknown) {
+      error.value = e instanceof Error ? e.message : t('notification_message.logout_error')
       notificationStore.error(t('notification_message.logout_error'))
     } finally {
       loaderStore.hideLoader()
@@ -72,7 +75,8 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = updatedUser
       notificationStore.success(t('notification_message.updated_profile_success'))
       notificationStore.info(t('notification_message.updated_profile_info'))
-    } catch {
+    } catch (e: unknown) {
+      error.value = e instanceof Error ? e.message : t('notification_message.updated_profile_error')
       notificationStore.error(t('notification_message.updated_profile_error'))
     } finally {
       loaderStore.hideLoader()
@@ -80,6 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const setMode = (newMode: 'login' | 'register' | 'edit') => {
+    error.value = null
     mode.value = newMode
   }
 

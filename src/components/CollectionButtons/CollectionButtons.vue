@@ -50,16 +50,18 @@ const currentType = computed<'movie' | 'tv'>(() => {
 
 const isMediaPage = computed(() => route.name === 'media')
 
-const typeToCheck = media.media_type ?? currentType.value
+const typeToCheck = computed(() => media.media_type ?? currentType.value)
 
 const isFavorite = (id: number) => {
-  return mediaStore.favoriteList().some((item) => item.id === id && item.media_type === typeToCheck)
+  return mediaStore
+    .favoriteList()
+    .some((item) => item.id === id && item.media_type === typeToCheck.value)
 }
 
 const isWatchLater = (id: number) => {
   return mediaStore
     .watchLaterList()
-    .some((item) => item.id === id && item.media_type === typeToCheck)
+    .some((item) => item.id === id && item.media_type === typeToCheck.value)
 }
 
 const toggleFavorite = (item: FirebaseItemType) => {
