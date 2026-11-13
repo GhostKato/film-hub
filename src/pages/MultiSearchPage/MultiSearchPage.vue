@@ -1,7 +1,7 @@
 <template>
   <IBackground>
     <div class="search-page">
-      <SearchBar @search="fetchSearchResults" />
+      <SearchBar @search="handleSearch" />
 
       <h3 class="result" v-if="searchStore.query">
         {{ $t('multi_search_page.search_result') }} "{{ searchStore.query }}"
@@ -15,20 +15,21 @@
         v-if="searchStore.query"
         :currentPage="currentPage"
         :totalPages="totalPages"
-        @update:page="fetchSearchResults(searchStore.query, $event)"
+        @update:page="changePage"
       />
     </div>
   </IBackground>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, watch, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import IBackground from '@/components/IBackground/IBackground.vue'
 import MediaList from '../../components/MediaList/MediaList.vue'
 import IPagination from '@/components/IPagination/IPagination.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import { useLoaderStore } from '@/stores/loader'
+import { useLanguageStore } from '@/stores/language'
 import { searchMulti } from '@/api/tmdb'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
@@ -36,16 +37,19 @@ import { notificationStore } from '@/stores/notifications'
 import { useI18n } from 'vue-i18n'
 
 const loaderStore = useLoaderStore()
+const languageStore = useLanguageStore()
 const searchStore = useSearchStore()
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const results = ref<TmdbItemType[]>([])
-const currentPage = ref(1)
+const currentPage = ref(Number(route.query.page) || 1)
 const totalPages = ref(1)
 
 const fetchSearchResults = async (q: string, page = 1) => {
-  if (!q) return
+  if (!q.trim()) return
+  searchStore.hideNotification()
   loaderStore.showLoader()
   try {
     const data = await searchMulti(q, page)
@@ -67,15 +71,41 @@ const filteredResults = computed(() => {
   return results.value.filter((item) => item.media_type === searchStore.type)
 })
 
-onMounted(() => {
-  if (searchStore.query) fetchSearchResults(searchStore.query)
-})
+const handleSearch = (q: string) => {
+  router.push({
+    path: '/multi-search',
+    query: { query: q, page: 1 },
+  })
+}
+
+const changePage = (page: number) => {
+  if (page === currentPage.value) return
+  router.push({
+    path: '/multi-search',
+    query: { ...route.query, query: searchStore.query, page },
+  })
+}
+
+watch(
+  () => [route.query.query, route.query.page, languageStore.lang],
+  () => {
+    const q = (route.query.query as string) || ''
+    const page = Number(route.query.page) || 1
+    if (q) {
+      searchStore.query = q
+      currentPage.value = page
+      fetchSearchResults(q, page)
+    }
+  },
+  { immediate: true },
+)
 
 watch(
   () => searchStore.query,
   (newQuery) => {
     if (!newQuery.trim()) {
       results.value = []
+      totalPages.value = 1
     }
   },
 )
@@ -84,8 +114,10 @@ watch(
   () => searchStore.type,
   () => {
     if (!searchStore.query.trim()) return
-    currentPage.value = 1
-    fetchSearchResults(searchStore.query, 1)
+    router.push({
+      path: '/multi-search',
+      query: { query: searchStore.query, page: 1 },
+    })
   },
 )
 </script>

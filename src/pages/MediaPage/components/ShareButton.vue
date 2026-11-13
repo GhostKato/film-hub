@@ -6,6 +6,9 @@
 
 <script setup lang="ts">
 import IButton from '@/components/IButton/IButton.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   title: {
@@ -15,7 +18,7 @@ const props = defineProps({
 })
 
 const share = async () => {
-  const shareText = `${props.title}\n{{ $t('share_button.message') }}\n${window.location.href}`
+  const shareText = `${props.title}\n${t('share_button.message')}\n${window.location.href}`
 
   if (navigator.share) {
     try {

@@ -1,16 +1,7 @@
 <template>
   <div class="search-bar">
     <div class="position">
-      <select class="select" v-if="isMultiSearchPage" v-model="searchStore.type">
-        <option
-          class="option"
-          v-for="option in filterOptions"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ t(option.label) }}
-        </option>
-      </select>
+      <ISelect v-if="isMultiSearchPage" v-model="searchStore.type" :options="filterOptions" />
 
       <input
         :class="['input', isBigSearchBar ? 'big-search-bar' : 'small-search-bar']"
@@ -52,6 +43,7 @@ import IButton from '@/components/IButton/IButton.vue'
 import { useSearchStore } from '@/stores/search'
 import SearchIcon from '../icons/SearchIcon.vue'
 import XIcon from '../icons/XIcon.vue'
+import ISelect from '../ISelect/ISelect.vue'
 
 const searchStore = useSearchStore()
 const { t } = useI18n()
@@ -91,9 +83,9 @@ function clearSearch() {
 }
 
 const filterOptions = [
-  { label: 'search_bar.all', value: 'all' },
-  { label: 'search_bar.movies', value: 'movie' },
-  { label: 'search_bar.series', value: 'tv' },
+  { label: t('search_bar.all'), value: 'all' },
+  { label: t('search_bar.movies'), value: 'movie' },
+  { label: t('search_bar.series'), value: 'tv' },
 ]
 </script>
 

@@ -40,7 +40,7 @@
                   </div>
                 </div>
                 <div class="remove-cont">
-                  <IButton @click="mediaStore.removeRelease(item)" variant="remove-release-btn"
+                  <IButton @click.stop="mediaStore.removeRelease(item)" variant="remove-release-btn"
                     ><XIcon />
                   </IButton>
                 </div>
