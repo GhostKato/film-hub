@@ -1,5 +1,12 @@
 <template>
-  <IBackground>
+  <IBackground class="media-wrapper">
+    <div
+      v-if="backdropUrl"
+      class="media-backdrop"
+      :class="{ loaded: isBackdropLoaded }"
+      :style="{ backgroundImage: `url(${backdropUrl})` }"
+    ></div>
+
     <div v-if="media" class="media-page">
       <div class="all-info">
         <div class="info-main">
@@ -100,11 +107,29 @@ const media = ref<TmdbMediaType | null>(null)
 const cast = ref<PersonItemType[]>([])
 const crew = ref<PersonItemType[]>([])
 const trailerId = ref<string | null>(null)
+const isBackdropLoaded = ref(false)
 const languageStore = useLanguageStore()
 const { t } = useI18n()
 
 const studios = computed(() => {
   return media.value?.production_companies ?? []
+})
+
+const backdropUrl = computed(() => {
+  if (!media.value?.backdrop_path) return ''
+  return getImageUrl(media.value.backdrop_path, 'backdrop', 'w1280')
+})
+
+watch(backdropUrl, (newUrl) => {
+  if (!newUrl) {
+    isBackdropLoaded.value = false
+    return
+  }
+  const img = new Image()
+  img.src = newUrl
+  img.onload = () => {
+    isBackdropLoaded.value = true
+  }
 })
 
 const fetchMedia = async () => {
@@ -135,11 +160,46 @@ watch(
 </script>
 
 <style scoped>
+.media-wrapper {
+  position: relative;
+}
+.media-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 95vh;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+}
+.media-backdrop.loaded {
+  opacity: 1;
+}
+.media-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0.7) 65%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+}
 .media-page {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 20px;
+  padding: 20px 20px 50px;
 }
 .all-info {
   display: flex;
@@ -207,6 +267,14 @@ watch(
   .all-info {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
+    gap: 30px;
+  }
+  .info-main {
+    flex: 1;
+  }
+  .youtube-player {
+    width: 640px;
   }
 }
 </style>

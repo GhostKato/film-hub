@@ -24,6 +24,7 @@ const { videoId } = defineProps<{
   aspect-ratio: 16 / 9;
   border-radius: 8px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .error {
   text-align: center;

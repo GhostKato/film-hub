@@ -40,7 +40,10 @@
     "remove_watch_later": "Don't watch",
     "share_btn": "Share",
     "actors_title": "Actors",
-    "production_crew_title": "Production Crew"
+    "production_crew_title": "Production Crew",
+    "reviews_title": "Reviews",
+    "read_more": "Read more",
+    "show_less": "Show less"
   },
   "person_page": {
     "date_of_birth": "Date of birth:",

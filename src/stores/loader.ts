@@ -4,6 +4,7 @@ export const useLoaderStore = defineStore('loader', {
   state: () => ({
     isLoading: false,
     isGlobalLoading: false,
+    isListLoading: false,
   }),
   actions: {
     showLoader() {
@@ -11,6 +12,13 @@ export const useLoaderStore = defineStore('loader', {
     },
     hideLoader() {
       this.isLoading = false
+    },
+
+    showListLoader() {
+      this.isListLoading = true
+    },
+    hideListLoader() {
+      this.isListLoading = false
     },
 
     showGlobalLoader() {

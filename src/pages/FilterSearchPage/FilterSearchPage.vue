@@ -79,7 +79,7 @@ const fetchResults = async (page = currentPage.value) => {
     },
   })
 
-  loaderStore.showLoader()
+  loaderStore.showListLoader()
   try {
     const params = {
       ...filters.value,
@@ -107,7 +107,7 @@ const fetchResults = async (page = currentPage.value) => {
         : 'notification_message.filter_series_error'
     notificationStore.error(t(key))
   } finally {
-    loaderStore.hideLoader()
+    loaderStore.hideListLoader()
   }
 }
 

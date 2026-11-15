@@ -40,7 +40,10 @@
     "remove_watch_later": "Не смотреть",
     "share_btn": "Поделиться",
     "actors_title": "Актёры",
-    "production_crew_title": "Съемочная группа"
+    "production_crew_title": "Съемочная группа",
+    "reviews_title": "Отзывы",
+    "read_more": "Читать далее",
+    "show_less": "Свернуть"
   },
   "person_page": {
     "date_of_birth": "Дата рождения:",

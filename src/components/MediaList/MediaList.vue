@@ -1,9 +1,13 @@
 <template>
   <div class="media-list">
+    <div v-if="loaderStore.isListLoading" class="media-grid">
+      <MediaCardSkeleton v-for="n in 20" :key="n" />
+    </div>
+
     <div
-      v-if="
-        (!isMultiSearchPage && !itemsWithPoster.length && !loaderStore.isLoading) ||
-        (searchStore.notification && !itemsWithPoster.length && !loaderStore.isLoading)
+      v-else-if="
+        (!isMultiSearchPage && !itemsWithPoster.length) ||
+        (searchStore.notification && !itemsWithPoster.length)
       "
       class="empty"
     >
@@ -50,6 +54,7 @@ import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
 import { useLoaderStore } from '@/stores/loader'
 import MediaInfo from '../MediaInfo/MediaInfo.vue'
+import MediaCardSkeleton from '@/components/MediaCardSkeleton/MediaCardSkeleton.vue'
 
 const searchStore = useSearchStore()
 const loaderStore = useLoaderStore()
