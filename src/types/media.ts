@@ -3,6 +3,7 @@ export interface TmdbItemType {
   title?: string
   name?: string
   poster_path?: string
+  backdrop_path?: string | null
   media_type: 'movie' | 'tv' | 'person'
   first_air_date?: string
   release_date?: string
@@ -30,6 +31,7 @@ export interface TmdbMediaType {
   name?: string
   overview?: string
   poster_path?: string
+  backdrop_path?: string | null
   release_date?: string
   first_air_date?: string
   vote_average?: number

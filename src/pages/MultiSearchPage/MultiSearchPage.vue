@@ -50,7 +50,7 @@ const totalPages = ref(1)
 const fetchSearchResults = async (q: string, page = 1) => {
   if (!q.trim()) return
   searchStore.hideNotification()
-  loaderStore.showLoader()
+  loaderStore.showListLoader()
   try {
     const data = await searchMulti(q, page)
     results.value = data.results.filter((item: TmdbItemType) => item.poster_path)
@@ -62,7 +62,7 @@ const fetchSearchResults = async (q: string, page = 1) => {
   } catch {
     notificationStore.error(t('notification_message.multi_search_error'))
   } finally {
-    loaderStore.hideLoader()
+    loaderStore.hideListLoader()
   }
 }
 

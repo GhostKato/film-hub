@@ -40,7 +40,10 @@
     "remove_watch_later": "Не дивитись",
     "share_btn": "Поділитись",
     "actors_title": "Актори",
-    "production_crew_title": "Виробнича бригада"
+    "production_crew_title": "Виробнича бригада",
+    "reviews_title": "Відгуки",
+    "read_more": "Читати далі",
+    "show_less": "Згорнути"
   },
   "person_page": {
     "date_of_birth": "Дата народження:",

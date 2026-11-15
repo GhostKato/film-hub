@@ -113,7 +113,7 @@ const languageStore = useLanguageStore()
 const searchStore = useSearchStore()
 
 const fetchSeries = async (category: string, page = 1) => {
-  loaderStore.showLoader()
+  loaderStore.showListLoader()
   try {
     let data
     switch (category) {
@@ -136,7 +136,7 @@ const fetchSeries = async (category: string, page = 1) => {
   } catch {
     notificationStore.error(t('notification_message.series_error'))
   } finally {
-    loaderStore.hideLoader()
+    loaderStore.hideListLoader()
   }
 }
 const changeCategory = (category: string) => {
