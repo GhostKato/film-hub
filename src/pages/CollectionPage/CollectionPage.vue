@@ -311,7 +311,6 @@ onMounted(() => {
   .collection-page {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: stretch;
     height: calc(100vh - 100px);
     overflow: hidden;
