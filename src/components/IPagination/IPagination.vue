@@ -149,15 +149,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyDown))
 }
 @media (min-width: 1920px) {
   .pagination {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -72px;
+    position: static;
+    transform: none;
+    padding-top: 10px;
+    padding-bottom: 12px;
+    margin-top: auto;
   }
 }
 @media (min-width: 2560px) {
   .pagination {
-    bottom: -130px;
+    padding-top: 14px;
+    padding-bottom: 16px;
   }
 }
 </style>

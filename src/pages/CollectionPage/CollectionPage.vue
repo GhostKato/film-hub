@@ -255,7 +255,6 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   padding: 5px;
-  height: 80vh;
 }
 .header-page {
   display: flex;
@@ -308,12 +307,25 @@ onMounted(() => {
     width: auto;
   }
 }
-@media (min-width: 2560px) {
-  .header-page {
-    margin-bottom: 15px;
+@media (min-width: 1920px) {
+  .collection-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: calc(100vh - 100px);
+    overflow: hidden;
   }
   .title {
-    margin-bottom: 30px;
+    margin-bottom: 6px;
+  }
+}
+@media (min-width: 2560px) {
+  .header-page {
+    margin-bottom: 8px;
+  }
+  .title {
+    margin-bottom: 12px;
   }
 }
 </style>

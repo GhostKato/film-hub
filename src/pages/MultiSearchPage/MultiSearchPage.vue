@@ -128,7 +128,6 @@ watch(
   flex-direction: column;
   align-items: center;
   padding: 5px;
-  height: 80vh;
 }
 
 .result {
@@ -154,6 +153,19 @@ watch(
   .result {
     font-size: 20px;
     text-align: start;
+  }
+}
+@media (min-width: 1920px) {
+  .search-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: calc(100vh - 100px);
+    overflow: hidden;
+  }
+  .result {
+    margin: 8px 20px;
   }
 }
 </style>

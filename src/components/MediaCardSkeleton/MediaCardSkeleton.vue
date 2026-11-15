@@ -95,7 +95,7 @@
 
 @media (min-width: 1920px) {
   .skeleton-card {
-    aspect-ratio: 9 / 17;
+    aspect-ratio: 9 / 16;
   }
 }
 </style>

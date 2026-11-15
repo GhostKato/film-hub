@@ -152,11 +152,15 @@ const isMultiSearchPage = route.path == '/multi-search'
   }
 }
 @media (min-width: 1920px) {
+  .media-list {
+    padding: 6px 20px;
+  }
   .media-grid {
     grid-template-columns: repeat(10, 1fr);
+    gap: 12px;
   }
   .media-card {
-    aspect-ratio: 9 / 17;
+    aspect-ratio: 9 / 16;
     transition: transform 0.3s ease;
   }
   .media-card:hover {
@@ -165,8 +169,14 @@ const isMultiSearchPage = route.path == '/multi-search'
   }
 }
 @media (min-width: 2560px) {
+  .media-list {
+    padding: 10px 20px;
+  }
   .media-grid {
-    gap: 30px 10px;
+    gap: 16px 12px;
+  }
+  .media-card {
+    aspect-ratio: 9 / 16;
   }
 }
 </style>

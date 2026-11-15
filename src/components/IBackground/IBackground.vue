@@ -72,7 +72,6 @@ const handleMouseLeave = () => {
   min-height: calc(100vh - 100px);
   background-color: #030612;
   transition: background-color 0.8s ease;
-  overflow: hidden;
 }
 
 /* 2. Сериалы — Янтарно-золотой (максимальный контраст с синими фильмами) */
@@ -126,6 +125,7 @@ const handleMouseLeave = () => {
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
 }
 
 .orb {
