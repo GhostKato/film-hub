@@ -1,5 +1,11 @@
 <template>
-  <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
+  <svg
+    class="icon"
+    viewBox="0 0 256 256"
+    :width="width ?? 18"
+    :height="height ?? 18"
+    fill="currentColor"
+  >
     <g
       fill-rule="nonzero"
       stroke="none"
@@ -16,3 +22,17 @@
     </g>
   </svg>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+  width?: number | string
+  height?: number | string
+}>()
+</script>
+
+<style scoped>
+.icon {
+  display: block;
+  flex-shrink: 0;
+}
+</style>
