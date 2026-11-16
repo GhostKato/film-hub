@@ -1,21 +1,32 @@
 .tab-btn {
-  padding: 4px 3px;
-  border: none;
+  padding: 4px 8px;
   border-radius: 8px;
-  background: var(--color-dark-grey);
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .share-btn {
-  border: none;
   border-radius: 8px;
-  padding: 5px;
+  padding: 6px 14px;
+  background-color: rgba(25, 95, 215, 0.48);
+  border-color: rgba(115, 175, 255, 0.32);
+  box-shadow:
+    0 12px 26px rgba(25, 95, 215, 0.42),
+    0 4px 12px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+}
+
+.share-btn:hover {
+  background-color: rgba(35, 120, 250, 0.78);
+  border-color: rgba(150, 200, 255, 0.65);
+  box-shadow:
+    0 16px 32px rgba(30, 110, 240, 0.65),
+    0 6px 14px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
 @media (min-width: 768px) {
   .tab-btn {
-    padding: 5px;
+    padding: 5px 10px;
   }
 
   .share-btn {
@@ -25,7 +36,7 @@
 
 @media (min-width: 1920px) {
   .tab-btn {
-    padding: none;
+    padding: 0;
     height: 33px;
     width: 210px;
   }

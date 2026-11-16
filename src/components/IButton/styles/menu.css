@@ -1,16 +1,12 @@
 .menu-auth-btn {
   height: 40px;
   width: 160px;
-  border: none;
   border-radius: 8px;
 }
 .menu-edit-btn {
   height: 40px;
   width: 160px;
-  border: none;
   border-radius: 8px;
-  background-color: transparent;
-  border: 1px solid var(--color-grey);
 }
 .menu-edit-btn:hover {
   border-color: var(--color-hover);
@@ -18,18 +14,10 @@
 .language-btn {
   width: 50px;
   height: 30px;
-  background: transparent;
-  border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   gap: 5px;
-  transition: all 0.3s;
-  background-color: transparent;
-  border: 1px solid var(--color-grey);
-}
-.language-btn:hover {
-  border: 1px solid var(--color-hover);
 }
 @media (min-width: 768px) {
   .menu-auth-btn,

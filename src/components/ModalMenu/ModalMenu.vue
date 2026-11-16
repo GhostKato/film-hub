@@ -1,5 +1,5 @@
 <template>
-  <Transition name="slide-right">
+  <Transition name="menu-fade">
     <div
       v-if="modalStore.modals.menu"
       class="modal-menu-wrapper"
@@ -89,18 +89,21 @@ autoClose('menu')
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  padding-top: 55px;
-  padding-right: 5px;
-  z-index: 50;
+  padding-top: 60px;
+  padding-right: 10px;
+  background-color: rgba(5, 7, 10, 0.65);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 60;
   pointer-events: all;
 }
 .modal-menu {
-  padding: 10px;
-  border-radius: 8px;
+  padding: 6px;
+  border-radius: 16px;
   pointer-events: all;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 14px;
 }
 .update-btn {
   background: none;
@@ -118,38 +121,53 @@ autoClose('menu')
 }
 .auth-container,
 .language-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  background-color: var(--color-transparent-black);
-  backdrop-filter: blur(14px) saturate(160%);
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--color-grey);
+  gap: 12px;
+  background-color: rgba(24, 28, 32, 0.72);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.88),
+    0 10px 20px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
 }
 .auth-container {
-  padding-top: 30px;
+  padding-top: 34px;
 }
 .user-name,
 .language-title,
 .user-greeting {
   text-align: center;
 }
-.slide-right-enter-active,
-.slide-right-leave-active {
-  transition:
-    transform 0.35s ease,
-    opacity 0.35s ease;
+.menu-fade-enter-active,
+.menu-fade-leave-active {
+  transition: opacity 0.3s ease;
 }
-.slide-right-enter-from,
-.slide-right-leave-to {
-  transform: translateX(100%);
+.menu-fade-enter-active .modal-menu,
+.menu-fade-leave-active .modal-menu {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
+}
+.menu-fade-enter-from,
+.menu-fade-leave-to {
+  opacity: 0;
+}
+.menu-fade-enter-from .modal-menu,
+.menu-fade-leave-to .modal-menu {
+  transform: translateX(30px) scale(0.97);
   opacity: 0;
 }
 @media (min-width: 768px) {
   .modal-menu-wrapper {
-    padding-top: 70px;
+    padding-top: 75px;
+    padding-right: 16px;
   }
   .user-name,
   .language-title,

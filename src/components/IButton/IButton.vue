@@ -56,7 +56,7 @@ const handleClick = (e: Event) => {
   font-size: 16px;
 }
 
-/* Дымчатое матовое стекло по умолчанию для корпусных кнопок */
+/* Лёгкое дымчатое стекло для неактивных вкладок и обычных кнопок */
 .big-btn-collection,
 .small-btn-collection,
 .form-submit-btn,
@@ -70,7 +70,7 @@ const handleClick = (e: Event) => {
 .small-search-btn,
 .release-clear-all-btn,
 .pagination-btn {
-  background-color: rgba(34, 38, 42, 0.56);
+  background-color: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -126,16 +126,15 @@ const handleClick = (e: Event) => {
     inset 0 2px 4px rgba(0, 0, 0, 0.45);
 }
 
-/* Полупрозрачное рубиновое стекло для акцентных кнопок */
-.big-btn-collection,
+/* Полупрозрачное рубиновое стекло для акцентных кнопок и активной пагинации */
 .form-submit-btn,
 .menu-auth-btn,
-.share-btn,
 .auth-nav-btn.active,
 .tab-btn.active,
 .big-search-btn,
 .small-search-btn,
-.release-clear-all-btn {
+.release-clear-all-btn,
+.pagination-btn {
   background-color: rgba(159, 27, 25, 0.76);
   border-color: rgba(255, 130, 125, 0.28);
 }
@@ -173,11 +172,11 @@ const handleClick = (e: Event) => {
   border-color: rgba(255, 175, 145, 0.42);
 }
 
-/* Неактивная кнопка — приглушённое матовое стекло на том же уровне */
+/* Неактивная (заблокированная) кнопка — максимально лёгкое приглушённое стекло */
 .is-disabled {
-  background-color: rgba(45, 48, 52, 0.42) !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
-  color: rgba(255, 255, 255, 0.38) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
   cursor: not-allowed !important;
   pointer-events: none;
 }

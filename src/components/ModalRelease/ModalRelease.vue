@@ -1,5 +1,5 @@
 <template>
-  <Transition name="slide-right">
+  <Transition name="release-fade">
     <div
       v-if="modalStore.modals.release"
       class="modal-release-wrapper"
@@ -113,35 +113,45 @@ autoClose('release', 20000)
   inset: 0;
   display: flex;
   justify-content: flex-end;
-  top: 10px;
-  right: 10px;
-  z-index: 50;
+  align-items: flex-start;
+  padding: 60px 12px 12px;
+  background-color: rgba(5, 7, 10, 0.65);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 60;
 }
 .release-list {
   pointer-events: all;
 }
 .release-container,
 .empty-container {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-transparent-black);
-  backdrop-filter: blur(14px) saturate(160%);
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--color-grey);
+  background-color: rgba(24, 28, 32, 0.72);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 26px 54px rgba(0, 0, 0, 0.9),
+    0 10px 22px rgba(0, 0, 0, 0.68),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
   width: 355px;
 }
 .main-title {
   margin: 0;
   font-size: 20px;
-  text-shadow: 0 0 15px var(--color-shadow-black);
-  margin-bottom: 10px;
+  padding-right: 28px;
+  margin-bottom: 12px;
 }
 .release-scroll {
   display: flex;
   flex-direction: column;
   gap: 10px;
   overflow-y: auto;
+  padding: 2px;
   --item-height: 96px;
   --max-items: 7;
   max-height: calc(var(--item-height) * var(--max-items));
@@ -156,30 +166,46 @@ autoClose('release', 20000)
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: var(--color-transparent-black);
-  border-radius: 8px;
-  padding: 5px;
-  border: 1px solid var(--color-grey);
+  background-color: rgba(38, 42, 48, 0.52);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
   cursor: pointer;
   position: relative;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 .release-card:hover {
+  transform: translateY(-2px);
+  background-color: rgba(48, 54, 62, 0.68);
   border-color: var(--color-hover);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .img {
   width: 50px;
   height: 75px;
   border-radius: 8px;
+  object-fit: cover;
 }
 .info {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  padding-right: 36px;
 }
 .title {
   margin: 0;
-  font-size: 20px;
-  text-shadow: 0 0 15px var(--color-shadow-black);
+  font-size: 18px;
 }
 .icons-info-cont {
   display: flex;
@@ -187,7 +213,7 @@ autoClose('release', 20000)
   align-items: center;
   position: absolute;
   bottom: 2px;
-  right: 50px;
+  right: 46px;
 }
 .icons-info-item svg.active {
   color: var(--color-red);
@@ -197,20 +223,33 @@ autoClose('release', 20000)
   bottom: 5px;
   right: 2px;
 }
-.slide-right-enter-active,
-.slide-right-leave-active {
-  transition:
-    transform 0.35s ease,
-    opacity 0.35s ease;
+.release-fade-enter-active,
+.release-fade-leave-active {
+  transition: opacity 0.3s ease;
 }
-.slide-right-enter-from,
-.slide-right-leave-to {
-  transform: translateX(100%);
+.release-fade-enter-active .release-list,
+.release-fade-leave-active .release-list {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
+}
+.release-fade-enter-from,
+.release-fade-leave-to {
   opacity: 0;
+}
+.release-fade-enter-from .release-list,
+.release-fade-leave-to .release-list {
+  transform: translateX(30px) scale(0.97);
+  opacity: 0;
+}
+@media (min-width: 768px) {
+  .modal-release-wrapper {
+    padding-top: 75px;
+  }
 }
 @media (min-width: 1920px) {
   .modal-release-wrapper {
-    right: 20px;
+    padding-right: 20px;
   }
   .release-scroll {
     --max-items: 7;

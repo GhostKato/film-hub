@@ -1,12 +1,20 @@
 <template>
   <div class="big-btn-container" v-if="isMediaPage">
-    <IButton variant="big-btn-collection" @click="toggleFavorite(media)">
+    <IButton
+      variant="big-btn-collection"
+      :class="['btn-favorite', { 'is-favorite': isFavorite(media.id) }]"
+      @click="toggleFavorite(media)"
+    >
       {{
         isFavorite(media.id) ? $t('media_page.remove_favorites') : $t('media_page.add_favorites')
       }}
     </IButton>
 
-    <IButton variant="big-btn-collection" @click="toggleWatchLater(media)">
+    <IButton
+      variant="big-btn-collection"
+      :class="['btn-watch-later', { 'is-watch-later': isWatchLater(media.id) }]"
+      @click="toggleWatchLater(media)"
+    >
       {{
         isWatchLater(media.id)
           ? $t('media_page.remove_watch_later')
