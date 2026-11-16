@@ -216,12 +216,18 @@ watch(
   display: flex;
   justify-content: center;
   position: relative;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.85),
+    0 8px 18px rgba(0, 0, 0, 0.6);
 }
 .poster {
-  border-radius: 8px;
+  border-radius: 12px;
   object-fit: cover;
-  display: flex;
-  justify-content: center;
+  display: block;
 }
 .info-cont {
   display: flex;

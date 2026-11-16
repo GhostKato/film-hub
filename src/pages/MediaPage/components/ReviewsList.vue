@@ -80,24 +80,42 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
   max-width: 1100px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
 
 .reviews-title {
   text-align: center;
   margin-bottom: 10px;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.85);
 }
 
 .review-card {
-  background-color: var(--color-transparent-grey);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-grey);
+  background: rgba(18, 28, 22, 0.48);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.65),
+    0 4px 12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   color: var(--color-white);
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 22px 42px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .review-header {
@@ -105,7 +123,7 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid var(--color-grey);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   padding-bottom: 8px;
 }
 
@@ -113,6 +131,7 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
   margin: 0;
   font-size: 1.1rem;
   color: var(--color-white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .date {

@@ -85,8 +85,8 @@
     "placeholder": "Search by catalog...",
     "release": "Release",
     "date_added": "Added",
-    "a_to_z": "A → Z",
-    "z_to_a": "Z → A"
+    "a_to_z": "A › Z",
+    "z_to_a": "Z › A"
   },
   "search_bar": {
     "all": "All",

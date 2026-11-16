@@ -1,5 +1,5 @@
 <template>
-  <IButton @click="toggleMenu" variant="menu-btn">
+  <IButton @click="toggleMenu" variant="menu-btn" class="release-bell-btn">
     <ReleaseIcon class="bell-icon" :class="{ 'animate-bell': hasReleases }" />
   </IButton>
 </template>
@@ -100,15 +100,15 @@ function toggleMenu() {
   0%,
   100% {
     transform: rotate(0deg) scale(1);
-    filter: drop-shadow(0 0 4px rgba(159, 27, 25, 0.4));
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(159, 27, 25, 0.5));
   }
   8% {
     transform: rotate(22deg) scale(1.1);
-    filter: drop-shadow(0 0 10px rgba(255, 61, 0, 0.85));
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 14px rgba(255, 61, 0, 0.9));
   }
   16% {
     transform: rotate(-20deg) scale(1.1);
-    filter: drop-shadow(0 0 12px rgba(255, 61, 0, 0.9));
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 16px rgba(255, 61, 0, 0.95));
   }
   24% {
     transform: rotate(15deg) scale(1.06);
@@ -124,8 +124,21 @@ function toggleMenu() {
   }
   56% {
     transform: rotate(0deg) scale(1);
-    filter: drop-shadow(0 0 4px rgba(159, 27, 25, 0.4));
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(159, 27, 25, 0.5));
   }
+}
+
+.release-bell-btn {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.release-bell-btn:hover {
+  transform: translateY(-2px);
+}
+
+.release-bell-btn:active {
+  transform: translateY(1px) scale(0.92);
+  transition-duration: 0.08s;
 }
 
 .bell-icon {
@@ -133,9 +146,12 @@ function toggleMenu() {
   height: 30px;
   color: var(--color-white);
   transform-origin: 50% 15%;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.85))
+    drop-shadow(0 2px 4px rgba(255, 255, 255, 0.16));
   transition:
     color 0.3s ease,
-    transform 0.3s ease;
+    transform 0.3s ease,
+    filter 0.3s ease;
   will-change: transform, filter;
 }
 
@@ -148,5 +164,6 @@ function toggleMenu() {
   color: var(--color-hover);
   animation-play-state: paused;
   transform: scale(1.1);
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 12px rgba(255, 61, 0, 0.65));
 }
 </style>

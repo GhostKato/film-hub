@@ -9,9 +9,13 @@
           :to="`/person/${person.id}`"
           class="person-card"
         >
-          <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
-          <div class="name">{{ person.name }}</div>
-          <div class="character" v-if="person.character">as {{ person.character }}</div>
+          <div class="photo-box">
+            <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
+          </div>
+          <div class="info">
+            <div class="name">{{ person.name }}</div>
+            <div class="character" v-if="person.character">as {{ person.character }}</div>
+          </div>
         </router-link>
       </div>
     </div>
@@ -25,10 +29,14 @@
           :to="`/person/${person.id}`"
           class="person-card"
         >
-          <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
-          <div class="name">{{ person.name }}</div>
-          <div class="character">
-            {{ person.jobs.join(', ') }}
+          <div class="photo-box">
+            <img :src="getImageUrl(person.profile_path!, 'profile', 'w185')" :alt="person.name" />
+          </div>
+          <div class="info">
+            <div class="name">{{ person.name }}</div>
+            <div class="character">
+              {{ person.jobs.join(', ') }}
+            </div>
           </div>
         </router-link>
       </div>
@@ -80,42 +88,93 @@ const crewGrouped = computed(() => {
 
 h2 {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.85);
 }
 
 .people-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  gap: 16px;
 }
 
 .person-card {
-  width: 130px;
+  width: 140px;
+  display: flex;
+  flex-direction: column;
   text-align: center;
   color: var(--color-white);
   text-decoration: none;
-  transition: transform 0.2s;
+  background: rgba(18, 28, 22, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.65),
+    0 4px 10px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  overflow: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 .person-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-6px) scale(1.04);
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 24px 44px rgba(0, 0, 0, 0.85),
+    0 8px 18px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  z-index: 5;
 }
 
-.person-card img {
-  width: 130px;
-  height: 190px;
-  border-radius: 8px;
+.photo-box {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+}
+
+.photo-box img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 6px 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(10, 18, 14, 0.62) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .name {
+  font-size: 14px;
   font-weight: bold;
-  margin-top: 8px;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .character {
-  font-size: 0.9rem;
-  color: var(--color-light-grey);
+  font-size: 12px;
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.8);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

@@ -1,7 +1,12 @@
 <template>
   <div class="search-bar">
     <div class="position">
-      <ISelect v-if="isMultiSearchPage" v-model="searchStore.type" :options="filterOptions" />
+      <ISelect
+        v-if="isMultiSearchPage"
+        class="search-type-select"
+        v-model="searchStore.type"
+        :options="filterOptions"
+      />
 
       <input
         :class="['input', isBigSearchBar ? 'big-search-bar' : 'small-search-bar']"
@@ -99,21 +104,60 @@ const filterOptions = [
 .position {
   position: relative;
   display: flex;
+  align-items: stretch;
   gap: 5px;
+}
+.search-type-select {
+  width: 95px;
+  min-width: 95px;
+  flex-shrink: 0;
+}
+.search-type-select :deep(.select-trigger) {
+  width: 100%;
+  height: 39px;
+  padding: 0 10px;
 }
 .input {
   border-radius: 8px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: var(--color-white);
-  background-color: var(--color-dark-grey);
+  background-color: rgba(34, 38, 42, 0.56);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.65),
+    0 4px 8px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    border-color 0.2s ease,
+    background-color 0.25s ease;
 }
-.input:focus {
-  outline: 1px solid var(--color-red);
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
 }
 .input:hover {
-  outline: 1px solid var(--color-hover);
+  border-color: var(--color-hover);
+  background-color: rgba(40, 45, 50, 0.65);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 30px rgba(0, 0, 0, 0.8),
+    0 6px 12px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--color-red);
+  background-color: rgba(28, 32, 36, 0.72);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.85),
+    0 0 14px rgba(159, 27, 25, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .big-search-bar {
+  height: 39px;
   padding: 10px 35px 10px 10px;
   width: 200px;
 }
@@ -136,14 +180,16 @@ const filterOptions = [
   border-radius: 8px;
   font-size: 16px;
   color: var(--color-white);
-  background-color: var(--color-dark-grey);
-  border: none;
+  background-color: rgba(34, 38, 42, 0.56);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   outline: none;
   appearance: none;
   cursor: pointer;
 }
 .select:hover {
-  outline: 1px solid var(--color-hover);
+  border-color: var(--color-hover);
 }
 .option {
   font-size: 16px;
@@ -160,6 +206,10 @@ const filterOptions = [
   .position {
     gap: 10px;
   }
+  .search-type-select :deep(.select-trigger) {
+    height: 48px;
+    padding: 0 12px;
+  }
   .big-search-bar {
     height: 48px;
     width: 340px;
@@ -173,6 +223,10 @@ const filterOptions = [
   }
 }
 @media (min-width: 1024px) {
+  .search-type-select {
+    width: 115px;
+    min-width: 115px;
+  }
   .input {
     font-size: 20px;
   }

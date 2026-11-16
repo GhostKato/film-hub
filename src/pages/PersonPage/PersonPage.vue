@@ -105,7 +105,11 @@ watch(
 
 .person-photo {
   width: 250px;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.85),
+    0 8px 18px rgba(0, 0, 0, 0.6);
 }
 
 .person-info {

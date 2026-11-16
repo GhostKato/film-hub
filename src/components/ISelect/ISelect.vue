@@ -1,7 +1,12 @@
 <template>
   <div class="custom-select" ref="selectRef">
     <div class="select-trigger" @click="toggle" :class="{ open: isOpen }">
-      <span>{{ selectedLabel }}</span>
+      <span class="current-label">{{ selectedLabel }}</span>
+      <span class="width-sizer" aria-hidden="true">
+        <span v-for="option in options" :key="String(option.value)">
+          {{ option.label }}
+        </span>
+      </span>
     </div>
 
     <div v-if="isOpen" class="options-dropdown">
@@ -69,44 +74,71 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 .select-trigger {
   width: 100%;
   height: 27px;
-  display: flex;
+  display: inline-grid;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   border-radius: 8px;
   color: var(--color-white);
-  background-color: var(--color-dark-grey);
+  background-color: rgba(34, 38, 42, 0.56);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   cursor: pointer;
   font-size: 16px;
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.65),
+    0 4px 8px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
   transition:
-    outline 0.2s,
-    background-color 0.2s;
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    border-color 0.2s ease,
+    background-color 0.25s ease;
+}
+.current-label {
+  grid-area: 1 / 1;
+}
+.width-sizer {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
 }
 .select-trigger:hover,
 .select-trigger.open {
-  outline: 1px solid var(--color-hover);
+  border-color: var(--color-hover);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 30px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
-.selected-label {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0 10px;
+.select-trigger:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.7),
+    inset 0 2px 4px rgba(0, 0, 0, 0.45);
+  transition-duration: 0.08s;
 }
 .options-dropdown {
   position: absolute;
-  top: calc(100% + 5px);
+  top: calc(100% + 6px);
   left: 0;
   width: 100%;
-  background-color: var(--color-dark-grey);
+  background-color: rgba(24, 28, 32, 0.78);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 8px;
   z-index: 100;
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 265px;
-  box-shadow: 0 4px 12px var(--color-transparent-black);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.options-dropdown {
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.85),
+    0 6px 14px rgba(0, 0, 0, 0.6);
   scrollbar-width: thin;
   scrollbar-color: var(--color-hover) transparent;
   padding-right: 4px;
@@ -133,10 +165,10 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   transition: background-color 0.2s;
 }
 .option:hover {
-  background-color: var(--color-hover);
+  background-color: rgba(255, 61, 0, 0.82);
 }
 .option.active {
-  background-color: var(--color-red);
+  background-color: rgba(159, 27, 25, 0.85);
 }
 @media (min-width: 768px) {
   .custom-select {
@@ -145,7 +177,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   }
   .select-trigger {
     height: auto;
-    padding: 5px 5px;
+    padding: 5px 12px;
     white-space: nowrap;
   }
   .options-dropdown {
@@ -154,7 +186,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   }
   .option {
     white-space: nowrap;
-    padding: 10px 1px;
+    padding: 10px 12px;
     text-align: center;
   }
 }

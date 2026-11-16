@@ -13,12 +13,19 @@ import logo from '@/assets/images/logo.png'
 .logo-wrapper {
   position: relative;
   display: inline-block;
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.3s ease;
   animation: logoGlowPulse 3.8s ease-in-out infinite;
 }
 
 .logo-wrapper:hover {
-  transform: scale(1.04);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.logo-wrapper:active {
+  transform: translateY(1px) scale(0.97);
+  transition-duration: 0.08s;
 }
 
 .gradient-bg {
@@ -54,10 +61,11 @@ import logo from '@/assets/images/logo.png'
 @keyframes logoGlowPulse {
   0%,
   100% {
-    filter: drop-shadow(0 0 6px rgba(159, 27, 25, 0.35));
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 8px rgba(159, 27, 25, 0.4));
   }
   50% {
-    filter: drop-shadow(0 0 15px rgba(255, 61, 0, 0.7));
+    filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.95))
+      drop-shadow(0 0 16px rgba(255, 61, 0, 0.72));
   }
 }
 

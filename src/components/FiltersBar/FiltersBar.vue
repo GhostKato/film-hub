@@ -79,10 +79,10 @@ const yearOptions = computed(() => [
 ])
 
 const sortOptions = computed(() => [
-  { label: `${t('filters_bar.release')} ↑`, value: 1 as const },
-  { label: `${t('filters_bar.release')} ↓`, value: 2 as const },
-  { label: `${t('filters_bar.date_added')} ↑`, value: 3 as const },
-  { label: `${t('filters_bar.date_added')} ↓`, value: 4 as const },
+  { label: `${t('filters_bar.release')} ▴`, value: 1 as const },
+  { label: `${t('filters_bar.release')} ▾`, value: 2 as const },
+  { label: `${t('filters_bar.date_added')} ▴`, value: 3 as const },
+  { label: `${t('filters_bar.date_added')} ▾`, value: 4 as const },
   { label: t('filters_bar.a_to_z'), value: 5 as const },
   { label: t('filters_bar.z_to_a'), value: 6 as const },
 ])
@@ -122,6 +122,7 @@ watch([filterType, genre, rating, year, debouncedQuery, sortType], () => {
 onUnmounted(() => {
   if (debounceTimeout) clearTimeout(debounceTimeout)
 })
+
 function clearQuery() {
   query.value = ''
   debouncedQuery.value = ''
@@ -146,17 +147,44 @@ function clearQuery() {
 }
 .input {
   border-radius: 8px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: var(--color-white);
-  background-color: var(--color-dark-grey);
+  background-color: rgba(34, 38, 42, 0.56);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   padding: 5px 25px 5px 10px;
   width: 100%;
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.65),
+    0 4px 8px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    border-color 0.2s ease,
+    background-color 0.25s ease;
 }
-.input:focus {
-  outline: 1px solid var(--color-red);
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
 }
 .input:hover {
-  outline: 1px solid var(--color-hover);
+  border-color: var(--color-hover);
+  background-color: rgba(40, 45, 50, 0.65);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 30px rgba(0, 0, 0, 0.8),
+    0 6px 12px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--color-red);
+  background-color: rgba(28, 32, 36, 0.72);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.85),
+    0 0 14px rgba(159, 27, 25, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 @media (max-width: 767px) {
   .position {

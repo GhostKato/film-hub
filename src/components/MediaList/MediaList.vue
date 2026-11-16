@@ -93,17 +93,29 @@ const isMultiSearchPage = route.path == '/multi-search'
   display: flex;
   flex-direction: column;
   background: rgba(18, 28, 22, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-  border-radius: 10px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.65),
+    0 4px 10px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   transition:
-    transform 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+.media-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 24px 44px rgba(0, 0, 0, 0.85),
+    0 8px 18px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  z-index: 10;
 }
 .poster-box {
   position: relative;
@@ -126,14 +138,14 @@ const isMultiSearchPage = route.path == '/multi-search'
   padding: 6px 8px;
   text-align: center;
   color: var(--color-white);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(10, 18, 14, 0.55) 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(10, 18, 14, 0.62) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 .title {
   font-size: 15px;
   line-height: 1.2;
   margin: 0;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -167,7 +179,7 @@ const isMultiSearchPage = route.path == '/multi-search'
   }
   .media-grid {
     grid-template-columns: repeat(10, 1fr);
-    gap: 8px 12px;
+    gap: 10px 12px;
   }
   .info {
     padding: 4px 6px;
@@ -180,12 +192,6 @@ const isMultiSearchPage = route.path == '/multi-search'
   .type {
     font-size: 13px;
     font-weight: 500;
-  }
-  .media-card:hover {
-    transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.35);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
-    z-index: 10;
   }
 }
 @media (min-width: 2560px) {

@@ -108,26 +108,52 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyDown))
 }
 .pages-list {
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 .page-item {
   min-width: 40px;
   height: 35px;
-  background-color: var(--color-dark-grey);
+  background-color: rgba(34, 38, 42, 0.56);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   color: var(--color-white);
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   cursor: pointer;
-  transition: all 0.3s ease;
   border-radius: 8px;
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.65),
+    0 4px 8px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 .page-item:hover:not(.dots):not(.active) {
-  background-color: var(--color-hover);
+  background-color: rgba(255, 61, 0, 0.82);
+  border-color: rgba(255, 175, 145, 0.42);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 30px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+}
+.page-item:active:not(.dots):not(.active) {
+  transform: translateY(1px) scale(0.95);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.7),
+    inset 0 2px 4px rgba(0, 0, 0, 0.45);
+  transition-duration: 0.08s;
 }
 .page-item.active {
-  background-color: var(--color-red);
+  background-color: rgba(159, 27, 25, 0.78);
   color: var(--color-white);
   font-weight: bold;
-  border-color: var(--color-red);
+  border-color: rgba(255, 130, 125, 0.32);
+  box-shadow:
+    0 12px 26px rgba(159, 27, 25, 0.55),
+    0 4px 12px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
   cursor: default;
 }
 @media (max-width: 767px) {
