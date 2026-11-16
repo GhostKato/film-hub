@@ -10,7 +10,6 @@
 
 <style scoped>
 .skeleton-card {
-  aspect-ratio: 9 / 17;
   position: relative;
   background: var(--color-transparent-grey);
   border-radius: 8px;
@@ -21,23 +20,25 @@
 
 .skeleton-poster {
   width: 100%;
-  flex: 1;
+  aspect-ratio: 2 / 3;
   background: #1f1f1f;
   position: relative;
   overflow: hidden;
 }
 
 .skeleton-info {
-  padding: 8px 10px;
+  padding: 6px 8px;
+  min-height: 56px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
 }
 
 .skeleton-title {
   width: 80%;
-  height: 16px;
+  height: 15px;
   border-radius: 4px;
   background: #262626;
   position: relative;
@@ -75,27 +76,19 @@
   }
 }
 
-@media (min-width: 640px) {
-  .skeleton-card {
-    aspect-ratio: 9 / 16;
-  }
-}
-
-@media (min-width: 768px) {
-  .skeleton-card {
-    aspect-ratio: 9 / 17;
-  }
-}
-
-@media (min-width: 1024px) {
-  .skeleton-card {
-    aspect-ratio: 9 / 16;
-  }
-}
-
 @media (min-width: 1920px) {
-  .skeleton-card {
-    aspect-ratio: 9 / 16;
+  .skeleton-info {
+    padding: 4px 6px;
+    min-height: 52px;
+    height: 52px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .skeleton-info {
+    padding: 6px 8px;
+    min-height: 62px;
+    height: 62px;
   }
 }
 </style>

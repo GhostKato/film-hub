@@ -21,16 +21,18 @@
         class="media-card"
         @click="goToMedia(item)"
       >
-        <MediaInfo :item="item" />
-        <CollectionButtons :media="item" />
+        <div class="poster-box">
+          <MediaInfo :item="item" />
+          <CollectionButtons :media="item" />
 
-        <img
-          :src="getImageUrl(item.poster_path, 'poster', 'w500')"
-          :alt="item.title || item.name"
-        />
+          <img
+            :src="getImageUrl(item.poster_path, 'poster', 'w500')"
+            :alt="item.title || item.name"
+          />
+        </div>
 
         <div class="info">
-          <h3 class="title">{{ truncateTitle(item.title ?? item.name ?? '') }}</h3>
+          <h3 class="title">{{ item.title ?? item.name ?? '' }}</h3>
           <p class="type">
             {{
               item.media_type === 'tv' || (!item.media_type && item.name && !item.title)
@@ -49,7 +51,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { getImageUrl } from '@/utils/getImageUrl'
 import CollectionButtons from '../../components/CollectionButtons/CollectionButtons.vue'
-import { truncateTitle } from '@/utils/truncateTitle'
 import { useSearchStore } from '@/stores/search'
 import type { TmdbItemType } from '@/types/media'
 import { useLoaderStore } from '@/stores/loader'
@@ -89,82 +90,101 @@ const isMultiSearchPage = route.path == '/multi-search'
   gap: 10px;
 }
 .media-card {
-  aspect-ratio: 9 / 17;
-  position: relative;
-  background: var(--color-transparent-grey);
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 28, 22, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
-.media-card img {
+.poster-box {
+  position: relative;
   width: 100%;
-  height: auto;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+}
+.poster-box img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
 .info {
-  padding: 5px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 6px 8px;
   text-align: center;
   color: var(--color-white);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(10, 18, 14, 0.55) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 .title {
-  font-size: 16px;
-  margin-bottom: 5px;
+  font-size: 15px;
+  line-height: 1.2;
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .type {
-  font-size: 14px;
-  opacity: 0.8;
+  font-size: 13px;
+  line-height: 1.15;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
 }
 .empty {
   text-align: center;
   color: var(--color-white);
   margin-top: 40px;
 }
-@media (min-width: 640px) {
-  .media-card {
-    aspect-ratio: 9 / 16;
-  }
-}
 @media (min-width: 768px) {
   .media-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
-  .media-card {
-    aspect-ratio: 9 / 17;
-  }
 }
 @media (min-width: 1024px) {
-  .media-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .media-card {
-    aspect-ratio: 9 / 16;
-  }
   .empty {
     font-size: 20px;
   }
 }
-@media (min-width: 1280px) {
-  .media-card {
-    aspect-ratio: 9 / 16;
-  }
-}
 @media (min-width: 1920px) {
   .media-list {
-    padding: 6px 20px;
+    padding: 4px 20px;
   }
   .media-grid {
     grid-template-columns: repeat(10, 1fr);
-    gap: 12px;
+    gap: 8px 12px;
   }
-  .media-card {
-    aspect-ratio: 9 / 16;
-    transition: transform 0.3s ease;
+  .info {
+    padding: 4px 6px;
+    height: 52px;
+  }
+  .title {
+    font-size: 14px;
+    line-height: 1.15;
+  }
+  .type {
+    font-size: 13px;
+    font-weight: 500;
   }
   .media-card:hover {
     transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
     z-index: 10;
   }
 }
@@ -175,8 +195,15 @@ const isMultiSearchPage = route.path == '/multi-search'
   .media-grid {
     gap: 16px 12px;
   }
-  .media-card {
-    aspect-ratio: 9 / 16;
+  .info {
+    padding: 6px 8px;
+    height: 62px;
+  }
+  .title {
+    font-size: 15px;
+  }
+  .type {
+    font-size: 14px;
   }
 }
 </style>

@@ -164,7 +164,12 @@ watch(
     overflow: hidden;
   }
   .result {
-    margin: 8px 20px;
+    margin: 8px 20px 14px;
+  }
+}
+@media (min-width: 2560px) {
+  .result {
+    margin: 16px 20px 24px;
   }
 }
 </style>

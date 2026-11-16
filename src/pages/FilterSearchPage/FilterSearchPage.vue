@@ -221,16 +221,19 @@ watch(
     height: calc(100vh - 100px);
     overflow: hidden;
   }
+  .header-page {
+    margin-bottom: 14px;
+  }
   .title {
     margin-bottom: 6px;
   }
 }
 @media (min-width: 2560px) {
   .header-page {
-    margin-bottom: 8px;
+    margin-bottom: 28px;
   }
   .title {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 }
 </style>
