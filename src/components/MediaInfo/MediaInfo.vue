@@ -38,15 +38,19 @@ defineProps<{
   flex-direction: column;
   gap: 3px;
 }
-.release {
-  padding: 3px;
-  border-radius: 8px;
-  font-size: 15px;
-}
+.release,
 .rating {
   padding: 3px;
   border-radius: 8px;
   font-size: 15px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.rating {
   margin-right: auto;
 }
 </style>

@@ -90,10 +90,10 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
 }
 
 .review-card {
-  background: rgba(18, 28, 22, 0.48);
+  background: var(--glass-card);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 16px 32px rgba(0, 0, 0, 0.65),
     0 4px 12px rgba(0, 0, 0, 0.45),
@@ -112,7 +112,7 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
 
 .review-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.32);
+  border-color: var(--glass-border-bright);
   box-shadow:
     0 22px 42px rgba(0, 0, 0, 0.8),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -123,7 +123,7 @@ const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(lan
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid var(--glass-border);
   padding-bottom: 8px;
 }
 

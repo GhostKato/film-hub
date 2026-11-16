@@ -113,11 +113,11 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyDown))
 .page-item {
   min-width: 40px;
   height: 35px;
-  background-color: rgba(34, 38, 42, 0.56);
+  background-color: var(--glass-bg);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   color: var(--color-white);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   cursor: pointer;
   border-radius: 8px;
   box-shadow:
@@ -131,8 +131,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyDown))
     border-color 0.25s ease;
 }
 .page-item:hover:not(.dots):not(.active) {
-  background-color: rgba(255, 61, 0, 0.82);
-  border-color: rgba(255, 175, 145, 0.42);
+  background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
   transform: translateY(-2px);
   box-shadow:
     0 16px 30px rgba(0, 0, 0, 0.8),
@@ -146,10 +146,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyDown))
   transition-duration: 0.08s;
 }
 .page-item.active {
-  background-color: rgba(159, 27, 25, 0.78);
+  background-color: var(--glass-red);
   color: var(--color-white);
   font-weight: bold;
-  border-color: rgba(255, 130, 125, 0.32);
+  border-color: var(--glass-border-bright);
   box-shadow:
     0 12px 26px rgba(159, 27, 25, 0.55),
     0 4px 12px rgba(0, 0, 0, 0.65),

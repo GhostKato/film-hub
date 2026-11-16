@@ -1,17 +1,16 @@
-const rootStyles = getComputedStyle(document.documentElement)
-
 export const COLORS = {
   rating: {
-    low: rootStyles.getPropertyValue('--color-red').trim(),
-    medium: rootStyles.getPropertyValue('--color-orange').trim(),
-    high: rootStyles.getPropertyValue('--color-green').trim(),
+    low: 'var(--glass-red)',
+    medium: 'var(--glass-orange)',
+    high: 'var(--glass-green)',
   },
   release: {
-    past: rootStyles.getPropertyValue('--color-green').trim(),
-    today: rootStyles.getPropertyValue('--color-blue').trim(),
-    upcoming: rootStyles.getPropertyValue('--color-purple').trim(),
+    past: 'var(--glass-green)',
+    today: 'var(--glass-blue)',
+    upcoming: 'var(--glass-purple)',
   },
 }
+
 export const getRatingColor = (rating: number): string => {
   if (rating <= 5) return COLORS.rating.low
   if (rating < 8) return COLORS.rating.medium

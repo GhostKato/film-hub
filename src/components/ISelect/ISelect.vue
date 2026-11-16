@@ -79,10 +79,10 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   justify-items: center;
   border-radius: 8px;
   color: var(--color-white);
-  background-color: rgba(34, 38, 42, 0.56);
+  background-color: var(--glass-bg);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   cursor: pointer;
   font-size: 16px;
   box-shadow:
@@ -127,10 +127,10 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   top: calc(100% + 6px);
   left: 0;
   width: 100%;
-  background-color: rgba(24, 28, 32, 0.78);
+  background-color: var(--glass-modal);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
   z-index: 100;
   overflow-y: auto;
@@ -165,10 +165,10 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   transition: background-color 0.2s;
 }
 .option:hover {
-  background-color: rgba(255, 61, 0, 0.82);
+  background-color: var(--glass-hover);
 }
 .option.active {
-  background-color: rgba(159, 27, 25, 0.85);
+  background-color: var(--glass-red);
 }
 @media (min-width: 768px) {
   .custom-select {

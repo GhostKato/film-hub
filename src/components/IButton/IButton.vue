@@ -70,10 +70,10 @@ const handleClick = (e: Event) => {
 .small-search-btn,
 .release-clear-all-btn,
 .pagination-btn {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--glass-bg-light);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 10px 22px rgba(0, 0, 0, 0.65),
     0 4px 8px rgba(0, 0, 0, 0.45),
@@ -95,7 +95,7 @@ const handleClick = (e: Event) => {
 .release-clear-all-btn:hover:not(.is-disabled),
 .pagination-btn:hover:not(.is-disabled):not(:disabled) {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.34);
+  border-color: var(--glass-border-bright);
   box-shadow:
     0 16px 30px rgba(0, 0, 0, 0.8),
     0 6px 12px rgba(0, 0, 0, 0.55),
@@ -135,8 +135,8 @@ const handleClick = (e: Event) => {
 .small-search-btn,
 .release-clear-all-btn,
 .pagination-btn {
-  background-color: rgba(159, 27, 25, 0.76);
-  border-color: rgba(255, 130, 125, 0.28);
+  background-color: var(--glass-red);
+  border-color: var(--glass-border);
 }
 
 .tab-btn.active,
@@ -168,8 +168,8 @@ const handleClick = (e: Event) => {
 .small-search-btn:hover,
 .release-clear-all-btn:hover,
 .pagination-btn:hover:not(.is-disabled):not(:disabled) {
-  background-color: rgba(255, 61, 0, 0.82);
-  border-color: rgba(255, 175, 145, 0.42);
+  background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
 }
 
 /* Неактивная (заблокированная) кнопка — максимально лёгкое приглушённое стекло */

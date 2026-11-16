@@ -59,13 +59,13 @@ autoClose('auth', 50000)
 }
 .modal-content {
   position: relative;
-  background-color: rgba(24, 28, 32, 0.68);
+  background-color: var(--glass-modal);
   backdrop-filter: blur(18px) saturate(150%);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   padding: 40px 18px 20px 18px;
   border-radius: 16px;
   width: 320px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 28px 60px rgba(0, 0, 0, 0.9),
     0 12px 24px rgba(0, 0, 0, 0.7),

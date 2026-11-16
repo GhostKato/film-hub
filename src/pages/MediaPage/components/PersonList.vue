@@ -106,10 +106,10 @@ h2 {
   text-align: center;
   color: var(--color-white);
   text-decoration: none;
-  background: rgba(18, 28, 22, 0.45);
+  background: var(--glass-card);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 14px 28px rgba(0, 0, 0, 0.65),
     0 4px 10px rgba(0, 0, 0, 0.45),
@@ -124,7 +124,7 @@ h2 {
 
 .person-card:hover {
   transform: translateY(-6px) scale(1.04);
-  border-color: rgba(255, 255, 255, 0.42);
+  border-color: var(--glass-border-bright);
   box-shadow:
     0 24px 44px rgba(0, 0, 0, 0.85),
     0 8px 18px rgba(0, 0, 0, 0.55),
@@ -153,8 +153,8 @@ h2 {
   justify-content: space-between;
   gap: 4px;
   padding: 6px 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(10, 18, 14, 0.62) 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, var(--glass-bg-light) 0%, rgba(10, 18, 14, 0.62) 100%);
+  border-top: 1px solid var(--glass-border);
 }
 
 .name {

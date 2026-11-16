@@ -126,12 +126,12 @@ autoClose('menu')
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  background-color: rgba(24, 28, 32, 0.72);
+  background-color: var(--glass-modal);
   backdrop-filter: blur(18px) saturate(150%);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   padding: 16px 18px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 24px 48px rgba(0, 0, 0, 0.88),
     0 10px 20px rgba(0, 0, 0, 0.65),

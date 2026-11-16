@@ -147,9 +147,9 @@ function clearQuery() {
 }
 .input {
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   color: var(--color-white);
-  background-color: rgba(34, 38, 42, 0.56);
+  background-color: var(--glass-bg);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   padding: 5px 25px 5px 10px;
@@ -169,7 +169,7 @@ function clearQuery() {
 }
 .input:hover {
   border-color: var(--color-hover);
-  background-color: rgba(40, 45, 50, 0.65);
+  background-color: var(--glass-modal);
   transform: translateY(-2px);
   box-shadow:
     0 16px 30px rgba(0, 0, 0, 0.8),
@@ -179,7 +179,7 @@ function clearQuery() {
 .input:focus {
   outline: none;
   border-color: var(--color-red);
-  background-color: rgba(28, 32, 36, 0.72);
+  background-color: var(--glass-modal);
   transform: translateY(-2px);
   box-shadow:
     0 16px 32px rgba(0, 0, 0, 0.85),

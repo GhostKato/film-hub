@@ -119,9 +119,9 @@ const filterOptions = [
 }
 .input {
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   color: var(--color-white);
-  background-color: rgba(34, 38, 42, 0.56);
+  background-color: var(--glass-bg);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   box-shadow:
@@ -139,7 +139,7 @@ const filterOptions = [
 }
 .input:hover {
   border-color: var(--color-hover);
-  background-color: rgba(40, 45, 50, 0.65);
+  background-color: var(--glass-modal);
   transform: translateY(-2px);
   box-shadow:
     0 16px 30px rgba(0, 0, 0, 0.8),
@@ -149,7 +149,7 @@ const filterOptions = [
 .input:focus {
   outline: none;
   border-color: var(--color-red);
-  background-color: rgba(28, 32, 36, 0.72);
+  background-color: var(--glass-modal);
   transform: translateY(-2px);
   box-shadow:
     0 16px 32px rgba(0, 0, 0, 0.85),
@@ -180,10 +180,10 @@ const filterOptions = [
   border-radius: 8px;
   font-size: 16px;
   color: var(--color-white);
-  background-color: rgba(34, 38, 42, 0.56);
+  background-color: var(--glass-bg);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   outline: none;
   appearance: none;
   cursor: pointer;

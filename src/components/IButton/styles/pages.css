@@ -7,8 +7,8 @@
 .share-btn {
   border-radius: 8px;
   padding: 6px 14px;
-  background-color: rgba(25, 95, 215, 0.48);
-  border-color: rgba(115, 175, 255, 0.32);
+  background-color: var(--glass-blue);
+  border-color: var(--glass-border);
   box-shadow:
     0 12px 26px rgba(25, 95, 215, 0.42),
     0 4px 12px rgba(0, 0, 0, 0.65),
@@ -16,10 +16,10 @@
 }
 
 .share-btn:hover {
-  background-color: rgba(35, 120, 250, 0.78);
-  border-color: rgba(150, 200, 255, 0.65);
+  background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
   box-shadow:
-    0 16px 32px rgba(30, 110, 240, 0.65),
+    0 16px 32px rgba(255, 61, 0, 0.45),
     0 6px 14px rgba(0, 0, 0, 0.75),
     inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }

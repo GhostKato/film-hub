@@ -128,12 +128,12 @@ autoClose('release', 20000)
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: rgba(24, 28, 32, 0.72);
+  background-color: var(--glass-modal);
   backdrop-filter: blur(18px) saturate(150%);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   padding: 16px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 26px 54px rgba(0, 0, 0, 0.9),
     0 10px 22px rgba(0, 0, 0, 0.68),
@@ -166,12 +166,12 @@ autoClose('release', 20000)
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: rgba(38, 42, 48, 0.52);
+  background-color: var(--glass-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 10px;
   padding: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 8px 18px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
@@ -185,7 +185,7 @@ autoClose('release', 20000)
 }
 .release-card:hover {
   transform: translateY(-2px);
-  background-color: rgba(48, 54, 62, 0.68);
+  background-color: var(--glass-modal);
   border-color: var(--color-hover);
   box-shadow:
     0 12px 24px rgba(0, 0, 0, 0.72),
