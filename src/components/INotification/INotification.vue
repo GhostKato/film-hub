@@ -21,7 +21,7 @@ import { notificationStore } from '@/stores/notifications'
 .noti-wrapper {
   position: fixed;
   bottom: 1.2rem;
-  right: 1.2rem;
+  left: 1.2rem;
   z-index: 99999;
   display: flex;
   flex-direction: column;

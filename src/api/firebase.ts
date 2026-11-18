@@ -67,6 +67,7 @@ export const updateUserProfile = async (updates: ProfileUpdates) => {
 
 // Downloads user media
 export const loadMedia = async (userId: string): Promise<FirebaseItemType[]> => {
+  if (!auth.currentUser || auth.currentUser.uid !== userId) return []
   const ref = doc(db, 'media', userId)
   const snap = await getDoc(ref)
   if (snap.exists()) return snap.data()?.media || []
@@ -75,6 +76,7 @@ export const loadMedia = async (userId: string): Promise<FirebaseItemType[]> => 
 
 // Stores the entire array of user media
 export const saveMedia = async (userId: string, media: FirebaseItemType[]) => {
+  if (!auth.currentUser || auth.currentUser.uid !== userId) return
   const ref = doc(db, 'media', userId)
   await setDoc(ref, { media }, { merge: true })
 }
@@ -100,13 +102,13 @@ export const removeMediaItem = async (userId: string, item: FirebaseItemType) =>
   await setDoc(ref, { media: filtered }, { merge: true })
 }
 
-//Save recommendations (master account only)
+// Save recommendations (master account only)
 export const saveRecommended = async (media: FirebaseItemType[]) => {
   const ref = doc(db, 'recommended', 'mainId')
   await setDoc(ref, { recommended: media })
 }
 
-// //Reads recommendations
+// Reads recommendations
 export const loadRecommended = async (): Promise<FirebaseItemType[]> => {
   const ref = doc(db, 'recommended', 'mainId')
   const snap = await getDoc(ref)

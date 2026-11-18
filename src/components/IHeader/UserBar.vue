@@ -1,6 +1,5 @@
 <template>
   <div class="user-bar">
-    <ReleaseButton />
     <LanguageSwitcher />
 
     <IButton
@@ -23,7 +22,6 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { notificationStore } from '@/stores/notifications'
-import ReleaseButton from './ReleaseButton.vue'
 
 const modalStore = useModalStore()
 const authStore = useAuthStore()

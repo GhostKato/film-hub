@@ -24,6 +24,26 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
+.recommend-btn {
+  border-radius: 8px;
+  padding: 6px 14px;
+  background-color: var(--glass-purple);
+  border-color: var(--glass-border);
+  box-shadow:
+    0 12px 26px rgba(135, 55, 215, 0.42),
+    0 4px 12px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+}
+
+.recommend-btn:hover {
+  background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
+  box-shadow:
+    0 16px 32px rgba(255, 61, 0, 0.45),
+    0 6px 14px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
 @media (min-width: 768px) {
   .tab-btn {
     padding: 5px 10px;

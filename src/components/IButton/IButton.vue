@@ -64,6 +64,7 @@ const handleClick = (e: Event) => {
 .menu-edit-btn,
 .language-btn,
 .share-btn,
+.recommend-btn,
 .auth-nav-btn,
 .tab-btn,
 .big-search-btn,
@@ -88,6 +89,7 @@ const handleClick = (e: Event) => {
 .menu-edit-btn:hover:not(.is-disabled),
 .language-btn:hover:not(.is-disabled),
 .share-btn:hover:not(.is-disabled),
+.recommend-btn:hover:not(.is-disabled),
 .auth-nav-btn:hover:not(.is-disabled),
 .tab-btn:hover:not(.is-disabled),
 .big-search-btn:hover:not(.is-disabled),
@@ -115,6 +117,7 @@ const handleClick = (e: Event) => {
 .menu-edit-btn:active:not(.is-disabled),
 .language-btn:active:not(.is-disabled),
 .share-btn:active:not(.is-disabled),
+.recommend-btn:active:not(.is-disabled),
 .auth-nav-btn:active:not(.is-disabled),
 .tab-btn:active:not(.is-disabled),
 .big-search-btn:active:not(.is-disabled),
@@ -164,6 +167,7 @@ const handleClick = (e: Event) => {
 .language-btn:hover,
 .tab-btn:hover,
 .share-btn:hover,
+.recommend-btn:hover,
 .big-search-btn:hover,
 .small-search-btn:hover,
 .release-clear-all-btn:hover,
@@ -202,6 +206,7 @@ const handleClick = (e: Event) => {
   .form-submit-btn,
   .tab-btn,
   .share-btn,
+  .recommend-btn,
   .big-search-btn {
     font-size: 20px;
   }
@@ -214,4 +219,3 @@ const handleClick = (e: Event) => {
 <style scoped src="./styles/auth.css"></style>
 <style scoped src="./styles/pages.css"></style>
 <style scoped src="./styles/pagination.css"></style>
-<style scoped src="./styles/release.css"></style>

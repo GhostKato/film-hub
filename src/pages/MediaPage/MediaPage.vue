@@ -57,7 +57,19 @@
               </div>
             </div>
             <CollectionButtons :media="{ ...media, media_type: type }" />
-            <ShareButton :title="media.title ?? media.name ?? ''" />
+            <div class="share-actions">
+              <ShareButton :title="media.title ?? media.name ?? ''" />
+              <RecommendButton
+                :media="{
+                  id: media.id,
+                  media_type: type,
+                  title: media.title || media.name || '',
+                  poster_path: media.poster_path,
+                  release_date: media.release_date || media.first_air_date,
+                  vote_average: media.vote_average,
+                }"
+              />
+            </div>
           </div>
         </div>
         <YouTubePlayer v-if="trailerId" :videoId="trailerId" />
@@ -91,6 +103,7 @@ import { getImageUrl } from '@/utils/getImageUrl'
 import { useLanguageStore } from '@/stores/language'
 import { useLoaderStore } from '@/stores/loader'
 import ShareButton from './components/ShareButton.vue'
+import RecommendButton from './components/RecommendButton.vue'
 import type { PersonItemType } from '@/types/person'
 import type { TmdbMediaType } from '@/types/media'
 import MediaInfo from '@/components/MediaInfo/MediaInfo.vue'
@@ -100,8 +113,8 @@ import { useI18n } from 'vue-i18n'
 const loaderStore = useLoaderStore()
 
 const route = useRoute()
-const type = route.params.type as 'movie' | 'tv'
-const id = Number(route.params.id)
+const type = computed(() => route.params.type as 'movie' | 'tv')
+const id = computed(() => Number(route.params.id))
 
 const media = ref<TmdbMediaType | null>(null)
 const cast = ref<PersonItemType[]>([])
@@ -135,15 +148,16 @@ watch(backdropUrl, (newUrl) => {
 const fetchMedia = async () => {
   try {
     loaderStore.showLoader()
-    media.value = await getMediaById(id, type)
-    const credits = await getMediaCredits(id, type)
+    isBackdropLoaded.value = false
+    media.value = await getMediaById(id.value, type.value)
+    const credits = await getMediaCredits(id.value, type.value)
     cast.value = credits.cast.filter((p: PersonItemType) => p.profile_path).slice(0, 15)
     crew.value = credits.crew
       .filter((p: PersonItemType) =>
         ['Director', 'Producer', 'Writer', 'Screenplay'].includes(p.job || ''),
       )
       .filter((p: PersonItemType) => p.profile_path)
-    trailerId.value = await getMediaVideos(id, type)
+    trailerId.value = await getMediaVideos(id.value, type.value)
   } catch {
     notificationStore.error(t('notification_message.media_error'))
   } finally {
@@ -154,7 +168,7 @@ const fetchMedia = async () => {
 onMounted(fetchMedia)
 
 watch(
-  () => languageStore.lang,
+  () => [route.params.type, route.params.id, languageStore.lang],
   () => fetchMedia(),
 )
 </script>
@@ -262,6 +276,11 @@ watch(
   padding: 4px 10px;
   margin-right: 5px;
   border-radius: 8px;
+}
+.share-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 @media (min-width: 1024px) {
   .info-main {

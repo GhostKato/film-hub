@@ -16,7 +16,6 @@
       <UserBar />
     </div>
     <div v-else class="mobile-bar">
-      <ReleaseButton />
       <MenuButton />
     </div>
   </header>
@@ -27,7 +26,6 @@ import ILogo from './ILogo.vue'
 import IButton from '../IButton/IButton.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 import MenuButton from './MenuButton.vue'
-import ReleaseButton from './ReleaseButton.vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import UserBar from './UserBar.vue'
