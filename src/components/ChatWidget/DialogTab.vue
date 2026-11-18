@@ -1,7 +1,10 @@
 <template>
   <div class="dialog-tab">
     <div v-if="peerProfile" class="dialog-header">
-      <UserIdentityBadge :user="peerProfile" />
+      <div class="dialog-head-left">
+        <button class="back-btn" @click="chatStore.closeDialog()" title="Назад">←</button>
+      </div>
+
       <div class="dialog-head-right">
         <span v-if="isPeerTyping" class="typing-indicator">{{ $t('chat.typing') }}...</span>
         <button
@@ -165,12 +168,37 @@ const formatTime = (ts: number) =>
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   background: rgba(0, 0, 0, 0.25);
+}
+.dialog-head-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.back-btn {
+  display: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg-light);
+  color: var(--color-white);
+  cursor: pointer;
+}
+.back-btn:hover {
+  background-color: var(--glass-hover);
+}
+@media (max-width: 640px) {
+  .back-btn {
+    display: inline-flex;
+  }
 }
 .dialog-head-right {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 .typing-indicator {
   font-size: 12px;

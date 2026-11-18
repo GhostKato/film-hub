@@ -1,12 +1,15 @@
 <template>
-  <div v-if="user">
+  <div v-if="user" class="identity-wrap">
     <div class="top-row">
       <span v-if="showOnline" class="status-dot" :class="{ online: isVisibleOnline }"></span>
+
       <span class="nickname">{{ user.displayName }}</span>
+
       <span v-if="user.role !== 'user'" class="role-badge" :class="`role-${user.role}`">
         {{ roleLabel }}
       </span>
     </div>
+
     <span v-if="showDays" class="days-badge">
       {{ $t('chat.days_on_site', { days: daysCount }) }}
     </span>
@@ -22,7 +25,7 @@ import { useChatStore } from '@/stores/chat'
 
 const props = withDefaults(
   defineProps<{
-    user: UserProfile
+    user?: UserProfile
     showOnline?: boolean
     showDays?: boolean
   }>(),
@@ -35,16 +38,17 @@ const props = withDefaults(
 const { t } = useI18n()
 const chatStore = useChatStore()
 
-const daysCount = computed(() => getDaysOnSite(props.user.createdAt))
+const daysCount = computed(() => (props.user ? getDaysOnSite(props.user.createdAt) : 0))
 
 const isVisibleOnline = computed(() => {
-  if (!props.user.isOnline) return false
+  if (!props.user?.isOnline) return false
   if (!props.user.hideOnline) return true
+
   return Boolean(chatStore.currentUserProfile?.permissions.canSeeAllUsers)
 })
 
 const roleLabel = computed(() => {
-  switch (props.user.role) {
+  switch (props.user?.role) {
     case 'owner':
       return `👑 ${t('chat.role_owner')}`
     case 'admin':

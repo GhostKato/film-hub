@@ -18,17 +18,10 @@
 
 <script setup lang="ts">
 import { useChatStore } from '@/stores/chat'
-import { useAuthStore } from '@/stores/auth'
-import { useMediaStore } from '@/stores/media'
 
 const chatStore = useChatStore()
-const authStore = useAuthStore()
-const mediaStore = useMediaStore()
 
 const toggleWidget = () => {
-  if (!chatStore.isOpen && !authStore.user && mediaStore.releaseList().length > 0) {
-    chatStore.activeTab = 'system'
-  }
   chatStore.isOpen = !chatStore.isOpen
 }
 </script>

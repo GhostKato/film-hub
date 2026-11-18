@@ -1,106 +1,114 @@
 <template>
-  <ChatLauncher />
+  <template v-if="authStore.user">
+    <ChatLauncher />
 
-  <Transition name="widget-pop">
-    <div v-if="chatStore.isOpen" class="chat-window" :class="{ expanded: chatStore.isExpanded }">
-      <div class="window-header">
-        <div class="header-left">
-          <h3 class="window-title">{{ $t('chat.center_title') }}</h3>
+    <Transition name="widget-pop">
+      <div v-if="chatStore.isOpen" class="chat-window" :class="{ expanded: chatStore.isExpanded }">
+        <div class="window-header">
+          <div class="header-left">
+            <h3 class="window-title">{{ $t('chat.center_title') }}</h3>
+            <button
+              v-if="chatStore.currentUserProfile"
+              class="stealth-btn"
+              :class="{ active: chatStore.currentUserProfile.hideOnline }"
+              @click="chatStore.toggleStealthMode()"
+              :title="$t('chat.stealth_hint')"
+            >
+              {{
+                chatStore.currentUserProfile.hideOnline
+                  ? `👻 ${$t('chat.stealth_on')}`
+                  : `🟢 ${$t('chat.online')}`
+              }}
+            </button>
+          </div>
+
+          <div class="header-actions">
+            <button
+              class="icon-btn"
+              @click="chatStore.isExpanded = !chatStore.isExpanded"
+              :title="chatStore.isExpanded ? $t('chat.collapse') : $t('chat.expand')"
+            >
+              {{ chatStore.isExpanded ? '⤡' : '⤢' }}
+            </button>
+            <button class="icon-btn" @click="chatStore.isOpen = false">
+              <XIcon width="20" height="20" />
+            </button>
+          </div>
+        </div>
+
+        <div class="tabs-bar">
           <button
-            v-if="chatStore.currentUserProfile"
-            class="stealth-btn"
-            :class="{ active: chatStore.currentUserProfile.hideOnline }"
-            @click="chatStore.toggleStealthMode()"
-            :title="$t('chat.stealth_hint')"
+            class="tab-item"
+            :class="{ active: chatStore.activeTab === 'system' }"
+            @click="chatStore.activeTab = 'system'"
           >
-            {{
-              chatStore.currentUserProfile.hideOnline
-                ? `👻 ${$t('chat.stealth_on')}`
-                : `🟢 ${$t('chat.online')}`
-            }}
+            {{ $t('chat.tab_system') }}
+            <span v-if="chatStore.systemTabUnreadCount" class="mini-badge">
+              {{ chatStore.systemTabUnreadCount }}
+            </span>
           </button>
-        </div>
 
-        <div class="header-actions">
           <button
-            class="icon-btn"
-            @click="chatStore.isExpanded = !chatStore.isExpanded"
-            :title="chatStore.isExpanded ? $t('chat.collapse') : $t('chat.expand')"
+            class="tab-item"
+            :class="{ active: chatStore.activeTab === 'chat' }"
+            @click="chatStore.activeTab = 'chat'"
           >
-            {{ chatStore.isExpanded ? '⤡' : '⤢' }}
-          </button>
-          <button class="icon-btn" @click="chatStore.isOpen = false">
-            <XIcon width="20" height="20" />
+            {{ $t('chat.tab_chat') }}
+            <span v-if="chatStore.chatUnreadCount" class="mini-badge">
+              {{ chatStore.chatUnreadCount }}
+            </span>
           </button>
         </div>
-      </div>
 
-      <div class="tabs-bar">
-        <button
-          v-if="authStore.user"
-          class="tab-item"
-          :class="{ active: chatStore.activeTab === 'friends' }"
-          @click="chatStore.activeTab = 'friends'"
-        >
-          {{ $t('chat.tab_friends') }}
-          <span v-if="friendsStore.incomingRequests.length" class="mini-badge">
-            {{ friendsStore.incomingRequests.length }}
-          </span>
-        </button>
-
-        <button
-          class="tab-item"
-          :class="{ active: chatStore.activeTab === 'system' }"
-          @click="chatStore.activeTab = 'system'"
-        >
-          {{ $t('chat.tab_system') }}
-          <span v-if="chatStore.systemTabUnreadCount" class="mini-badge">
-            {{ chatStore.systemTabUnreadCount }}
-          </span>
-        </button>
-
-        <button
-          v-if="authStore.user && chatStore.activePeerUid"
-          class="tab-item"
-          :class="{ active: chatStore.activeTab === 'dialog' }"
-          @click="chatStore.activeTab = 'dialog'"
-        >
-          {{ activePeerName }}
-        </button>
-
-        <button
-          v-if="canSeeAllUsers"
-          class="tab-item admin-tab"
-          :class="{ active: chatStore.activeTab === 'all' }"
-          @click="chatStore.activeTab = 'all'"
-        >
-          {{ $t('chat.tab_all') }}
-        </button>
-      </div>
-
-      <div class="window-body" :class="{ 'split-layout': chatStore.isExpanded && authStore.user }">
-        <div v-if="chatStore.isExpanded && authStore.user" class="sidebar-pane">
-          <FriendsTab v-if="chatStore.activeTab !== 'all'" />
-          <AdminUsersTab v-else />
-        </div>
-
-        <div class="main-pane">
-          <template v-if="!authStore.user">
+        <div class="window-body">
+          <div v-if="chatStore.activeTab === 'system'" class="full-pane">
             <SystemTab />
-          </template>
-          <template v-else>
-            <DialogTab v-if="chatStore.activeTab === 'dialog' && chatStore.activePeerUid" />
-            <SystemTab v-else-if="chatStore.activeTab === 'system'" />
-            <AdminUsersTab v-else-if="chatStore.activeTab === 'all' && !chatStore.isExpanded" />
-            <FriendsTab v-else-if="!chatStore.isExpanded" />
-            <div v-else class="empty-dialog-placeholder">
-              <p>{{ $t('chat.select_friend_hint') }}</p>
+          </div>
+
+          <div v-else class="chat-split-layout">
+            <div
+              class="sidebar-pane"
+              :class="{ 'mobile-hidden': Boolean(chatStore.activePeerUid) }"
+            >
+              <div class="sub-tabs-bar">
+                <button
+                  v-if="canSeeAllUsers"
+                  class="sub-tab-btn admin-sub"
+                  :class="{ active: chatStore.chatSubTab === 'all' }"
+                  @click="chatStore.chatSubTab = 'all'"
+                >
+                  {{ $t('chat.tab_all') }}
+                </button>
+
+                <button
+                  class="sub-tab-btn"
+                  :class="{ active: chatStore.chatSubTab === 'friends' }"
+                  @click="chatStore.chatSubTab = 'friends'"
+                >
+                  {{ $t('chat.tab_friends') }}
+                  <span v-if="friendsStore.incomingRequests.length" class="mini-badge">
+                    {{ friendsStore.incomingRequests.length }}
+                  </span>
+                </button>
+              </div>
+
+              <div class="sidebar-content">
+                <AdminUsersTab v-if="canSeeAllUsers && chatStore.chatSubTab === 'all'" />
+                <FriendsTab v-else />
+              </div>
             </div>
-          </template>
+
+            <div class="dialog-pane" :class="{ 'mobile-hidden': !chatStore.activePeerUid }">
+              <DialogTab v-if="chatStore.activePeerUid" />
+              <div v-else class="empty-dialog-placeholder">
+                <p>{{ $t('chat.select_friend_hint') }}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -122,11 +130,6 @@ const friendsStore = useFriendsStore()
 const canSeeAllUsers = computed(() =>
   Boolean(chatStore.currentUserProfile?.permissions.canSeeAllUsers),
 )
-
-const activePeerName = computed(() => {
-  if (!chatStore.activePeerUid) return ''
-  return friendsStore.profilesMap[chatStore.activePeerUid]?.displayName || 'Чат'
-})
 </script>
 
 <style scoped>
@@ -136,8 +139,8 @@ const activePeerName = computed(() => {
   bottom: 84px;
   z-index: 85;
   width: calc(100vw - 36px);
-  max-width: 380px;
-  height: 500px;
+  max-width: 680px;
+  height: 520px;
   display: flex;
   flex-direction: column;
   background-color: var(--glass-modal);
@@ -158,9 +161,9 @@ const activePeerName = computed(() => {
   bottom: 50%;
   transform: translate(-50%, 50%);
   width: 94vw;
-  max-width: 920px;
+  max-width: 960px;
   height: 78vh;
-  max-height: 680px;
+  max-height: 700px;
 }
 
 .window-header {
@@ -218,23 +221,25 @@ const activePeerName = computed(() => {
 
 .tabs-bar {
   display: flex;
-  gap: 6px;
-  padding: 8px 10px;
+  gap: 8px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--glass-border);
-  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.2);
 }
 .tab-item {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-white);
   background-color: var(--glass-bg-light);
   border: 1px solid var(--glass-border);
   cursor: pointer;
-  white-space: nowrap;
   transition: background-color 0.2s ease;
 }
 .tab-item:hover {
@@ -244,12 +249,10 @@ const activePeerName = computed(() => {
   background-color: var(--glass-red);
   border-color: var(--glass-border-bright);
 }
-.admin-tab {
-  border-color: rgba(255, 185, 45, 0.5);
-}
+
 .mini-badge {
   background-color: var(--color-hover);
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
@@ -260,19 +263,79 @@ const activePeerName = computed(() => {
   display: flex;
   overflow: hidden;
 }
-.window-body.split-layout .sidebar-pane {
-  width: 340px;
-  border-right: 1px solid var(--glass-border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.main-pane {
+
+.full-pane {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
+.chat-split-layout {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebar-pane {
+  width: 270px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.sub-tabs-bar {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.sub-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--glass-bg-light);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.sub-tab-btn:hover {
+  background-color: var(--glass-hover);
+}
+.sub-tab-btn.active {
+  background-color: var(--glass-blue);
+  border-color: var(--glass-border-bright);
+}
+.admin-sub {
+  border-color: rgba(255, 185, 45, 0.45);
+}
+
+.sidebar-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dialog-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
 .empty-dialog-placeholder {
   flex: 1;
   display: flex;
@@ -281,6 +344,17 @@ const activePeerName = computed(() => {
   color: var(--color-light-grey);
   padding: 20px;
   text-align: center;
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .sidebar-pane {
+    width: 100%;
+    border-right: none;
+  }
+  .mobile-hidden {
+    display: none;
+  }
 }
 
 .widget-pop-enter-active,

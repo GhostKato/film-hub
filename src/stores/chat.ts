@@ -34,7 +34,8 @@ import {
 import { getChatId } from '@/utils/userHelpers'
 import { playBellSound } from '@/utils/playBellSound'
 
-export type ChatTabType = 'friends' | 'system' | 'dialog' | 'all'
+export type MainChatTab = 'system' | 'chat'
+export type ChatListSubTab = 'all' | 'friends'
 
 export const useChatStore = defineStore('chat', () => {
   const authStore = useAuthStore()
@@ -46,7 +47,8 @@ export const useChatStore = defineStore('chat', () => {
 
   const isOpen = ref(false)
   const isExpanded = ref(false)
-  const activeTab = ref<ChatTabType>('friends')
+  const activeTab = ref<MainChatTab>('chat')
+  const chatSubTab = ref<ChatListSubTab>('friends')
 
   const chats = ref<ChatRoom[]>([])
   const activePeerUid = ref<string | null>(null)
@@ -70,22 +72,22 @@ export const useChatStore = defineStore('chat', () => {
     return chats.value.find((c) => c.id === activeChatId.value) || null
   })
 
-  const totalUnreadCount = computed(() => {
+  const chatUnreadCount = computed(() => {
     const uid = authStore.user?.uid
-    const releasesCount = mediaStore.releaseList().length
-    if (!uid) return releasesCount
-
+    if (!uid) return 0
     const chatsUnread = chats.value.reduce((sum, room) => sum + (room.unreadCount?.[uid] || 0), 0)
-    const systemUnread = systemMessages.value.filter((m) => !m.isRead).length
-    const requestsUnread = friendsStore.incomingRequests.length
-
-    return chatsUnread + systemUnread + releasesCount + requestsUnread
+    return chatsUnread + friendsStore.incomingRequests.length
   })
 
   const systemTabUnreadCount = computed(() => {
     const releasesCount = mediaStore.releaseList().length
     const systemUnread = systemMessages.value.filter((m) => !m.isRead).length
     return releasesCount + systemUnread
+  })
+
+  const totalUnreadCount = computed(() => {
+    if (!authStore.user?.uid) return 0
+    return chatUnreadCount.value + systemTabUnreadCount.value
   })
 
   const init = async () => {
@@ -154,6 +156,10 @@ export const useChatStore = defineStore('chat', () => {
     unsubAllUsers = null
     heartbeatTimer = null
 
+    isOpen.value = false
+    isExpanded.value = false
+    activeTab.value = 'chat'
+    chatSubTab.value = 'friends'
     chats.value = []
     activeMessages.value = []
     systemMessages.value = []
@@ -167,7 +173,7 @@ export const useChatStore = defineStore('chat', () => {
 
     friendsStore.ensureProfileSubscribed(peerUid)
     activePeerUid.value = peerUid
-    activeTab.value = 'dialog'
+    activeTab.value = 'chat'
     isOpen.value = true
 
     if (unsubMessages) unsubMessages()
@@ -182,6 +188,15 @@ export const useChatStore = defineStore('chat', () => {
     })
 
     await markChatAsRead(chatId, uid)
+  }
+
+  const closeDialog = () => {
+    if (unsubMessages) {
+      unsubMessages()
+      unsubMessages = null
+    }
+    activePeerUid.value = null
+    activeMessages.value = []
   }
 
   const sendMessage = async (text: string, mediaCard?: SharedMediaCard) => {
@@ -267,17 +282,20 @@ export const useChatStore = defineStore('chat', () => {
     isOpen,
     isExpanded,
     activeTab,
+    chatSubTab,
     chats,
     activePeerUid,
     activeChatId,
     activeRoom,
     activeMessages,
     systemMessages,
+    chatUnreadCount,
     totalUnreadCount,
     systemTabUnreadCount,
     init,
     cleanup,
     openDialogWith,
+    closeDialog,
     sendMessage,
     recommendMediaToFriends,
     sendSystemBroadcast,

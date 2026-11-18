@@ -66,7 +66,6 @@ function selectLang(code: LangCode) {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1;
   gap: 8px;
 }
 
