@@ -18,6 +18,7 @@
           {{ $t('media_list.not_found') }}
         </p>
         <div v-for="user in friendsStore.searchResults" :key="user.uid" class="user-row">
+          <UserIdentityBadge :user="user" />
           <button
             v-if="!isAlreadyRelated(user.uid)"
             class="action-btn add"

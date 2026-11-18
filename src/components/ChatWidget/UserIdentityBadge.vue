@@ -1,5 +1,5 @@
 <template>
-
+  <div v-if="user">
     <div class="top-row">
       <span v-if="showOnline" class="status-dot" :class="{ online: isVisibleOnline }"></span>
       <span class="nickname">{{ user.displayName }}</span>
@@ -76,7 +76,9 @@ const roleLabel = computed(() => {
   border-radius: 50%;
   background-color: var(--color-grey);
   flex-shrink: 0;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 .status-dot.online {
   background-color: #10b981;

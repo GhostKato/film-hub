@@ -1,6 +1,7 @@
 <template>
   <div class="dialog-tab">
     <div v-if="peerProfile" class="dialog-header">
+      <UserIdentityBadge :user="peerProfile" />
       <div class="dialog-head-right">
         <span v-if="isPeerTyping" class="typing-indicator">{{ $t('chat.typing') }}...</span>
         <button

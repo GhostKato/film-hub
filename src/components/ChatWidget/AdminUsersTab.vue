@@ -54,6 +54,10 @@
             <input type="checkbox" :value="user.uid" v-model="selectedUids" />
           </label>
 
+          <div class="user-info-cell">
+            <UserIdentityBadge :user="user" />
+          </div>
+
           <div class="card-btns">
             <button
               v-if="!isRelatedWithUser(user.uid)"

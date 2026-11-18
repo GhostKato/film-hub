@@ -41,6 +41,7 @@
           <div class="friends-list">
             <label v-for="friend in filteredFriends" :key="friend.friendUid" class="friend-option">
               <input type="checkbox" :value="friend.friendUid" v-model="selectedUids" />
+              <UserIdentityBadge v-if="friend.user" :user="friend.user" />
             </label>
           </div>
 
