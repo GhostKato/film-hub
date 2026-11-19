@@ -69,9 +69,8 @@ export const useFriendsStore = defineStore('friends', () => {
           friendUid,
         }
       })
-      .filter((item) => item.user && !item.user.isDeleted)
+      .filter((item) => item.user && !item.user.isDeleted && !item.user.blockedUsers?.includes(uid))
   })
-
   const incomingRequests = computed(() => {
     const uid = authStore.user?.uid
     if (!uid) return []
@@ -82,6 +81,7 @@ export const useFriendsStore = defineStore('friends', () => {
         user: profilesMap.value[f.requesterId],
         senderUid: f.requesterId,
       }))
+      .filter((item) => !item.user?.blockedUsers?.includes(uid))
   })
 
   const outgoingRequests = computed(() => {

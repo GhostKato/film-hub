@@ -76,6 +76,22 @@ export const sendDirectMessage = async (params: {
   await addDoc(collection(db, 'chats', chatId, 'messages'), msgData)
 }
 
+export const sendDirectMessageBulk = async (params: {
+  sender: UserProfile
+  recipientUids: string[]
+  text: string
+}) => {
+  const { sender, recipientUids, text } = params
+  const clean = text.trim()
+  if (!clean) return
+  for (const uid of recipientUids) {
+    await sendDirectMessage({
+      sender,
+      recipientUid: uid,
+      text: clean,
+    })
+  }
+}
 export const createOrOpenGroupChat = async (params: {
   creator: UserProfile
   participantUids: string[]
@@ -167,7 +183,6 @@ export const sendMediaRecommendationBulk = async (params: {
     })
   }
 }
-
 export const sendSystemMessageBulk = async (params: {
   sender: UserProfile
   recipientUids: string[]
@@ -227,6 +242,17 @@ export const markChatAsRead = async (chatId: string, uid: string) => {
   })
 }
 
+export const markMessagesAsRead = async (chatId: string, uid: string, messageIds: string[]) => {
+  if (!messageIds.length) return
+  const batch = writeBatch(db)
+  messageIds.forEach((msgId) => {
+    batch.update(doc(db, 'chats', chatId, 'messages', msgId), {
+      readBy: arrayUnion(uid),
+    })
+  })
+  await batch.commit().catch(() => {})
+}
+
 export const clearChatHistoryForUser = async (chatId: string, uid: string) => {
   const chatRef = doc(db, 'chats', chatId)
   const snap = await getDoc(chatRef)
@@ -252,8 +278,11 @@ export const deleteMessageForMe = async (chatId: string, messageId: string, uid:
   })
 }
 
-export const deleteMessageForEveryone = async (chatId: string, messageId: string) => {
-  await deleteDoc(doc(db, 'chats', chatId, 'messages', messageId))
+export const editChatMessage = async (chatId: string, messageId: string, newText: string) => {
+  await updateDoc(doc(db, 'chats', chatId, 'messages', messageId), {
+    text: newText.trim(),
+    editedAt: Date.now(),
+  })
 }
 
 export const subscribeSystemMessages = (

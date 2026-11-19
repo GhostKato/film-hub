@@ -8,8 +8,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: true,
         canSendSystemMessages: true,
         canManageRoles: true,
-        canDeleteAnyMessage: true,
-        canBanOrDeleteUsers: true,
         canEditGlobalRecommended: true,
         canUseStealth: true,
       }
@@ -18,8 +16,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: true,
         canSendSystemMessages: true,
         canManageRoles: true,
-        canDeleteAnyMessage: true,
-        canBanOrDeleteUsers: false,
         canEditGlobalRecommended: false,
         canUseStealth: true,
       }
@@ -28,8 +24,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: true,
         canSendSystemMessages: true,
         canManageRoles: false,
-        canDeleteAnyMessage: true,
-        canBanOrDeleteUsers: false,
         canEditGlobalRecommended: false,
         canUseStealth: false,
       }
@@ -38,8 +32,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: false,
         canSendSystemMessages: false,
         canManageRoles: false,
-        canDeleteAnyMessage: false,
-        canBanOrDeleteUsers: false,
         canEditGlobalRecommended: false,
         canUseStealth: false,
       }

@@ -1,305 +1,334 @@
 <template>
-  <div class="admin-tab-wrap">
-    <div class="admin-toolbar">
+  <div class="users-tab-wrap">
+    <div class="users-toolbar">
       <input
         v-model="filterQuery"
         type="text"
         class="glass-input"
         :placeholder="$t('chat.filter_users_placeholder')"
       />
+
       <div class="bulk-actions">
-        <button class="mini-btn" @click="toggleSelectAll">
-          {{
-            selectedUids.length === filteredUsers.length
-              ? $t('chat.unselect_all')
-              : $t('chat.select_all')
-          }}
-        </button>
         <button
-          v-if="selectedUids.length"
-          class="mini-btn group-chat-btn"
-          @click="startGroupChatFromSelected"
+          v-if="!isBroadcastMode"
+          class="mini-btn accent full-width"
+          @click="enterBroadcastMode"
         >
-          💬 {{ $t('chat.write_selected', { count: selectedUids.length }) }}
+          📢 {{ $t('chat.group_send_btn') }}
         </button>
-        <button
-          v-if="selectedUids.length && canSendSystem"
-          class="mini-btn accent"
-          @click="showBroadcastForm = !showBroadcastForm"
-        >
-          📢 ({{ selectedUids.length }})
-        </button>
+
+        <template v-else>
+          <button class="mini-btn" @click="toggleSelectAll">
+            {{
+              selectedUids.length === selectableUsers.length && selectableUsers.length > 0
+                ? $t('chat.unselect_all')
+                : $t('chat.select_all')
+            }}
+          </button>
+
+          <button class="mini-btn danger" @click="exitBroadcastMode">
+            ✕ {{ $t('chat.cancel_group_send') }}
+          </button>
+        </template>
       </div>
     </div>
 
-    <div v-if="showBroadcastForm" class="broadcast-box">
+    <div v-if="isBroadcastMode" class="broadcast-box">
+      <div v-if="canSendSystem" class="broadcast-type-row">
+        <button
+          type="button"
+          class="type-pill"
+          :class="{ active: broadcastModeType === 'direct' }"
+          @click="broadcastModeType = 'direct'"
+        >
+          💬 {{ $t('chat.broadcast_direct_type') }}
+        </button>
+        <button
+          type="button"
+          class="type-pill"
+          :class="{ active: broadcastModeType === 'system' }"
+          @click="broadcastModeType = 'system'"
+        >
+          🔔 {{ $t('chat.broadcast_system_type') }}
+        </button>
+      </div>
+
       <input
+        v-if="broadcastModeType === 'system' && canSendSystem"
         v-model="broadcastTitle"
         type="text"
         class="glass-input"
         :placeholder="$t('chat.broadcast_title_placeholder')"
       />
+
       <textarea
         v-model="broadcastText"
         rows="2"
         class="glass-input"
         :placeholder="$t('chat.broadcast_text_placeholder')"
       ></textarea>
-      <label class="checkbox-row">
+
+      <label v-if="broadcastModeType === 'system' && canSendSystem" class="checkbox-row">
         <input type="checkbox" v-model="isAnonymous" />
         <span>{{ $t('chat.send_anonymously') }}</span>
       </label>
-      <button class="send-broadcast-btn" @click="submitBroadcast" :disabled="!broadcastText.trim()">
+
+      <button
+        class="send-broadcast-btn"
+        @click="submitBroadcast"
+        :disabled="!selectedUids.length || !broadcastText.trim() || isSending"
+      >
         {{ $t('chat.send_to_selected', { count: selectedUids.length }) }}
       </button>
     </div>
 
     <div class="scroll-area">
-      <div
+      <p v-if="!filteredUsers.length" class="hint-text">{{ $t('media_list.not_found') }}</p>
+
+      <UserRowCard
         v-for="user in filteredUsers"
         :key="user.uid"
-        class="admin-user-card clickable"
-        :class="{ active: chatStore.activePeerUid === user.uid }"
-        @click="chatStore.openDialogWith(user.uid)"
-      >
-        <div class="card-top">
-          <label class="select-check" @click.stop>
-            <input type="checkbox" :value="user.uid" v-model="selectedUids" />
-          </label>
-
-          <div class="user-info-cell">
-            <UserIdentityBadge :user="user" />
-          </div>
-
-          <div class="card-btns" @click.stop>
-            <button
-              v-if="!isRelatedWithUser(user.uid)"
-              class="mini-btn"
-              @click="friendsStore.addFriend(user.uid)"
-              :title="$t('chat.add_friend')"
-            >
-              ➕
-            </button>
-            <button
-              class="mini-btn"
-              @click="chatStore.openDialogWith(user.uid)"
-              :title="$t('chat.write_direct')"
-            >
-              💬
-            </button>
-            <button
-              v-if="canManageRoles && user.uid !== MAIN_ACCOUNT_ID"
-              class="mini-btn"
-              @click="
-                editingUser =
-                  editingUser?.uid === user.uid
-                    ? null
-                    : {
-                        ...user,
-                        permissions: {
-                          ...getDefaultPermissions(user.role),
-                          ...user.permissions,
-                        },
-                      }
-              "
-              :title="$t('chat.edit_rights')"
-            >
-              ⚙
-            </button>
-            <button
-              v-if="canDeleteUsers && user.uid !== MAIN_ACCOUNT_ID"
-              class="mini-btn danger"
-              @click="confirmDeleteUser(user)"
-              :title="$t('chat.delete_user_db')"
-            >
-              🗑
-            </button>
-          </div>
-        </div>
-
-        <div v-if="editingUser && editingUser.uid === user.uid" class="rights-panel" @click.stop>
-          <div class="role-row">
-            <span>{{ $t('chat.role_label') }}:</span>
-            <select v-model="editingUser.role" @change="onRolePresetChange" class="role-select">
-              <option value="user">{{ $t('chat.role_user') }}</option>
-              <option value="moderator">{{ $t('chat.role_moderator') }}</option>
-              <option value="admin">{{ $t('chat.role_admin') }}</option>
-            </select>
-          </div>
-
-          <div class="perms-grid">
-            <label v-for="(val, key) in editingUser.permissions" :key="key" class="perm-item">
-              <input type="checkbox" v-model="editingUser.permissions[key]" />
-              <span>{{ $t(`chat.perm_${key}`) }}</span>
-            </label>
-          </div>
-
-          <button class="save-rights-btn" @click="saveUserRights">
-            {{ $t('chat.save_rights') }}
-          </button>
-        </div>
-      </div>
+        :user="user"
+        :selection-mode="isBroadcastMode"
+        :selected="selectedUids.includes(user.uid)"
+        :last-message="getLastMessage(user.uid)"
+        :unread-count="getUnreadForUser(user.uid)"
+        @toggle-select="toggleUserSelection"
+      />
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useChatStore } from '@/stores/chat'
 import { useAuthStore } from '@/stores/auth'
-import { useFriendsStore } from '@/stores/friends'
-import { MAIN_ACCOUNT_ID } from '@/constants/env'
-import type { UserProfile } from '@/types/chat'
-import { getDefaultPermissions } from '@/utils/userHelpers'
-import { deleteUserAccountData, updateUserRoleAndPermissions } from '@/api/users'
+import { getChatId } from '@/utils/userHelpers'
 import { notificationStore } from '@/stores/notifications'
-import { useI18n } from 'vue-i18n'
-import UserIdentityBadge from './UserIdentityBadge.vue'
+import UserRowCard from './UserRowCard.vue'
 
 const chatStore = useChatStore()
 const authStore = useAuthStore()
-const friendsStore = useFriendsStore()
 const { t } = useI18n()
 
 const filterQuery = ref('')
+const isBroadcastMode = ref(false)
 const selectedUids = ref<string[]>([])
-const showBroadcastForm = ref(false)
+const broadcastModeType = ref<'direct' | 'system'>('direct')
 const broadcastTitle = ref('')
 const broadcastText = ref('')
 const isAnonymous = ref(true)
-const editingUser = ref<UserProfile | null>(null)
+const isSending = ref(false)
 
-const canManageRoles = computed(() =>
-  Boolean(chatStore.currentUserProfile?.permissions.canManageRoles),
-)
 const canSendSystem = computed(() =>
   Boolean(chatStore.currentUserProfile?.permissions.canSendSystemMessages),
-)
-const canDeleteUsers = computed(() =>
-  Boolean(chatStore.currentUserProfile?.permissions.canBanOrDeleteUsers),
 )
 
 const filteredUsers = computed(() => {
   const q = filterQuery.value.trim().toLowerCase()
   return chatStore.allUsers.filter((u) => {
-    if (u.uid === authStore.user?.uid) return false
     if (!q) return true
-    return u.displayNameLower.includes(q) || u.email.toLowerCase().includes(q)
+    return u.displayNameLower.includes(q)
   })
 })
 
-const isRelatedWithUser = (targetUid: string) =>
-  friendsStore.friendships.some((f) => f.users.includes(targetUid))
+const selectableUsers = computed(() =>
+  filteredUsers.value.filter((u) => !chatStore.currentUserProfile?.blockedUsers?.includes(u.uid)),
+)
+
+const enterBroadcastMode = () => {
+  isBroadcastMode.value = true
+  selectedUids.value = []
+  broadcastModeType.value = 'direct'
+}
+
+const exitBroadcastMode = () => {
+  isBroadcastMode.value = false
+  selectedUids.value = []
+  broadcastTitle.value = ''
+  broadcastText.value = ''
+}
+
+const toggleUserSelection = (uid: string) => {
+  const idx = selectedUids.value.indexOf(uid)
+  if (idx === -1) selectedUids.value.push(uid)
+  else selectedUids.value.splice(idx, 1)
+}
 
 const toggleSelectAll = () => {
-  if (selectedUids.value.length === filteredUsers.value.length) {
+  if (selectedUids.value.length === selectableUsers.value.length) {
     selectedUids.value = []
   } else {
-    selectedUids.value = filteredUsers.value.map((u) => u.uid)
+    selectedUids.value = selectableUsers.value.map((u) => u.uid)
   }
-}
-
-const startGroupChatFromSelected = async () => {
-  if (!selectedUids.value.length) return
-  const targets = [...selectedUids.value]
-  selectedUids.value = []
-  await chatStore.startChatWithSelected(targets)
-}
-
-const onRolePresetChange = () => {
-  if (!editingUser.value) return
-  editingUser.value.permissions = getDefaultPermissions(editingUser.value.role)
-}
-
-const saveUserRights = async () => {
-  if (!editingUser.value) return
-  await updateUserRoleAndPermissions(
-    editingUser.value.uid,
-    editingUser.value.role,
-    editingUser.value.permissions,
-  )
-  editingUser.value = null
-  notificationStore.success(t('notification_message.updated_profile_success'))
 }
 
 const submitBroadcast = async () => {
   if (!selectedUids.value.length || !broadcastText.value.trim()) return
-  await chatStore.sendSystemBroadcast({
-    recipientUids: selectedUids.value,
-    title: broadcastTitle.value,
-    text: broadcastText.value,
-    isAnonymous: isAnonymous.value,
-  })
-  broadcastTitle.value = ''
-  broadcastText.value = ''
-  showBroadcastForm.value = false
-  selectedUids.value = []
-  notificationStore.success(t('chat.broadcast_sent'))
+  isSending.value = true
+  try {
+    if (broadcastModeType.value === 'system' && canSendSystem.value) {
+      await chatStore.sendSystemBroadcast({
+        recipientUids: selectedUids.value,
+        title: broadcastTitle.value,
+        text: broadcastText.value,
+        isAnonymous: isAnonymous.value,
+      })
+    } else {
+      await chatStore.sendDirectBroadcast(selectedUids.value, broadcastText.value)
+    }
+    notificationStore.success(t('chat.broadcast_sent'))
+    exitBroadcastMode()
+  } finally {
+    isSending.value = false
+  }
 }
 
-const confirmDeleteUser = async (user: UserProfile) => {
-  if (!window.confirm(t('chat.confirm_delete_user', { name: user.displayName }))) return
-  await deleteUserAccountData(user.uid)
-  notificationStore.removed(t('chat.user_deleted_notice'))
+const getUnreadForUser = (targetUid: string) => {
+  const myUid = authStore.user?.uid
+  if (!myUid) return 0
+  const room = chatStore.chats.find((c) => c.id === getChatId(myUid, targetUid))
+  return room?.unreadCount?.[myUid] || 0
+}
+
+const getLastMessage = (targetUid: string) => {
+  const myUid = authStore.user?.uid
+  if (!myUid) return ''
+  const room = chatStore.chats.find((c) => c.id === getChatId(myUid, targetUid))
+  return room?.lastMessage || ''
 }
 </script>
 <style scoped>
-.admin-tab-wrap {
+.users-tab-wrap {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
 }
-.admin-toolbar {
+.users-toolbar {
   padding: 10px;
   border-bottom: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.22);
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 .bulk-actions {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   gap: 6px;
 }
 .glass-input {
   width: 100%;
-  padding: 6px 10px;
+  padding: 7px 10px;
   border-radius: 8px;
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg);
   color: var(--color-white);
   font-size: 13px;
   outline: none;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+.glass-input:hover {
+  border-color: var(--color-hover);
+  background-color: var(--glass-modal);
+}
+.glass-input:focus {
+  border-color: var(--color-red);
+  background-color: var(--glass-modal);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.75),
+    0 0 12px rgba(159, 27, 25, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .broadcast-box {
   padding: 10px;
   border-bottom: 1px solid var(--glass-border);
-  background: rgba(0, 0, 0, 0.35);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.25) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
+  gap: 7px;
+}
+.broadcast-type-row {
+  display: flex;
   gap: 6px;
+}
+.type-pill {
+  flex: 1;
+  padding: 5px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg-light);
+  color: var(--color-light-grey);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+.type-pill:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: var(--color-white);
+}
+.type-pill.active {
+  background-color: var(--glass-purple);
+  color: var(--color-white);
+  border-color: var(--glass-border-bright);
+  font-weight: 700;
+  box-shadow:
+    0 8px 18px rgba(135, 55, 215, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 .checkbox-row {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 12px;
+  color: var(--color-light-grey);
 }
-.send-broadcast-btn,
-.save-rights-btn {
-  padding: 6px 10px;
+.send-broadcast-btn {
+  padding: 7px 10px;
   border-radius: 8px;
   background-color: var(--glass-red);
   border: 1px solid var(--glass-border);
   color: var(--color-white);
   cursor: pointer;
   font-weight: 600;
+  box-shadow:
+    0 10px 22px rgba(159, 27, 25, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
-.send-broadcast-btn:hover,
-.save-rights-btn:hover {
+.send-broadcast-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
   background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
+}
+.send-broadcast-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+}
+.send-broadcast-btn:disabled {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.35);
+  box-shadow: none;
+  cursor: not-allowed;
 }
 .scroll-area {
   flex: 1;
@@ -309,89 +338,50 @@ const confirmDeleteUser = async (user: UserProfile) => {
   flex-direction: column;
   gap: 8px;
 }
-.admin-user-card {
-  padding: 8px 10px;
-  border-radius: 10px;
-  background-color: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-}
-.admin-user-card.clickable {
-  cursor: pointer;
-}
-.admin-user-card.clickable:hover,
-.admin-user-card.active {
-  border-color: var(--color-hover);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-.card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.user-info-cell {
-  flex: 1;
-  min-width: 0;
-}
-.card-btns {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
+.hint-text {
+  font-size: 13px;
+  color: var(--color-light-grey);
+  text-align: center;
+  padding: 10px;
 }
 .mini-btn {
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg-light);
   color: var(--color-white);
   font-size: 12px;
   cursor: pointer;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+.mini-btn.full-width {
+  width: 100%;
+  font-weight: 600;
 }
 .mini-btn:hover {
+  transform: translateY(-2px);
   background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
 }
-.mini-btn.group-chat-btn {
-  background-color: var(--glass-purple);
-  font-weight: 700;
+.mini-btn:active {
+  transform: translateY(1px) scale(0.96);
 }
 .mini-btn.accent {
   background-color: var(--glass-blue);
+  box-shadow:
+    0 10px 22px rgba(25, 95, 215, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.mini-btn.danger {
+  background-color: var(--glass-red-soft);
 }
 .mini-btn.danger:hover {
   background-color: var(--glass-red);
-}
-.rights-panel {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--glass-border);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 12px;
-}
-.role-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.role-select {
-  background-color: var(--glass-modal);
-  color: var(--color-white);
-  border: 1px solid var(--glass-border);
-  border-radius: 6px;
-  padding: 3px 6px;
-}
-.perms-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 4px;
-}
-.perm-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 </style>

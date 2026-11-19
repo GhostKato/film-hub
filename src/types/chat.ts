@@ -4,8 +4,6 @@ export interface UserPermissions {
   canSeeAllUsers: boolean
   canSendSystemMessages: boolean
   canManageRoles: boolean
-  canDeleteAnyMessage: boolean
-  canBanOrDeleteUsers: boolean
   canEditGlobalRecommended: boolean
   canUseStealth: boolean
 }

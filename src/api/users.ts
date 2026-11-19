@@ -6,12 +6,12 @@ import {
   getDocs,
   setDoc,
   updateDoc,
-  deleteDoc,
   query,
   where,
   limit,
   onSnapshot,
-  writeBatch,
+  arrayUnion,
+  arrayRemove,
 } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
 import type { UserPermissions, UserProfile, UserRole } from '@/types/chat'
@@ -76,6 +76,19 @@ export const toggleHideOnline = async (uid: string, hideOnline: boolean) => {
   await updateDoc(ref, { hideOnline, updatedAt: Date.now() })
 }
 
+export const blockUser = async (currentUid: string, targetUid: string) => {
+  await updateDoc(doc(db, 'users', currentUid), {
+    blockedUsers: arrayUnion(targetUid),
+    updatedAt: Date.now(),
+  })
+}
+
+export const unblockUser = async (currentUid: string, targetUid: string) => {
+  await updateDoc(doc(db, 'users', currentUid), {
+    blockedUsers: arrayRemove(targetUid),
+    updatedAt: Date.now(),
+  })
+}
 export const searchUsersByNickname = async (
   searchQuery: string,
   currentUid: string,
@@ -93,7 +106,7 @@ export const searchUsersByNickname = async (
   const snap = await getDocs(q)
   return snap.docs
     .map((d) => d.data() as UserProfile)
-    .filter((u) => u.uid !== currentUid && !u.isDeleted)
+    .filter((u) => u.uid !== currentUid && !u.isDeleted && !u.blockedUsers?.includes(currentUid))
 }
 
 export const subscribeToUser = (uid: string, callback: (user: UserProfile | null) => void) => {
@@ -125,40 +138,4 @@ export const updateUserRoleAndPermissions = async (
 export const setUserBlockedStatus = async (targetUid: string, isBlocked: boolean) => {
   if (targetUid === MAIN_ACCOUNT_ID) return
   await updateDoc(doc(db, 'users', targetUid), { isBlocked, updatedAt: Date.now() })
-}
-
-export const deleteUserAccountData = async (targetUid: string) => {
-  if (targetUid === MAIN_ACCOUNT_ID) return
-
-  const batch = writeBatch(db)
-
-  batch.set(doc(db, 'users', targetUid), {
-    uid: targetUid,
-    displayName: 'Deleted User',
-    displayNameLower: 'deleted user',
-    email: '',
-    role: 'user',
-    permissions: getDefaultPermissions('user'),
-    isOnline: false,
-    hideOnline: true,
-    lastSeen: Date.now(),
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-    isDeleted: true,
-    blockedUsers: [],
-  })
-
-  batch.delete(doc(db, 'media', targetUid))
-
-  const friendsSnap = await getDocs(
-    query(collection(db, 'friendships'), where('users', 'array-contains', targetUid)),
-  )
-  friendsSnap.forEach((d) => batch.delete(d.ref))
-
-  await batch.commit()
-
-  const sysSnap = await getDocs(collection(db, 'system_messages', targetUid, 'items'))
-  for (const d of sysSnap.docs) {
-    await deleteDoc(d.ref)
-  }
 }

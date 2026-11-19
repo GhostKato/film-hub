@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
 import { useFriendsStore } from './friends'
@@ -13,12 +13,14 @@ import type {
 import {
   clearChatHistoryForUser,
   createOrOpenGroupChat,
-  deleteMessageForEveryone,
   deleteMessageForMe,
   deleteSystemMessage,
+  editChatMessage,
   markChatAsRead,
+  markMessagesAsRead,
   markSystemMessageRead,
   sendDirectMessage,
+  sendDirectMessageBulk,
   sendMediaRecommendationBulk,
   sendRoomMessage,
   sendSystemMessageBulk,
@@ -29,6 +31,7 @@ import {
 } from '@/api/chat'
 import {
   subscribeAllUsers,
+  subscribeToUser,
   syncUserProfile,
   toggleHideOnline,
   updateOnlineStatus,
@@ -45,7 +48,7 @@ export const useChatStore = defineStore('chat', () => {
   const friendsStore = useFriendsStore()
 
   const currentUserProfile = ref<UserProfile | null>(null)
-  const allUsers = ref<UserProfile[]>([])
+  const rawAllUsers = ref<UserProfile[]>([])
 
   const isOpen = ref(false)
   const isExpanded = ref(false)
@@ -62,12 +65,43 @@ export const useChatStore = defineStore('chat', () => {
   let unsubMessages: (() => void) | null = null
   let unsubSystem: (() => void) | null = null
   let unsubAllUsers: (() => void) | null = null
+  let unsubCurrentUser: (() => void) | null = null
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null
+  let visibilityHandler: (() => void) | null = null
+  let pageHideHandler: (() => void) | null = null
+
+  const allUsers = computed(() => {
+    const myUid = authStore.user?.uid
+    if (!myUid) return []
+    return rawAllUsers.value.filter(
+      (u) => u.uid !== myUid && !u.isDeleted && !u.blockedUsers?.includes(myUid),
+    )
+  })
+
+  const canSeeAllUsers = computed(() =>
+    Boolean(currentUserProfile.value?.permissions?.canSeeAllUsers),
+  )
 
   const canUseStealth = computed(() =>
     Boolean(currentUserProfile.value?.permissions?.canUseStealth),
   )
 
+  watch(canSeeAllUsers, (allowed) => {
+    if (unsubAllUsers) {
+      unsubAllUsers()
+      unsubAllUsers = null
+    }
+    if (allowed && authStore.user) {
+      unsubAllUsers = subscribeAllUsers((users) => {
+        rawAllUsers.value = users
+      })
+    } else {
+      rawAllUsers.value = []
+      if (chatSubTab.value === 'all') {
+        chatSubTab.value = 'friends'
+      }
+    }
+  })
   const activeRoom = computed(() => {
     if (!activeChatId.value) return null
     return chats.value.find((c) => c.id === activeChatId.value) || null
@@ -114,11 +148,31 @@ export const useChatStore = defineStore('chat', () => {
 
     currentUserProfile.value = profile
 
+    unsubCurrentUser = subscribeToUser(fbUser.uid, (updatedMe) => {
+      if (updatedMe) currentUserProfile.value = updatedMe
+    })
+
     heartbeatTimer = setInterval(() => {
-      if (document.visibilityState === 'visible' && authStore.user?.uid) {
+      if (authStore.user?.uid) {
         updateOnlineStatus(authStore.user.uid, true)
       }
-    }, 60000)
+    }, 30000)
+
+    visibilityHandler = () => {
+      const uid = authStore.user?.uid
+      if (!uid) return
+      if (document.visibilityState === 'visible') {
+        updateOnlineStatus(uid, true)
+      }
+    }
+
+    pageHideHandler = () => {
+      const uid = authStore.user?.uid
+      if (uid) updateOnlineStatus(uid, false)
+    }
+
+    document.addEventListener('visibilitychange', visibilityHandler)
+    window.addEventListener('pagehide', pageHideHandler)
 
     let firstChatsLoad = true
     unsubChats = subscribeUserChats(fbUser.uid, (rooms) => {
@@ -145,25 +199,28 @@ export const useChatStore = defineStore('chat', () => {
       firstSysLoad = false
       systemMessages.value = items
     })
-
-    if (profile.permissions.canSeeAllUsers) {
-      unsubAllUsers = subscribeAllUsers((users) => {
-        allUsers.value = users
-      })
-    }
   }
-
   const cleanup = () => {
     if (unsubChats) unsubChats()
     if (unsubMessages) unsubMessages()
     if (unsubSystem) unsubSystem()
     if (unsubAllUsers) unsubAllUsers()
+    if (unsubCurrentUser) unsubCurrentUser()
     if (heartbeatTimer) clearInterval(heartbeatTimer)
+    if (visibilityHandler) {
+      document.removeEventListener('visibilitychange', visibilityHandler)
+      visibilityHandler = null
+    }
+    if (pageHideHandler) {
+      window.removeEventListener('pagehide', pageHideHandler)
+      pageHideHandler = null
+    }
 
     unsubChats = null
     unsubMessages = null
     unsubSystem = null
     unsubAllUsers = null
+    unsubCurrentUser = null
     heartbeatTimer = null
 
     isOpen.value = false
@@ -173,10 +230,12 @@ export const useChatStore = defineStore('chat', () => {
     chats.value = []
     activeMessages.value = []
     systemMessages.value = []
-    allUsers.value = []
+    rawAllUsers.value = []
+    currentUserProfile.value = null
     activeChatId.value = null
     activePeerUid.value = null
   }
+
   const subscribeToRoom = async (chatId: string, peerUid: string | null) => {
     const uid = authStore.user?.uid
     if (!uid) return
@@ -194,6 +253,14 @@ export const useChatStore = defineStore('chat', () => {
       activeMessages.value = msgs.filter(
         (m) => !m.deletedFor?.includes(uid) && m.createdAt > minTime,
       )
+
+      const unreadIds = activeMessages.value
+        .filter((m) => m.senderId !== uid && !m.readBy?.includes(uid))
+        .map((m) => m.id)
+
+      if (unreadIds.length) {
+        markMessagesAsRead(chatId, uid, unreadIds)
+      }
       markChatAsRead(chatId, uid)
     })
 
@@ -203,6 +270,11 @@ export const useChatStore = defineStore('chat', () => {
   const openDialogWith = async (peerUid: string) => {
     const uid = authStore.user?.uid
     if (!uid) return
+    const peer =
+      rawAllUsers.value.find((u) => u.uid === peerUid) || friendsStore.profilesMap[peerUid]
+    if (peer?.blockedUsers?.includes(uid)) return
+    if (currentUserProfile.value?.blockedUsers?.includes(peerUid)) return
+
     friendsStore.ensureProfileSubscribed(peerUid)
     const chatId = getChatId(uid, peerUid)
     await subscribeToRoom(chatId, peerUid)
@@ -222,8 +294,9 @@ export const useChatStore = defineStore('chat', () => {
     const others = Array.from(new Set(selectedUids.filter((id) => id !== uid)))
     if (!others.length) return
 
-    if (others.length === 1 && others[0]) {
-      await openDialogWith(others[0])
+    const firstOther = others[0]
+    if (others.length === 1 && firstOther) {
+      await openDialogWith(firstOther)
       return
     }
 
@@ -235,7 +308,6 @@ export const useChatStore = defineStore('chat', () => {
     })
     await subscribeToRoom(chatId, null)
   }
-
   const closeDialog = () => {
     if (unsubMessages) {
       unsubMessages()
@@ -265,6 +337,15 @@ export const useChatStore = defineStore('chat', () => {
         mediaCard,
       })
     }
+  }
+
+  const sendDirectBroadcast = async (recipientUids: string[], text: string) => {
+    if (!currentUserProfile.value || !recipientUids.length || !text.trim()) return
+    await sendDirectMessageBulk({
+      sender: currentUserProfile.value,
+      recipientUids,
+      text,
+    })
   }
 
   const recommendMediaToFriends = async (
@@ -300,13 +381,16 @@ export const useChatStore = defineStore('chat', () => {
     await setTypingStatus(activeChatId.value, authStore.user.uid, isTyping)
   }
 
-  const removeMessage = async (messageId: string, forEveryone: boolean) => {
+  const editMessage = async (messageId: string, newText: string) => {
     if (!activeChatId.value || !authStore.user?.uid) return
-    if (forEveryone) {
-      await deleteMessageForEveryone(activeChatId.value, messageId)
-    } else {
-      await deleteMessageForMe(activeChatId.value, messageId, authStore.user.uid)
-    }
+    const trimmed = newText.trim()
+    if (!trimmed) return
+    await editChatMessage(activeChatId.value, messageId, trimmed)
+  }
+
+  const removeMessage = async (messageId: string) => {
+    if (!activeChatId.value || !authStore.user?.uid) return
+    await deleteMessageForMe(activeChatId.value, messageId, authStore.user.uid)
   }
 
   const clearCurrentChat = async () => {
@@ -335,6 +419,7 @@ export const useChatStore = defineStore('chat', () => {
   return {
     currentUserProfile,
     allUsers,
+    canSeeAllUsers,
     canUseStealth,
     isOpen,
     isExpanded,
@@ -357,9 +442,11 @@ export const useChatStore = defineStore('chat', () => {
     startChatWithSelected,
     closeDialog,
     sendMessage,
+    sendDirectBroadcast,
     recommendMediaToFriends,
     sendSystemBroadcast,
     setTyping,
+    editMessage,
     removeMessage,
     clearCurrentChat,
     toggleStealthMode,

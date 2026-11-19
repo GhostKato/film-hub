@@ -7,6 +7,7 @@ import { auth } from '@/firebase'
 import { useLoaderStore } from '@/stores/loader'
 import { notificationStore } from './notifications'
 import { useI18n } from 'vue-i18n'
+import { updateOnlineStatus } from '@/api/users'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
@@ -50,7 +51,11 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = async () => {
     loaderStore.showLoader()
     error.value = null
+    const uid = user.value?.uid
     try {
+      if (uid) {
+        await updateOnlineStatus(uid, false)
+      }
       await FirebaseAPI.logout()
       user.value = null
       notificationStore.success(t('notification_message.logout_success'))
@@ -94,5 +99,15 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  return { user, error, mode, register, login, logout, updateProfile, setMode, initAuthListener }
+  return {
+    user,
+    error,
+    mode,
+    register,
+    login,
+    logout,
+    updateProfile,
+    setMode,
+    initAuthListener,
+  }
 })

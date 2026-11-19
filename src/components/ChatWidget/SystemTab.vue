@@ -126,45 +126,73 @@ const formatTime = (ts: number) =>
   margin-bottom: 8px;
 }
 .block-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   color: var(--color-light-grey);
 }
 .clear-btn {
   font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 8px;
   background-color: var(--glass-red);
   border: 1px solid var(--glass-border);
   color: var(--color-white);
   cursor: pointer;
+  box-shadow:
+    0 6px 14px rgba(159, 27, 25, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition:
+    transform 0.2s ease,
+    background-color 0.25s ease;
+}
+.clear-btn:hover {
+  transform: translateY(-1px);
+  background-color: var(--glass-hover);
 }
 .sys-card {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   padding: 10px;
-  border-radius: 10px;
-  background-color: var(--glass-bg);
+  border-radius: 12px;
+  background: var(--glass-card);
   border: 1px solid var(--glass-border);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   margin-bottom: 8px;
   position: relative;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 .sys-card.clickable {
   cursor: pointer;
 }
 .sys-card.clickable:hover {
-  border-color: var(--color-hover);
+  transform: translateY(-2px);
+  border-color: var(--glass-border-bright);
+  box-shadow:
+    0 16px 30px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 .sys-card.unread {
   border-color: var(--color-hover);
-  box-shadow: 0 0 12px rgba(255, 61, 0, 0.25);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.65),
+    0 0 14px rgba(255, 61, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
 }
 .mini-poster {
   width: 44px;
   height: 66px;
-  border-radius: 6px;
+  border-radius: 8px;
   object-fit: cover;
+  border: 1px solid var(--glass-border);
   flex-shrink: 0;
 }
 .card-body {
@@ -190,16 +218,20 @@ const formatTime = (ts: number) =>
 }
 .attached-media {
   margin-top: 8px;
-  padding: 6px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.35);
+  padding: 7px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.42);
   border: 1px solid var(--glass-border);
   display: flex;
   gap: 8px;
   align-items: center;
   cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    transform 0.2s ease;
 }
 .attached-media:hover {
+  transform: translateY(-1px);
   border-color: var(--color-hover);
 }
 .close-mini {
@@ -207,6 +239,7 @@ const formatTime = (ts: number) =>
   border: none;
   color: var(--color-light-grey);
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 .close-mini:hover {
   color: var(--color-hover);

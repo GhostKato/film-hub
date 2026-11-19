@@ -69,8 +69,8 @@
             <div class="sidebar-pane" :class="{ 'mobile-hidden': Boolean(chatStore.activeChatId) }">
               <div class="sub-tabs-bar">
                 <button
-                  v-if="canSeeAllUsers"
-                  class="sub-tab-btn admin-sub"
+                  v-if="chatStore.canSeeAllUsers"
+                  class="sub-tab-btn"
                   :class="{ active: chatStore.chatSubTab === 'all' }"
                   @click="chatStore.chatSubTab = 'all'"
                 >
@@ -88,9 +88,8 @@
                   </span>
                 </button>
               </div>
-
               <div class="sidebar-content">
-                <AdminUsersTab v-if="canSeeAllUsers && chatStore.chatSubTab === 'all'" />
+                <AdminUsersTab v-if="chatStore.canSeeAllUsers && chatStore.chatSubTab === 'all'" />
                 <FriendsTab v-else />
               </div>
             </div>
@@ -109,7 +108,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useChatStore } from '@/stores/chat'
 import { useFriendsStore } from '@/stores/friends'
@@ -123,44 +121,30 @@ import XIcon from '@/components/icons/XIcon.vue'
 const authStore = useAuthStore()
 const chatStore = useChatStore()
 const friendsStore = useFriendsStore()
-
-const canSeeAllUsers = computed(() =>
-  Boolean(chatStore.currentUserProfile?.permissions.canSeeAllUsers),
-)
-
-watch(
-  () => authStore.user?.uid,
-  (uid) => {
-    if (uid) {
-      chatStore.init()
-      friendsStore.init()
-    } else {
-      chatStore.cleanup()
-      friendsStore.cleanup()
-    }
-  },
-  { immediate: true },
-)
 </script>
 
 <style scoped>
 .chat-window {
   position: fixed;
-  bottom: 84px;
-  right: 18px;
+  bottom: 88px;
+  right: 20px;
   z-index: 90;
-  width: 380px;
-  height: 520px;
+  width: 390px;
+  height: 540px;
   max-width: calc(100vw - 24px);
-  max-height: calc(100vh - 104px);
-  background-color: var(--glass-modal);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  max-height: calc(100vh - 110px);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(159, 27, 25, 0.24) 0%, transparent 48%),
+    radial-gradient(circle at 92% 100%, rgba(25, 85, 235, 0.18) 0%, transparent 52%),
+    var(--glass-modal);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
   border: 1px solid var(--glass-border-bright);
   border-radius: 18px;
   box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.85),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    0 28px 65px rgba(0, 0, 0, 0.92),
+    0 12px 26px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -169,8 +153,8 @@ watch(
     height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .chat-window.expanded {
-  width: 780px;
-  height: 620px;
+  width: 800px;
+  height: 630px;
 }
 @media (max-width: 767px) {
   .chat-window,
@@ -178,20 +162,34 @@ watch(
     right: 12px;
     left: 12px;
     width: auto;
-    bottom: 78px;
-    height: calc(100vh - 96px);
+    bottom: 82px;
+    height: calc(100vh - 98px);
   }
   .mobile-hidden {
     display: none !important;
   }
 }
 .window-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  border-bottom: 1px solid var(--glass-border);
-  background: rgba(0, 0, 0, 0.25);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.48) 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+.window-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 4%;
+  width: 92%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--glass-border-bright) 50%,
+    transparent 100%
+  );
 }
 .header-left {
   display: flex;
@@ -201,20 +199,39 @@ watch(
 .window-title {
   font-size: 16px;
   font-weight: 700;
+  letter-spacing: 0.2px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
 }
 .stealth-btn {
   font-size: 11px;
-  padding: 3px 8px;
+  font-weight: 600;
+  padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid var(--glass-border);
-  background-color: var(--glass-bg);
+  background-color: var(--glass-bg-light);
   color: var(--color-light-grey);
   cursor: pointer;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.2s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+.stealth-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--glass-border-bright);
+  color: var(--color-white);
 }
 .stealth-btn.active {
   background-color: var(--glass-purple);
   color: var(--color-white);
   border-color: var(--glass-border-bright);
+  box-shadow:
+    0 8px 18px rgba(135, 55, 215, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 .header-actions {
   display: flex;
@@ -226,40 +243,69 @@ watch(
   height: 30px;
   border-radius: 8px;
   border: 1px solid var(--glass-border);
-  background-color: var(--glass-bg);
+  background-color: var(--glass-bg-light);
   color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   font-size: 15px;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 .icon-btn:hover {
+  transform: translateY(-2px);
   background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
+}
+.icon-btn:active {
+  transform: translateY(1px) scale(0.94);
 }
 .tabs-bar {
   display: flex;
-  border-bottom: 1px solid var(--glass-border);
+  padding: 8px 10px 4px;
+  gap: 8px;
 }
 .tab-item {
   flex: 1;
-  padding: 10px;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background-color: var(--glass-bg-light);
+  border: 1px solid var(--glass-border);
   color: var(--color-light-grey);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition:
+    transform 0.2s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+.tab-item:hover:not(.active) {
+  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.13);
+  color: var(--color-white);
 }
 .tab-item.active {
   color: var(--color-white);
-  border-bottom-color: var(--color-hover);
-  background-color: var(--glass-bg);
+  background-color: var(--glass-red);
+  border-color: var(--glass-border-bright);
+  box-shadow:
+    0 10px 22px rgba(159, 27, 25, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 .mini-badge {
   background-color: var(--color-hover);
@@ -268,6 +314,8 @@ watch(
   font-weight: 800;
   padding: 1px 6px;
   border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
 }
 .window-body {
   flex: 1;
@@ -313,8 +361,8 @@ watch(
 }
 .sub-tabs-bar {
   display: flex;
-  padding: 6px;
-  gap: 6px;
+  padding: 6px 10px 8px;
+  gap: 8px;
   border-bottom: 1px solid var(--glass-border);
 }
 .sub-tab-btn {
@@ -324,20 +372,30 @@ watch(
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg);
   color: var(--color-light-grey);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 }
-.sub-tab-btn.active {
-  background-color: var(--glass-red);
+.sub-tab-btn:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.12);
   color: var(--color-white);
 }
-.sub-tab-btn.admin-sub.active {
-  background-color: var(--glass-purple);
+.sub-tab-btn.active {
+  background-color: rgba(175, 25, 25, 0.55);
+  border-color: var(--glass-border-bright);
+  color: var(--color-white);
+  box-shadow:
+    0 6px 14px rgba(159, 27, 25, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .sidebar-content {
   flex: 1;
@@ -348,17 +406,19 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 24px;
   text-align: center;
+  font-size: 14px;
   color: var(--color-light-grey);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
 }
 .widget-pop-enter-active,
 .widget-pop-leave-active {
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .widget-pop-enter-from,
 .widget-pop-leave-to {
   opacity: 0;
-  transform: translateY(14px) scale(0.96);
+  transform: translateY(16px) scale(0.96);
 }
 </style>

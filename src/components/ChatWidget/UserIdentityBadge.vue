@@ -1,27 +1,33 @@
 <template>
-  <div v-if="user" class="identity-wrap">
+  <div class="identity-wrap">
     <div class="top-row">
       <span v-if="showOnline" class="status-dot" :class="{ online: isVisibleOnline }"></span>
 
-      <span class="nickname">{{ user.displayName }}</span>
+      <span class="nickname">{{ user?.displayName }}</span>
 
-      <span v-if="user.role !== 'user'" class="role-badge" :class="`role-${user.role}`">
+      <span v-if="user" class="role-badge" :class="`role-${user.role}`">
         {{ roleLabel }}
       </span>
     </div>
 
     <span v-if="showDays" class="days-badge">
-      {{ $t('chat.days_on_site', { days: daysCount }) }}
+      <template v-if="isVisibleOnline">
+        {{ $t('chat.days_on_site', { days: daysCount }) }} • {{ $t('chat.online') }}
+      </template>
+      <template v-else>
+        {{ $t('chat.last_seen_at', { time: formattedLastSeen }) }}
+      </template>
     </span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { UserProfile } from '@/types/chat'
 import { getDaysOnSite } from '@/utils/userHelpers'
 import { useChatStore } from '@/stores/chat'
+import { MAIN_ACCOUNT_ID } from '@/constants/env'
 
 const props = withDefaults(
   defineProps<{
@@ -38,23 +44,52 @@ const props = withDefaults(
 const { t } = useI18n()
 const chatStore = useChatStore()
 
+const now = ref(Date.now())
+let tickTimer: ReturnType<typeof setInterval> | null = null
+
+onMounted(() => {
+  tickTimer = setInterval(() => {
+    now.value = Date.now()
+  }, 15000)
+})
+
+onUnmounted(() => {
+  if (tickTimer) clearInterval(tickTimer)
+})
+
 const daysCount = computed(() => (props.user ? getDaysOnSite(props.user.createdAt) : 0))
 
 const isVisibleOnline = computed(() => {
   if (!props.user?.isOnline) return false
+  const isFresh = now.value - (props.user.lastSeen || 0) < 75000
+  if (!isFresh) return false
   if (!props.user.hideOnline) return true
 
-  return Boolean(chatStore.currentUserProfile?.permissions.canSeeAllUsers)
+  const me = chatStore.currentUserProfile
+  return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
+})
+
+const formattedLastSeen = computed(() => {
+  if (!props.user?.lastSeen) return ''
+  return new Date(props.user.lastSeen).toLocaleString([], {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 })
 
 const roleLabel = computed(() => {
   switch (props.user?.role) {
     case 'owner':
-      return `👑 ${t('chat.role_owner')}`
+      return `🎬 ${t('chat.role_owner')}`
     case 'admin':
-      return `🛡️ ${t('chat.role_admin')}`
+      return `🎥 ${t('chat.role_admin')}`
     case 'moderator':
-      return `⚡ ${t('chat.role_moderator')}`
+      return `📢 ${t('chat.role_moderator')}`
+    case 'user':
+      return `🍿 ${t('chat.role_user')}`
     default:
       return ''
   }
@@ -65,7 +100,7 @@ const roleLabel = computed(() => {
 .identity-wrap {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 .top-row {
@@ -79,6 +114,7 @@ const roleLabel = computed(() => {
   height: 8px;
   border-radius: 50%;
   background-color: var(--color-grey);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   flex-shrink: 0;
   transition:
     background-color 0.3s ease,
@@ -86,12 +122,14 @@ const roleLabel = computed(() => {
 }
 .status-dot.online {
   background-color: #10b981;
-  box-shadow: 0 0 8px var(--color-shadow-green);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 0 10px var(--color-shadow-green);
 }
 .nickname {
   font-weight: 700;
   font-size: 14px;
   color: var(--color-white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -99,23 +137,36 @@ const roleLabel = computed(() => {
 .role-badge {
   font-size: 11px;
   font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 6px;
+  padding: 2px 8px;
+  border-radius: 8px;
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(8px);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
   white-space: nowrap;
 }
 .role-owner {
   background-color: var(--glass-red);
-  box-shadow: 0 0 10px rgba(159, 27, 25, 0.5);
+  box-shadow:
+    0 4px 12px rgba(159, 27, 25, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .role-admin {
   background-color: var(--glass-blue);
-  box-shadow: 0 0 10px rgba(25, 95, 215, 0.45);
+  box-shadow:
+    0 4px 12px rgba(25, 95, 215, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .role-moderator {
   background-color: var(--glass-green);
-  box-shadow: 0 0 10px rgba(16, 165, 100, 0.45);
+  box-shadow:
+    0 4px 12px rgba(16, 165, 100, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.role-user {
+  background-color: var(--glass-bg-light);
+  color: var(--color-light-grey);
 }
 .days-badge {
   font-size: 11px;
