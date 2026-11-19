@@ -1,19 +1,33 @@
 <template>
   <div class="dialog-tab">
-    <div v-if="peerProfile" class="dialog-header">
+    <div v-if="chatStore.activeChatId" class="dialog-header">
       <div class="dialog-head-left">
-        <button class="back-btn" @click="chatStore.closeDialog()" title="Назад">←</button>
+        <UserIdentityBadge v-if="peerProfile" :user="peerProfile" />
+
+        <div v-else-if="chatStore.activeRoom?.isGroup" class="group-header-info">
+          <span class="group-title">👥 {{ groupTitleText }}</span>
+          <span class="group-members-count">
+            {{ $t('chat.participants_count', { count: groupMembersList.length }) }}
+          </span>
+        </div>
       </div>
 
       <div class="dialog-head-right">
-        <span v-if="isPeerTyping" class="typing-indicator">{{ $t('chat.typing') }}...</span>
+        <span v-if="typingText" class="typing-indicator">{{ typingText }}</span>
         <button
           v-if="chatStore.activeMessages.length"
-          class="clear-chat-btn"
+          class="header-action-btn"
           @click="chatStore.clearCurrentChat()"
           :title="$t('chat.clear_history')"
         >
           🧹
+        </button>
+        <button
+          class="header-action-btn close-dialog-btn"
+          @click="chatStore.closeDialog()"
+          :title="$t('chat.close_dialog')"
+        >
+          ✕
         </button>
       </div>
     </div>
@@ -88,6 +102,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useChatStore } from '@/stores/chat'
 import { useAuthStore } from '@/stores/auth'
 import { useFriendsStore } from '@/stores/friends'
@@ -99,6 +114,7 @@ const chatStore = useChatStore()
 const authStore = useAuthStore()
 const friendsStore = useFriendsStore()
 const router = useRouter()
+const { t } = useI18n()
 
 const draft = ref('')
 const messagesBox = ref<HTMLElement | null>(null)
@@ -109,9 +125,31 @@ const peerProfile = computed(() => {
   return friendsStore.profilesMap[chatStore.activePeerUid] || null
 })
 
-const isPeerTyping = computed(() => {
-  if (!chatStore.activePeerUid || !chatStore.activeRoom?.typing) return false
-  return Boolean(chatStore.activeRoom.typing[chatStore.activePeerUid])
+const groupMembersList = computed(() => {
+  const room = chatStore.activeRoom
+  if (!room?.isGroup) return []
+  return room.participants
+    .filter((uid) => uid !== authStore.user?.uid)
+    .map((uid) => friendsStore.profilesMap[uid]?.displayName || '...')
+})
+
+const groupTitleText = computed(() => {
+  const room = chatStore.activeRoom
+  if (room?.groupTitle) return room.groupTitle
+  return groupMembersList.value.join(', ') || t('chat.group_chat_default')
+})
+
+const typingText = computed(() => {
+  const room = chatStore.activeRoom
+  const myUid = authStore.user?.uid
+  if (!room?.typing || !myUid) return ''
+  const typingUids = Object.entries(room.typing)
+    .filter(([uid, val]) => uid !== myUid && val)
+    .map(([uid]) => friendsStore.profilesMap[uid]?.displayName || '')
+    .filter(Boolean)
+  if (!typingUids.length) return ''
+  if (!room.isGroup) return `${t('chat.typing')}...`
+  return `${typingUids.join(', ')} ${t('chat.typing')}...`
 })
 
 const canDeleteForAll = (msg: ChatMessage) => {
@@ -172,41 +210,39 @@ const formatTime = (ts: number) =>
   background: rgba(0, 0, 0, 0.25);
 }
 .dialog-head-left {
+  min-width: 0;
+  flex: 1;
+}
+.group-header-info {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
   min-width: 0;
 }
-.back-btn {
-  display: none;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--glass-border);
-  background-color: var(--glass-bg-light);
+.group-title {
+  font-size: 13px;
+  font-weight: 700;
   color: var(--color-white);
-  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.back-btn:hover {
-  background-color: var(--glass-hover);
-}
-@media (max-width: 640px) {
-  .back-btn {
-    display: inline-flex;
-  }
+.group-members-count {
+  font-size: 11px;
+  color: var(--color-light-grey);
 }
 .dialog-head-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 .typing-indicator {
-  font-size: 12px;
+  font-size: 11px;
   color: #10b981;
   font-style: italic;
 }
-.clear-chat-btn {
-  padding: 3px 6px;
+.header-action-btn {
+  padding: 3px 7px;
   border-radius: 6px;
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg-light);
@@ -214,8 +250,11 @@ const formatTime = (ts: number) =>
   cursor: pointer;
   font-size: 12px;
 }
-.clear-chat-btn:hover {
+.header-action-btn:hover {
   background-color: var(--glass-red);
+}
+.close-dialog-btn {
+  font-weight: 700;
 }
 .messages-area {
   flex: 1;

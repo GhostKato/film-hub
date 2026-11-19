@@ -16,6 +16,13 @@
           }}
         </button>
         <button
+          v-if="selectedUids.length"
+          class="mini-btn group-chat-btn"
+          @click="startGroupChatFromSelected"
+        >
+          💬 {{ $t('chat.write_selected', { count: selectedUids.length }) }}
+        </button>
+        <button
           v-if="selectedUids.length && canSendSystem"
           class="mini-btn accent"
           @click="showBroadcastForm = !showBroadcastForm"
@@ -48,9 +55,15 @@
     </div>
 
     <div class="scroll-area">
-      <div v-for="user in filteredUsers" :key="user.uid" class="admin-user-card">
+      <div
+        v-for="user in filteredUsers"
+        :key="user.uid"
+        class="admin-user-card clickable"
+        :class="{ active: chatStore.activePeerUid === user.uid }"
+        @click="chatStore.openDialogWith(user.uid)"
+      >
         <div class="card-top">
-          <label class="select-check">
+          <label class="select-check" @click.stop>
             <input type="checkbox" :value="user.uid" v-model="selectedUids" />
           </label>
 
@@ -58,7 +71,7 @@
             <UserIdentityBadge :user="user" />
           </div>
 
-          <div class="card-btns">
+          <div class="card-btns" @click.stop>
             <button
               v-if="!isRelatedWithUser(user.uid)"
               class="mini-btn"
@@ -81,7 +94,13 @@
                 editingUser =
                   editingUser?.uid === user.uid
                     ? null
-                    : { ...user, permissions: { ...user.permissions } }
+                    : {
+                        ...user,
+                        permissions: {
+                          ...getDefaultPermissions(user.role),
+                          ...user.permissions,
+                        },
+                      }
               "
               :title="$t('chat.edit_rights')"
             >
@@ -98,20 +117,20 @@
           </div>
         </div>
 
-        <div v-if="editingUser && editingUser.uid === user.uid" class="rights-panel">
+        <div v-if="editingUser && editingUser.uid === user.uid" class="rights-panel" @click.stop>
           <div class="role-row">
             <span>{{ $t('chat.role_label') }}:</span>
             <select v-model="editingUser.role" @change="onRolePresetChange" class="role-select">
-              <option value="user">User</option>
-              <option value="moderator">Moderator</option>
-              <option value="admin">Admin</option>
+              <option value="user">{{ $t('chat.role_user') }}</option>
+              <option value="moderator">{{ $t('chat.role_moderator') }}</option>
+              <option value="admin">{{ $t('chat.role_admin') }}</option>
             </select>
           </div>
 
           <div class="perms-grid">
             <label v-for="(val, key) in editingUser.permissions" :key="key" class="perm-item">
               <input type="checkbox" v-model="editingUser.permissions[key]" />
-              <span>{{ key }}</span>
+              <span>{{ $t(`chat.perm_${key}`) }}</span>
             </label>
           </div>
 
@@ -180,6 +199,13 @@ const toggleSelectAll = () => {
   }
 }
 
+const startGroupChatFromSelected = async () => {
+  if (!selectedUids.value.length) return
+  const targets = [...selectedUids.value]
+  selectedUids.value = []
+  await chatStore.startChatWithSelected(targets)
+}
+
 const onRolePresetChange = () => {
   if (!editingUser.value) return
   editingUser.value.permissions = getDefaultPermissions(editingUser.value.role)
@@ -217,7 +243,6 @@ const confirmDeleteUser = async (user: UserProfile) => {
   notificationStore.removed(t('chat.user_deleted_notice'))
 }
 </script>
-
 <style scoped>
 .admin-tab-wrap {
   display: flex;
@@ -234,6 +259,7 @@ const confirmDeleteUser = async (user: UserProfile) => {
 }
 .bulk-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 6px;
 }
@@ -288,6 +314,17 @@ const confirmDeleteUser = async (user: UserProfile) => {
   border-radius: 10px;
   background-color: var(--glass-bg);
   border: 1px solid var(--glass-border);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.admin-user-card.clickable {
+  cursor: pointer;
+}
+.admin-user-card.clickable:hover,
+.admin-user-card.active {
+  border-color: var(--color-hover);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 .card-top {
   display: flex;
@@ -295,9 +332,14 @@ const confirmDeleteUser = async (user: UserProfile) => {
   justify-content: space-between;
   gap: 8px;
 }
+.user-info-cell {
+  flex: 1;
+  min-width: 0;
+}
 .card-btns {
   display: flex;
   gap: 4px;
+  flex-shrink: 0;
 }
 .mini-btn {
   padding: 4px 8px;
@@ -310,6 +352,10 @@ const confirmDeleteUser = async (user: UserProfile) => {
 }
 .mini-btn:hover {
   background-color: var(--glass-hover);
+}
+.mini-btn.group-chat-btn {
+  background-color: var(--glass-purple);
+  font-weight: 700;
 }
 .mini-btn.accent {
   background-color: var(--glass-blue);

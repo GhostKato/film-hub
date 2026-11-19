@@ -41,6 +41,7 @@ export const sendDirectMessage = async (params: {
     const newRoom: ChatRoom = {
       id: chatId,
       participants: [sender.uid, recipientUid].sort(),
+      isGroup: false,
       lastMessage: previewText,
       lastSenderId: sender.uid,
       updatedAt: Date.now(),
@@ -60,6 +61,81 @@ export const sendDirectMessage = async (params: {
       [`unreadCount.${recipientUid}`]: increment(1),
     })
   }
+
+  const msgData: Omit<ChatMessage, 'id'> = {
+    senderId: sender.uid,
+    senderName: sender.displayName,
+    senderRole: sender.role,
+    text: text.trim(),
+    ...(mediaCard ? { mediaCard } : {}),
+    deletedFor: [],
+    readBy: [sender.uid],
+    createdAt: Date.now(),
+  }
+
+  await addDoc(collection(db, 'chats', chatId, 'messages'), msgData)
+}
+
+export const createOrOpenGroupChat = async (params: {
+  creator: UserProfile
+  participantUids: string[]
+  groupTitle?: string
+}): Promise<string> => {
+  const uniqueParticipants = Array.from(
+    new Set([params.creator.uid, ...params.participantUids]),
+  ).sort()
+  const chatId = `group_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+  const chatRef = doc(db, 'chats', chatId)
+
+  const unreadCount: Record<string, number> = {}
+  uniqueParticipants.forEach((uid) => {
+    unreadCount[uid] = 0
+  })
+
+  const newRoom: ChatRoom = {
+    id: chatId,
+    participants: uniqueParticipants,
+    isGroup: true,
+    ...(params.groupTitle?.trim() ? { groupTitle: params.groupTitle.trim() } : {}),
+    lastMessage: '',
+    lastSenderId: params.creator.uid,
+    updatedAt: Date.now(),
+    unreadCount,
+    typing: {},
+    clearedAt: {},
+  }
+
+  await setDoc(chatRef, newRoom)
+  return chatId
+}
+
+export const sendRoomMessage = async (params: {
+  chatId: string
+  sender: UserProfile
+  text: string
+  mediaCard?: SharedMediaCard
+}) => {
+  const { chatId, sender, text, mediaCard } = params
+  const chatRef = doc(db, 'chats', chatId)
+  const chatSnap = await getDoc(chatRef)
+  if (!chatSnap.exists()) return
+
+  const roomData = chatSnap.data() as ChatRoom
+  const previewText = text.trim() || (mediaCard ? `🎬 ${mediaCard.title}` : '')
+
+  const updates: Record<string, unknown> = {
+    lastMessage: previewText,
+    lastSenderId: sender.uid,
+    updatedAt: Date.now(),
+  }
+
+  roomData.participants.forEach((uid) => {
+    if (uid !== sender.uid) {
+      updates[`unreadCount.${uid}`] = increment(1)
+    }
+  })
+
+  await updateDoc(chatRef, updates)
 
   const msgData: Omit<ChatMessage, 'id'> = {
     senderId: sender.uid,
@@ -125,7 +201,7 @@ export const subscribeUserChats = (uid: string, callback: (chats: ChatRoom[]) =>
   const q = query(collection(db, 'chats'), where('participants', 'array-contains', uid))
   return onSnapshot(q, (snap) => {
     const rooms = snap.docs
-      .map((d) => d.data() as ChatRoom)
+      .map((d) => ({ id: d.id, ...(d.data() as Omit<ChatRoom, 'id'>) }))
       .sort((a, b) => b.updatedAt - a.updatedAt)
     callback(rooms)
   })
@@ -137,10 +213,7 @@ export const subscribeChatMessages = (
 ) => {
   const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('createdAt', 'asc'))
   return onSnapshot(q, (snap) => {
-    const msgs = snap.docs.map((d) => ({
-      id: d.id,
-      ...(d.data() as Omit<ChatMessage, 'id'>),
-    }))
+    const msgs = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<ChatMessage, 'id'>) }))
     callback(msgs)
   })
 }

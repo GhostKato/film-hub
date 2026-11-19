@@ -11,6 +11,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canDeleteAnyMessage: true,
         canBanOrDeleteUsers: true,
         canEditGlobalRecommended: true,
+        canUseStealth: true,
       }
     case 'admin':
       return {
@@ -20,6 +21,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canDeleteAnyMessage: true,
         canBanOrDeleteUsers: false,
         canEditGlobalRecommended: false,
+        canUseStealth: true,
       }
     case 'moderator':
       return {
@@ -29,6 +31,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canDeleteAnyMessage: true,
         canBanOrDeleteUsers: false,
         canEditGlobalRecommended: false,
+        canUseStealth: false,
       }
     default:
       return {
@@ -38,6 +41,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canDeleteAnyMessage: false,
         canBanOrDeleteUsers: false,
         canEditGlobalRecommended: false,
+        canUseStealth: false,
       }
   }
 }

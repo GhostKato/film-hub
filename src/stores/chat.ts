@@ -12,6 +12,7 @@ import type {
 } from '@/types/chat'
 import {
   clearChatHistoryForUser,
+  createOrOpenGroupChat,
   deleteMessageForEveryone,
   deleteMessageForMe,
   deleteSystemMessage,
@@ -19,6 +20,7 @@ import {
   markSystemMessageRead,
   sendDirectMessage,
   sendMediaRecommendationBulk,
+  sendRoomMessage,
   sendSystemMessageBulk,
   setTypingStatus,
   subscribeChatMessages,
@@ -51,6 +53,7 @@ export const useChatStore = defineStore('chat', () => {
   const chatSubTab = ref<ChatListSubTab>('friends')
 
   const chats = ref<ChatRoom[]>([])
+  const activeChatId = ref<string | null>(null)
   const activePeerUid = ref<string | null>(null)
   const activeMessages = ref<ChatMessage[]>([])
   const systemMessages = ref<SystemNotificationItem[]>([])
@@ -61,16 +64,16 @@ export const useChatStore = defineStore('chat', () => {
   let unsubAllUsers: (() => void) | null = null
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null
 
-  const activeChatId = computed(() => {
-    const uid = authStore.user?.uid
-    if (!uid || !activePeerUid.value) return null
-    return getChatId(uid, activePeerUid.value)
-  })
+  const canUseStealth = computed(() =>
+    Boolean(currentUserProfile.value?.permissions?.canUseStealth),
+  )
 
   const activeRoom = computed(() => {
     if (!activeChatId.value) return null
     return chats.value.find((c) => c.id === activeChatId.value) || null
   })
+
+  const groupChats = computed(() => chats.value.filter((c) => c.isGroup))
 
   const chatUnreadCount = computed(() => {
     const uid = authStore.user?.uid
@@ -103,6 +106,12 @@ export const useChatStore = defineStore('chat', () => {
       await authStore.logout()
       return
     }
+
+    if (profile.hideOnline && !profile.permissions?.canUseStealth) {
+      await toggleHideOnline(profile.uid, false)
+      profile.hideOnline = false
+    }
+
     currentUserProfile.value = profile
 
     heartbeatTimer = setInterval(() => {
@@ -122,8 +131,9 @@ export const useChatStore = defineStore('chat', () => {
       chats.value = rooms
 
       rooms.forEach((r) => {
-        const peer = r.participants.find((id) => id !== fbUser.uid)
-        if (peer) friendsStore.ensureProfileSubscribed(peer)
+        r.participants.forEach((pid) => {
+          if (pid !== fbUser.uid) friendsStore.ensureProfileSubscribed(pid)
+        })
       })
     })
 
@@ -164,20 +174,20 @@ export const useChatStore = defineStore('chat', () => {
     activeMessages.value = []
     systemMessages.value = []
     allUsers.value = []
+    activeChatId.value = null
     activePeerUid.value = null
   }
-
-  const openDialogWith = async (peerUid: string) => {
+  const subscribeToRoom = async (chatId: string, peerUid: string | null) => {
     const uid = authStore.user?.uid
     if (!uid) return
 
-    friendsStore.ensureProfileSubscribed(peerUid)
+    activeChatId.value = chatId
     activePeerUid.value = peerUid
     activeTab.value = 'chat'
     isOpen.value = true
 
     if (unsubMessages) unsubMessages()
-    const chatId = getChatId(uid, peerUid)
+    activeMessages.value = []
 
     unsubMessages = subscribeChatMessages(chatId, (msgs) => {
       const minTime = activeRoom.value?.clearedAt?.[uid] || 0
@@ -190,25 +200,71 @@ export const useChatStore = defineStore('chat', () => {
     await markChatAsRead(chatId, uid)
   }
 
+  const openDialogWith = async (peerUid: string) => {
+    const uid = authStore.user?.uid
+    if (!uid) return
+    friendsStore.ensureProfileSubscribed(peerUid)
+    const chatId = getChatId(uid, peerUid)
+    await subscribeToRoom(chatId, peerUid)
+  }
+
+  const openGroupRoom = async (chatId: string) => {
+    const room = chats.value.find((c) => c.id === chatId)
+    room?.participants.forEach((pid) => {
+      if (pid !== authStore.user?.uid) friendsStore.ensureProfileSubscribed(pid)
+    })
+    await subscribeToRoom(chatId, null)
+  }
+
+  const startChatWithSelected = async (selectedUids: string[], groupTitle?: string) => {
+    const uid = authStore.user?.uid
+    if (!uid || !currentUserProfile.value) return
+    const others = Array.from(new Set(selectedUids.filter((id) => id !== uid)))
+    if (!others.length) return
+
+    if (others.length === 1 && others[0]) {
+      await openDialogWith(others[0])
+      return
+    }
+
+    others.forEach((id) => friendsStore.ensureProfileSubscribed(id))
+    const chatId = await createOrOpenGroupChat({
+      creator: currentUserProfile.value,
+      participantUids: others,
+      groupTitle,
+    })
+    await subscribeToRoom(chatId, null)
+  }
+
   const closeDialog = () => {
     if (unsubMessages) {
       unsubMessages()
       unsubMessages = null
     }
+    activeChatId.value = null
     activePeerUid.value = null
     activeMessages.value = []
   }
 
   const sendMessage = async (text: string, mediaCard?: SharedMediaCard) => {
-    if (!currentUserProfile.value || !activePeerUid.value) return
+    if (!currentUserProfile.value || !activeChatId.value) return
     if (!text.trim() && !mediaCard) return
 
-    await sendDirectMessage({
-      sender: currentUserProfile.value,
-      recipientUid: activePeerUid.value,
-      text,
-      mediaCard,
-    })
+    if (activeRoom.value?.isGroup) {
+      await sendRoomMessage({
+        chatId: activeChatId.value,
+        sender: currentUserProfile.value,
+        text,
+        mediaCard,
+      })
+    } else if (activePeerUid.value) {
+      await sendDirectMessage({
+        sender: currentUserProfile.value,
+        recipientUid: activePeerUid.value,
+        text,
+        mediaCard,
+      })
+    }
   }
 
   const recommendMediaToFriends = async (
@@ -260,7 +316,7 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   const toggleStealthMode = async () => {
-    if (!currentUserProfile.value) return
+    if (!currentUserProfile.value || !canUseStealth.value) return
     const nextVal = !currentUserProfile.value.hideOnline
     await toggleHideOnline(currentUserProfile.value.uid, nextVal)
     currentUserProfile.value.hideOnline = nextVal
@@ -279,13 +335,15 @@ export const useChatStore = defineStore('chat', () => {
   return {
     currentUserProfile,
     allUsers,
+    canUseStealth,
     isOpen,
     isExpanded,
     activeTab,
     chatSubTab,
     chats,
-    activePeerUid,
+    groupChats,
     activeChatId,
+    activePeerUid,
     activeRoom,
     activeMessages,
     systemMessages,
@@ -295,6 +353,8 @@ export const useChatStore = defineStore('chat', () => {
     init,
     cleanup,
     openDialogWith,
+    openGroupRoom,
+    startChatWithSelected,
     closeDialog,
     sendMessage,
     recommendMediaToFriends,

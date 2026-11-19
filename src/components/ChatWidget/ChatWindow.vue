@@ -8,7 +8,7 @@
           <div class="header-left">
             <h3 class="window-title">{{ $t('chat.center_title') }}</h3>
             <button
-              v-if="chatStore.currentUserProfile"
+              v-if="chatStore.currentUserProfile && chatStore.canUseStealth"
               class="stealth-btn"
               :class="{ active: chatStore.currentUserProfile.hideOnline }"
               @click="chatStore.toggleStealthMode()"
@@ -66,10 +66,7 @@
           </div>
 
           <div v-else class="chat-split-layout">
-            <div
-              class="sidebar-pane"
-              :class="{ 'mobile-hidden': Boolean(chatStore.activePeerUid) }"
-            >
+            <div class="sidebar-pane" :class="{ 'mobile-hidden': Boolean(chatStore.activeChatId) }">
               <div class="sub-tabs-bar">
                 <button
                   v-if="canSeeAllUsers"
@@ -98,8 +95,8 @@
               </div>
             </div>
 
-            <div class="dialog-pane" :class="{ 'mobile-hidden': !chatStore.activePeerUid }">
-              <DialogTab v-if="chatStore.activePeerUid" />
+            <div class="dialog-pane" :class="{ 'mobile-hidden': !chatStore.activeChatId }">
+              <DialogTab v-if="chatStore.activeChatId" />
               <div v-else class="empty-dialog-placeholder">
                 <p>{{ $t('chat.select_friend_hint') }}</p>
               </div>
@@ -112,67 +109,89 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useChatStore } from '@/stores/chat'
+import { computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useChatStore } from '@/stores/chat'
 import { useFriendsStore } from '@/stores/friends'
 import ChatLauncher from './ChatLauncher.vue'
-import FriendsTab from './FriendsTab.vue'
 import SystemTab from './SystemTab.vue'
-import DialogTab from './DialogTab.vue'
+import FriendsTab from './FriendsTab.vue'
 import AdminUsersTab from './AdminUsersTab.vue'
+import DialogTab from './DialogTab.vue'
 import XIcon from '@/components/icons/XIcon.vue'
 
-const chatStore = useChatStore()
 const authStore = useAuthStore()
+const chatStore = useChatStore()
 const friendsStore = useFriendsStore()
 
 const canSeeAllUsers = computed(() =>
   Boolean(chatStore.currentUserProfile?.permissions.canSeeAllUsers),
+)
+
+watch(
+  () => authStore.user?.uid,
+  (uid) => {
+    if (uid) {
+      chatStore.init()
+      friendsStore.init()
+    } else {
+      chatStore.cleanup()
+      friendsStore.cleanup()
+    }
+  },
+  { immediate: true },
 )
 </script>
 
 <style scoped>
 .chat-window {
   position: fixed;
-  right: 18px;
   bottom: 84px;
-  z-index: 85;
-  width: calc(100vw - 36px);
-  max-width: 680px;
+  right: 18px;
+  z-index: 90;
+  width: 380px;
   height: 520px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 104px);
+  background-color: var(--glass-modal);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid var(--glass-border-bright);
+  border-radius: 18px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
   display: flex;
   flex-direction: column;
-  background-color: var(--glass-modal);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid var(--glass-border-bright);
-  border-radius: 16px;
-  box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.92),
-    0 12px 24px rgba(0, 0, 0, 0.72),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
 .chat-window.expanded {
-  left: 50%;
-  bottom: 50%;
-  transform: translate(-50%, 50%);
-  width: 94vw;
-  max-width: 960px;
-  height: 78vh;
-  max-height: 700px;
+  width: 780px;
+  height: 620px;
 }
-
+@media (max-width: 767px) {
+  .chat-window,
+  .chat-window.expanded {
+    right: 12px;
+    left: 12px;
+    width: auto;
+    bottom: 78px;
+    height: calc(100vh - 96px);
+  }
+  .mobile-hidden {
+    display: none !important;
+  }
+}
 .window-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 12px 14px;
   border-bottom: 1px solid var(--glass-border);
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.25);
 }
 .header-left {
   display: flex;
@@ -181,20 +200,20 @@ const canSeeAllUsers = computed(() =>
 }
 .window-title {
   font-size: 16px;
-  margin: 0;
+  font-weight: 700;
 }
 .stealth-btn {
   font-size: 11px;
   padding: 3px 8px;
-  border-radius: 8px;
-  color: var(--color-white);
-  background-color: var(--glass-bg-light);
+  border-radius: 999px;
   border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg);
+  color: var(--color-light-grey);
   cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 .stealth-btn.active {
   background-color: var(--glass-purple);
+  color: var(--color-white);
   border-color: var(--glass-border-bright);
 }
 .header-actions {
@@ -203,169 +222,143 @@ const canSeeAllUsers = computed(() =>
   gap: 6px;
 }
 .icon-btn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
   border: 1px solid var(--glass-border);
-  background-color: var(--glass-bg-light);
+  background-color: var(--glass-bg);
   color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 15px;
 }
 .icon-btn:hover {
   background-color: var(--glass-hover);
 }
-
 .tabs-bar {
   display: flex;
-  gap: 8px;
-  padding: 8px 12px;
   border-bottom: 1px solid var(--glass-border);
-  background: rgba(0, 0, 0, 0.2);
 }
 .tab-item {
   flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-light-grey);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 7px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-white);
-  background-color: var(--glass-bg-light);
-  border: 1px solid var(--glass-border);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-.tab-item:hover {
-  background-color: var(--glass-hover);
 }
 .tab-item.active {
-  background-color: var(--glass-red);
-  border-color: var(--glass-border-bright);
+  color: var(--color-white);
+  border-bottom-color: var(--color-hover);
+  background-color: var(--glass-bg);
 }
-
 .mini-badge {
   background-color: var(--color-hover);
+  color: var(--color-white);
+  font-size: 11px;
+  font-weight: 800;
   padding: 1px 6px;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
 }
-
 .window-body {
   flex: 1;
-  display: flex;
   overflow: hidden;
-}
-
-.full-pane {
-  flex: 1;
   display: flex;
   flex-direction: column;
+}
+.full-pane {
+  flex: 1;
   overflow: hidden;
 }
-
 .chat-split-layout {
   flex: 1;
   display: flex;
   overflow: hidden;
 }
-
 .sidebar-pane {
-  width: 270px;
-  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   border-right: 1px solid var(--glass-border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.15);
 }
-
-.sub-tabs-bar {
-  display: flex;
-  gap: 6px;
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--glass-border);
+.chat-window.expanded .sidebar-pane {
+  width: 300px;
+  flex-shrink: 0;
 }
-
-.sub-tab-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 5px 8px;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-white);
-  background-color: var(--glass-bg-light);
-  border: 1px solid var(--glass-border);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-.sub-tab-btn:hover {
-  background-color: var(--glass-hover);
-}
-.sub-tab-btn.active {
-  background-color: var(--glass-blue);
-  border-color: var(--glass-border-bright);
-}
-.admin-sub {
-  border-color: rgba(255, 185, 45, 0.45);
-}
-
-.sidebar-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 .dialog-pane {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-width: 0;
 }
-
+.chat-window:not(.expanded) .sidebar-pane:not(.mobile-hidden) + .dialog-pane {
+  display: none;
+}
+@media (min-width: 768px) {
+  .chat-window:not(.expanded) .sidebar-pane.mobile-hidden {
+    display: none;
+  }
+  .chat-window:not(.expanded) .dialog-pane:not(.mobile-hidden) {
+    display: flex;
+  }
+}
+.sub-tabs-bar {
+  display: flex;
+  padding: 6px;
+  gap: 6px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.sub-tab-btn {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg);
+  color: var(--color-light-grey);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.sub-tab-btn.active {
+  background-color: var(--glass-red);
+  color: var(--color-white);
+}
+.sub-tab-btn.admin-sub.active {
+  background-color: var(--glass-purple);
+}
+.sidebar-content {
+  flex: 1;
+  overflow: hidden;
+}
 .empty-dialog-placeholder {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-light-grey);
   padding: 20px;
   text-align: center;
-  font-size: 14px;
+  color: var(--color-light-grey);
 }
-
-@media (max-width: 640px) {
-  .sidebar-pane {
-    width: 100%;
-    border-right: none;
-  }
-  .mobile-hidden {
-    display: none;
-  }
-}
-
 .widget-pop-enter-active,
 .widget-pop-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .widget-pop-enter-from,
 .widget-pop-leave-to {
   opacity: 0;
-  transform: translateY(16px) scale(0.96);
+  transform: translateY(14px) scale(0.96);
 }
 </style>

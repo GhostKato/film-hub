@@ -7,6 +7,7 @@ export interface UserPermissions {
   canDeleteAnyMessage: boolean
   canBanOrDeleteUsers: boolean
   canEditGlobalRecommended: boolean
+  canUseStealth: boolean
 }
 
 export interface UserProfile {
@@ -61,6 +62,8 @@ export interface ChatMessage {
 export interface ChatRoom {
   id: string
   participants: string[]
+  isGroup?: boolean
+  groupTitle?: string
   lastMessage: string
   lastSenderId: string
   updatedAt: number
