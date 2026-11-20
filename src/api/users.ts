@@ -78,6 +78,13 @@ export const toggleHideOnline = async (uid: string, hideOnline: boolean) => {
 
 export const blockUser = async (currentUid: string, targetUid: string) => {
   if (targetUid === MAIN_ACCOUNT_ID) return
+  if (currentUid !== MAIN_ACCOUNT_ID) {
+    const targetSnap = await getDoc(doc(db, 'users', targetUid))
+    if (targetSnap.exists()) {
+      const target = targetSnap.data() as UserProfile
+      if (target.role === 'owner' || target.permissions?.hasImmunity) return
+    }
+  }
   await updateDoc(doc(db, 'users', currentUid), {
     blockedUsers: arrayUnion(targetUid),
     updatedAt: Date.now(),
@@ -90,6 +97,7 @@ export const unblockUser = async (currentUid: string, targetUid: string) => {
     updatedAt: Date.now(),
   })
 }
+
 export const searchUsersByNickname = async (
   searchQuery: string,
   currentUid: string,
@@ -130,10 +138,26 @@ export const updateUserRoleAndPermissions = async (
   targetUid: string,
   role: UserRole,
   permissions: UserPermissions,
+  actor?: UserProfile | null,
 ) => {
   if (targetUid === MAIN_ACCOUNT_ID) return
   const ref = doc(db, 'users', targetUid)
-  await updateDoc(ref, { role, permissions, updatedAt: Date.now() })
+  const snap = await getDoc(ref)
+  if (!snap.exists()) return
+
+  const targetData = snap.data() as UserProfile
+  const isActorOwner = actor?.role === 'owner' || actor?.uid === MAIN_ACCOUNT_ID
+
+  const safePermissions: UserPermissions = { ...permissions }
+
+  if (!isActorOwner) {
+    if (targetData.role === 'owner' || targetData.permissions?.hasImmunity) {
+      return
+    }
+    safePermissions.hasImmunity = false
+  }
+
+  await updateDoc(ref, { role, permissions: safePermissions, updatedAt: Date.now() })
 }
 
 export const setUserBlockedStatus = async (targetUid: string, isBlocked: boolean) => {

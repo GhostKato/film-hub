@@ -5,6 +5,7 @@ export interface UserPermissions {
   canSendSystemMessages: boolean
   canManageRoles: boolean
   canUseStealth: boolean
+  hasImmunity: boolean
 }
 
 export interface UserProfile {

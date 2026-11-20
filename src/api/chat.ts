@@ -7,6 +7,8 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  getDocs,
+  deleteField,
   query,
   where,
   orderBy,
@@ -92,6 +94,7 @@ export const sendDirectMessageBulk = async (params: {
     })
   }
 }
+
 export const createOrOpenGroupChat = async (params: {
   creator: UserProfile
   participantUids: string[]
@@ -183,6 +186,7 @@ export const sendMediaRecommendationBulk = async (params: {
     })
   }
 }
+
 export const sendSystemMessageBulk = async (params: {
   sender: UserProfile
   recipientUids: string[]
@@ -211,7 +215,6 @@ export const sendSystemMessageBulk = async (params: {
 
   await batch.commit()
 }
-
 export const subscribeUserChats = (uid: string, callback: (chats: ChatRoom[]) => void) => {
   const q = query(collection(db, 'chats'), where('participants', 'array-contains', uid))
   return onSnapshot(q, (snap) => {
@@ -261,6 +264,54 @@ export const clearChatHistoryForUser = async (chatId: string, uid: string) => {
     [`clearedAt.${uid}`]: Date.now(),
     [`unreadCount.${uid}`]: 0,
   })
+}
+
+export const leaveGroupChat = async (chatId: string, user: UserProfile) => {
+  const chatRef = doc(db, 'chats', chatId)
+  const snap = await getDoc(chatRef)
+  if (!snap.exists()) return
+
+  const roomData = snap.data() as ChatRoom
+  if (!roomData.isGroup) return
+
+  const remainingParticipants = roomData.participants.filter((id) => id !== user.uid)
+
+  if (remainingParticipants.length < 2) {
+    const messagesSnap = await getDocs(collection(db, 'chats', chatId, 'messages'))
+    const docs = messagesSnap.docs
+    for (let i = 0; i < docs.length; i += 450) {
+      const batch = writeBatch(db)
+      docs.slice(i, i + 450).forEach((d) => batch.delete(d.ref))
+      await batch.commit()
+    }
+    await deleteDoc(chatRef)
+    return
+  }
+
+  const leaveText = `👋 ${user.displayName} покинул(а) чат`
+
+  await updateDoc(chatRef, {
+    participants: remainingParticipants,
+    [`unreadCount.${user.uid}`]: deleteField(),
+    [`typing.${user.uid}`]: deleteField(),
+    [`clearedAt.${user.uid}`]: deleteField(),
+    lastMessage: leaveText,
+    lastSenderId: user.uid,
+    updatedAt: Date.now(),
+  })
+
+  const sysMsg: Omit<ChatMessage, 'id'> = {
+    senderId: user.uid,
+    senderName: user.displayName,
+    senderRole: user.role,
+    text: leaveText,
+    isSystem: true,
+    deletedFor: [],
+    readBy: [user.uid],
+    createdAt: Date.now(),
+  }
+
+  await addDoc(collection(db, 'chats', chatId, 'messages'), sysMsg)
 }
 
 export const setTypingStatus = async (chatId: string, uid: string, isTyping: boolean) => {

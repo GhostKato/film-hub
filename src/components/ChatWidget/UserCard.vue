@@ -65,7 +65,13 @@
           </button>
           <span v-else class="pending-tag">{{ $t('chat.request_pending') }}</span>
 
-          <template v-if="user.uid !== MAIN_ACCOUNT_ID && user.role !== 'owner'">
+          <template
+            v-if="
+              user.uid !== MAIN_ACCOUNT_ID &&
+              user.role !== 'owner' &&
+              (isMeOwner || !user.permissions?.hasImmunity)
+            "
+          >
             <button v-if="!isBlockedByMe" class="drawer-btn red-glass-btn" @click="handleBlock">
               🚫 {{ $t('chat.block_user') }}
             </button>
@@ -76,7 +82,7 @@
         </div>
 
         <button
-          v-if="canManageRoles && user.uid !== MAIN_ACCOUNT_ID"
+          v-if="canEditTargetRights"
           class="drawer-btn red-glass-btn full-width-btn"
           @click="toggleRightsPanel"
         >
@@ -84,7 +90,7 @@
         </button>
       </div>
 
-      <div v-if="showRightsPanel && canManageRoles" class="rights-panel">
+      <div v-if="showRightsPanel && canEditTargetRights" class="rights-panel">
         <div class="role-row">
           <span>{{ $t('chat.role_label') }}:</span>
           <select v-model="editRole" @change="onRolePresetChange" class="role-select">
@@ -95,7 +101,7 @@
         </div>
 
         <div class="perms-grid">
-          <label v-for="(val, key) in editPerms" :key="key" class="perm-item">
+          <label v-for="key in visiblePermissionKeys" :key="key" class="perm-item">
             <input type="checkbox" v-model="editPerms[key]" />
             <span>{{ $t(`chat.perm_${key}`) }}</span>
           </label>
@@ -160,17 +166,41 @@ const friendship = computed(() =>
   friendsStore.friendships.find((f) => f.users.includes(props.user.uid)),
 )
 
+const isMeOwner = computed(() => {
+  const me = chatStore.currentUserProfile
+  return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
+})
+
 const canManageRoles = computed(() =>
   Boolean(chatStore.currentUserProfile?.permissions.canManageRoles),
 )
+
+const canEditTargetRights = computed(() => {
+  if (!canManageRoles.value || props.user.uid === MAIN_ACCOUNT_ID) return false
+  if (isMeOwner.value) return true
+  if (props.user.role === 'owner' || props.user.permissions?.hasImmunity) return false
+  return true
+})
+
+const visiblePermissionKeys = computed<(keyof UserPermissions)[]>(() => {
+  const baseKeys: (keyof UserPermissions)[] = [
+    'canSeeAllUsers',
+    'canSendSystemMessages',
+    'canManageRoles',
+    'canUseStealth',
+  ]
+  if (isMeOwner.value) {
+    baseKeys.push('hasImmunity')
+  }
+  return baseKeys
+})
 
 const isVisibleOnline = computed(() => {
   if (!props.user.isOnline) return false
   const isFresh = Date.now() - (props.user.lastSeen || 0) < 75000
   if (!isFresh) return false
   if (!props.user.hideOnline) return true
-  const me = chatStore.currentUserProfile
-  return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
+  return isMeOwner.value
 })
 
 const formattedLastSeen = computed(() => {
@@ -217,15 +247,25 @@ const handleUnblock = async () => {
 }
 
 const onRolePresetChange = () => {
-  editPerms.value = getDefaultPermissions(editRole.value)
+  const currentImmunity = Boolean(editPerms.value.hasImmunity)
+  editPerms.value = {
+    ...getDefaultPermissions(editRole.value),
+    ...(isMeOwner.value ? { hasImmunity: currentImmunity } : {}),
+  }
 }
 
 const saveRights = async () => {
-  await updateUserRoleAndPermissions(props.user.uid, editRole.value, editPerms.value)
+  await updateUserRoleAndPermissions(
+    props.user.uid,
+    editRole.value,
+    editPerms.value,
+    chatStore.currentUserProfile,
+  )
   showRightsPanel.value = false
   notificationStore.success(t('notification_message.updated_profile_success'))
 }
 </script>
+
 <style scoped>
 .user-card {
   padding: 9px 11px;

@@ -16,6 +16,7 @@ import {
   deleteMessageForMe,
   deleteSystemMessage,
   editChatMessage,
+  leaveGroupChat,
   markChatAsRead,
   markMessagesAsRead,
   markSystemMessageRead,
@@ -102,6 +103,7 @@ export const useChatStore = defineStore('chat', () => {
       }
     }
   })
+
   const activeRoom = computed(() => {
     if (!activeChatId.value) return null
     return chats.value.find((c) => c.id === activeChatId.value) || null
@@ -308,6 +310,7 @@ export const useChatStore = defineStore('chat', () => {
     })
     await subscribeToRoom(chatId, null)
   }
+
   const closeDialog = () => {
     if (unsubMessages) {
       unsubMessages()
@@ -399,6 +402,13 @@ export const useChatStore = defineStore('chat', () => {
     activeMessages.value = []
   }
 
+  const leaveCurrentGroupChat = async () => {
+    if (!activeChatId.value || !currentUserProfile.value || !activeRoom.value?.isGroup) return
+    const targetChatId = activeChatId.value
+    closeDialog()
+    await leaveGroupChat(targetChatId, currentUserProfile.value)
+  }
+
   const toggleStealthMode = async () => {
     if (!currentUserProfile.value || !canUseStealth.value) return
     const nextVal = !currentUserProfile.value.hideOnline
@@ -449,6 +459,7 @@ export const useChatStore = defineStore('chat', () => {
     editMessage,
     removeMessage,
     clearCurrentChat,
+    leaveCurrentGroupChat,
     toggleStealthMode,
     readSystemItem,
     removeSystemItem,

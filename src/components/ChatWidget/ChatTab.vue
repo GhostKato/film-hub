@@ -16,6 +16,16 @@
 
         <div class="edit-mode-group">
           <button
+            v-if="chatStore.activeRoom?.isGroup"
+            class="header-action-btn danger-action leave-group-btn"
+            :class="{ confirming: isConfirmingLeave }"
+            @click="handleLeaveGroup"
+            :title="$t('chat.leave_group')"
+          >
+            {{ isConfirmingLeave ? `🚪 ${$t('chat.leave_group_confirm')}` : '🚪' }}
+          </button>
+
+          <button
             v-if="isEditMode && chatStore.activeMessages.length"
             class="header-action-btn danger-action"
             @click="handleClearChat"
@@ -45,89 +55,94 @@
     </div>
 
     <div ref="messagesBox" class="messages-area">
-      <div
-        v-for="msg in chatStore.activeMessages"
-        :key="msg.id"
-        class="msg-bubble"
-        :class="{ mine: isMyMessage(msg) }"
-      >
-        <div class="msg-top">
-          <span class="msg-author">{{ msg.senderName }}</span>
-
-          <div v-if="isEditMode && isMyMessage(msg)" class="msg-controls">
-            <button
-              v-if="msg.text"
-              class="del-btn edit"
-              @click="startEditingMsg(msg)"
-              :title="$t('chat.edit_message')"
-            >
-              ✏️
-            </button>
-            <button
-              class="del-btn"
-              @click="chatStore.removeMessage(msg.id)"
-              :title="$t('chat.delete_for_me')"
-            >
-              🗑
-            </button>
-          </div>
+      <template v-for="msg in chatStore.activeMessages" :key="msg.id">
+        <div v-if="msg.isSystem" class="system-event-pill">
+          <span>{{ msg.text }}</span>
+          <span class="system-event-time">{{ formatTime(msg.createdAt) }}</span>
         </div>
 
-        <div
-          v-if="msg.mediaCard"
-          class="media-share-card"
-          @click="openMedia(msg.mediaCard.media_type, msg.mediaCard.id)"
-        >
-          <img
-            v-if="msg.mediaCard.poster_path"
-            :src="getImageUrl(msg.mediaCard.poster_path, 'poster', 'w154')"
-            class="share-poster"
-            alt="Poster"
-          />
-          <div class="share-info">
-            <span class="share-tag">🎬 {{ $t('chat.recommended_badge') }}</span>
-            <h4 class="share-title">{{ msg.mediaCard.title }}</h4>
-            <p class="share-meta">
-              {{ msg.mediaCard.release_date?.slice(0, 4) }}
-              <span v-if="msg.mediaCard.vote_average"> • ⭐ {{ msg.mediaCard.vote_average }}</span>
-            </p>
-          </div>
-        </div>
-        <div v-if="editingMessageId === msg.id" class="inline-edit-box">
-          <input
-            v-model="editingText"
-            type="text"
-            class="inline-edit-input"
-            @keyup.enter="saveEditedMsg(msg.id)"
-            @keyup.esc="cancelEditingMsg"
-          />
-          <div class="inline-edit-actions">
-            <button
-              type="button"
-              class="inline-btn save"
-              :disabled="!editingText.trim()"
-              @click="saveEditedMsg(msg.id)"
-            >
-              ✔
-            </button>
-            <button type="button" class="inline-btn cancel" @click="cancelEditingMsg">✕</button>
-          </div>
-        </div>
+        <div v-else class="msg-bubble" :class="{ mine: isMyMessage(msg) }">
+          <div class="msg-top">
+            <span class="msg-author">{{ msg.senderName }}</span>
 
-        <p v-else-if="msg.text" class="msg-text">{{ msg.text }}</p>
+            <div v-if="isEditMode && isMyMessage(msg)" class="msg-controls">
+              <button
+                v-if="msg.text"
+                class="del-btn edit"
+                @click="startEditingMsg(msg)"
+                :title="$t('chat.edit_message')"
+              >
+                ✏️
+              </button>
+              <button
+                class="del-btn"
+                @click="chatStore.removeMessage(msg.id)"
+                :title="$t('chat.delete_for_me')"
+              >
+                🗑
+              </button>
+            </div>
+          </div>
 
-        <span class="msg-time">
-          <span v-if="msg.editedAt" class="edited-label">({{ $t('chat.edited_mark') }}) </span>
-          {{ formatTime(msg.createdAt) }}
-          <span
-            v-if="isMyMessage(msg)"
-            class="read-ticks"
-            :class="{ read: isMessageReadByOthers(msg) }"
+          <div
+            v-if="msg.mediaCard"
+            class="media-share-card"
+            @click="openMedia(msg.mediaCard.media_type, msg.mediaCard.id)"
           >
-            {{ isMessageReadByOthers(msg) ? '✓✓' : '✓' }}
+            <img
+              v-if="msg.mediaCard.poster_path"
+              :src="getImageUrl(msg.mediaCard.poster_path, 'poster', 'w154')"
+              class="share-poster"
+              alt="Poster"
+            />
+            <div class="share-info">
+              <span class="share-tag">🎬 {{ $t('chat.recommended_badge') }}</span>
+              <h4 class="share-title">{{ msg.mediaCard.title }}</h4>
+              <p class="share-meta">
+                {{ msg.mediaCard.release_date?.slice(0, 4) }}
+                <span v-if="msg.mediaCard.vote_average">
+                  • ⭐ {{ msg.mediaCard.vote_average }}</span
+                >
+              </p>
+            </div>
+          </div>
+
+          <div v-if="editingMessageId === msg.id" class="inline-edit-box">
+            <input
+              v-model="editingText"
+              type="text"
+              class="inline-edit-input"
+              @keyup.enter="saveEditedMsg(msg.id)"
+              @keyup.esc="cancelEditingMsg"
+            />
+            <div class="inline-edit-actions">
+              <button
+                type="button"
+                class="inline-btn save"
+                :disabled="!editingText.trim()"
+                @click="saveEditedMsg(msg.id)"
+              >
+                ✔
+              </button>
+              <button type="button" class="inline-btn cancel" @click="cancelEditingMsg">✕</button>
+            </div>
+          </div>
+
+          <p v-else-if="msg.text" class="msg-text">{{ msg.text }}</p>
+
+          <span class="msg-time">
+            <span v-if="msg.editedAt" class="edited-label">({{ $t('chat.edited_mark') }}) </span>
+            {{ formatTime(msg.createdAt) }}
+            <span
+              v-if="isMyMessage(msg)"
+              class="read-ticks"
+              :class="{ read: isMessageReadByOthers(msg) }"
+            >
+              {{ isMessageReadByOthers(msg) ? '✓✓' : '✓' }}
+            </span>
           </span>
-        </span>
-      </div>
+        </div>
+      </template>
     </div>
 
     <form class="input-bar" @submit.prevent="handleSend">
@@ -142,7 +157,6 @@
     </form>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
@@ -165,7 +179,10 @@ const messagesBox = ref<HTMLElement | null>(null)
 const isEditMode = ref(false)
 const editingMessageId = ref<string | null>(null)
 const editingText = ref('')
+const isConfirmingLeave = ref(false)
+
 let typingTimer: ReturnType<typeof setTimeout> | null = null
+let leaveConfirmTimer: ReturnType<typeof setTimeout> | null = null
 
 const isMyMessage = (msg: ChatMessage) => msg.senderId === authStore.user?.uid
 
@@ -173,6 +190,28 @@ const isMessageReadByOthers = (msg: ChatMessage) => {
   const myUid = authStore.user?.uid
   if (!myUid || !msg.readBy) return false
   return msg.readBy.some((uid) => uid !== myUid)
+}
+
+const resetLeaveConfirm = () => {
+  isConfirmingLeave.value = false
+  if (leaveConfirmTimer) {
+    clearTimeout(leaveConfirmTimer)
+    leaveConfirmTimer = null
+  }
+}
+
+const handleLeaveGroup = async () => {
+  if (!isConfirmingLeave.value) {
+    isConfirmingLeave.value = true
+    leaveConfirmTimer = setTimeout(() => {
+      isConfirmingLeave.value = false
+    }, 3000)
+    return
+  }
+  resetLeaveConfirm()
+  isEditMode.value = false
+  cancelEditingMsg()
+  await chatStore.leaveCurrentGroupChat()
 }
 
 const toggleEditMode = () => {
@@ -207,6 +246,7 @@ const handleClearChat = async () => {
 
 const handleCloseDialog = () => {
   isEditMode.value = false
+  resetLeaveConfirm()
   cancelEditingMsg()
   chatStore.closeDialog()
 }
@@ -282,6 +322,7 @@ watch(
   () => chatStore.activeChatId,
   () => {
     isEditMode.value = false
+    resetLeaveConfirm()
     cancelEditingMsg()
   },
 )
@@ -378,6 +419,7 @@ const formatTime = (ts: number) =>
   color: var(--color-white);
   cursor: pointer;
   font-size: 12px;
+  white-space: nowrap;
   box-shadow:
     0 6px 14px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.22);
@@ -404,8 +446,13 @@ const formatTime = (ts: number) =>
 .danger-action {
   background-color: var(--glass-red-soft);
 }
-.danger-action:hover {
+.danger-action:hover,
+.leave-group-btn.confirming {
   background-color: var(--glass-red);
+  border-color: var(--color-hover);
+}
+.leave-group-btn.confirming {
+  font-weight: 700;
 }
 .close-dialog-btn {
   font-weight: 700;
@@ -418,6 +465,22 @@ const formatTime = (ts: number) =>
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.system-event-pill {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  color: var(--color-light-grey);
+  font-size: 11px;
+}
+.system-event-time {
+  opacity: 0.7;
+  font-size: 10px;
 }
 .msg-bubble {
   max-width: 82%;
