@@ -41,7 +41,7 @@
           <div class="friends-list">
             <label v-for="friend in filteredFriends" :key="friend.friendUid" class="friend-option">
               <input type="checkbox" :value="friend.friendUid" v-model="selectedUids" />
-              <UserIdentityBadge v-if="friend.user" :user="friend.user" />
+              <UserBadge v-if="friend.user" :user="friend.user" />
             </label>
           </div>
 
@@ -78,7 +78,7 @@ import { notificationStore } from '@/stores/notifications'
 import { getImageUrl } from '@/utils/getImageUrl'
 import type { SharedMediaCard } from '@/types/chat'
 import XIcon from '@/components/icons/XIcon.vue'
-import UserIdentityBadge from '@/components/ChatWidget/UserIdentityBadge.vue'
+import UserBadge from '@/components/ChatWidget/UserBadge.vue'
 
 const props = defineProps<{
   media: SharedMediaCard

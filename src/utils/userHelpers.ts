@@ -8,7 +8,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: true,
         canSendSystemMessages: true,
         canManageRoles: true,
-        canEditGlobalRecommended: true,
         canUseStealth: true,
       }
     case 'admin':
@@ -16,7 +15,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: true,
         canSendSystemMessages: true,
         canManageRoles: true,
-        canEditGlobalRecommended: false,
         canUseStealth: true,
       }
     case 'moderator':
@@ -24,7 +22,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: true,
         canSendSystemMessages: true,
         canManageRoles: false,
-        canEditGlobalRecommended: false,
         canUseStealth: false,
       }
     default:
@@ -32,7 +29,6 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canSeeAllUsers: false,
         canSendSystemMessages: false,
         canManageRoles: false,
-        canEditGlobalRecommended: false,
         canUseStealth: false,
       }
   }

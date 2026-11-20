@@ -9,7 +9,7 @@
   </main>
   <ModalMenu />
   <ModalAuth />
-  <ChatWindow />
+  <ChatWidget />
   <ILoader />
   <HotKeys />
   <INotification />
@@ -20,7 +20,7 @@ import IHeader from '@/components/IHeader/IHeader.vue'
 import ILoader from '@/components/ILoader/ILoader.vue'
 import ModalMenu from '@/components/ModalMenu/ModalMenu.vue'
 import ModalAuth from './components/ModalAuth/ModalAuth.vue'
-import ChatWindow from './components/ChatWidget/ChatWindow.vue'
+import ChatWidget from './components/ChatWidget/ChatWidget.vue'
 import { useAuthStore } from './stores/auth'
 import { onMounted, onBeforeUnmount, watch } from 'vue'
 import { useLoaderStore } from './stores/loader'

@@ -77,6 +77,7 @@ export const toggleHideOnline = async (uid: string, hideOnline: boolean) => {
 }
 
 export const blockUser = async (currentUid: string, targetUid: string) => {
+  if (targetUid === MAIN_ACCOUNT_ID) return
   await updateDoc(doc(db, 'users', currentUid), {
     blockedUsers: arrayUnion(targetUid),
     updatedAt: Date.now(),

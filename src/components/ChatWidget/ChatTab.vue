@@ -1,8 +1,8 @@
 <template>
-  <div class="dialog-tab">
+  <div class="chat-tab">
     <div v-if="chatStore.activeChatId" class="dialog-header">
       <div class="dialog-head-left">
-        <UserIdentityBadge v-if="peerProfile" :user="peerProfile" />
+        <UserBadge v-if="peerProfile" :user="peerProfile" />
         <div v-else-if="chatStore.activeRoom?.isGroup" class="group-header-info">
           <span class="group-title">👥 {{ groupTitleText }}</span>
           <span class="group-members-count">
@@ -152,7 +152,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useFriendsStore } from '@/stores/friends'
 import { getImageUrl } from '@/utils/getImageUrl'
 import type { ChatMessage } from '@/types/chat'
-import UserIdentityBadge from './UserIdentityBadge.vue'
+import UserBadge from './UserBadge.vue'
 
 const chatStore = useChatStore()
 const authStore = useAuthStore()
@@ -174,6 +174,7 @@ const isMessageReadByOthers = (msg: ChatMessage) => {
   if (!myUid || !msg.readBy) return false
   return msg.readBy.some((uid) => uid !== myUid)
 }
+
 const toggleEditMode = () => {
   isEditMode.value = !isEditMode.value
   if (!isEditMode.value) {
@@ -212,7 +213,11 @@ const handleCloseDialog = () => {
 
 const peerProfile = computed(() => {
   if (!chatStore.activePeerUid) return null
-  return friendsStore.profilesMap[chatStore.activePeerUid] || null
+  return (
+    friendsStore.profilesMap[chatStore.activePeerUid] ||
+    chatStore.allUsers.find((u) => u.uid === chatStore.activePeerUid) ||
+    null
+  )
 })
 
 const groupMembersList = computed(() => {
@@ -220,7 +225,12 @@ const groupMembersList = computed(() => {
   if (!room?.isGroup) return []
   return room.participants
     .filter((uid) => uid !== authStore.user?.uid)
-    .map((uid) => friendsStore.profilesMap[uid]?.displayName || '...')
+    .map(
+      (uid) =>
+        friendsStore.profilesMap[uid]?.displayName ||
+        chatStore.allUsers.find((u) => u.uid === uid)?.displayName ||
+        '...',
+    )
 })
 
 const groupTitleText = computed(() => {
@@ -235,7 +245,12 @@ const typingText = computed(() => {
   if (!room?.typing || !myUid) return ''
   const typingUids = Object.entries(room.typing)
     .filter(([uid, val]) => uid !== myUid && val)
-    .map(([uid]) => friendsStore.profilesMap[uid]?.displayName || '')
+    .map(
+      ([uid]) =>
+        friendsStore.profilesMap[uid]?.displayName ||
+        chatStore.allUsers.find((u) => u.uid === uid)?.displayName ||
+        '',
+    )
     .filter(Boolean)
   if (!typingUids.length) return ''
   if (!room.isGroup) return `${t('chat.typing')}...`
@@ -286,7 +301,7 @@ const formatTime = (ts: number) =>
   new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 </script>
 <style scoped>
-.dialog-tab {
+.chat-tab {
   display: flex;
   flex-direction: column;
   height: 100%;

@@ -1,22 +1,22 @@
 <template>
   <div
-    class="user-row-card"
+    class="user-card"
     :class="{ active: chatStore.activePeerUid === user.uid, blocked: isBlockedByMe }"
     @click="handleRowClick"
   >
     <div class="card-top">
-      <label class="checkbox-slot" :class="{ visible: selectionMode }" @click.stop>
+      <label v-if="showCheckbox !== false" class="custom-red-checkbox" @click.stop>
         <input
           type="checkbox"
-          :value="user.uid"
           :checked="selected"
           :disabled="isBlockedByMe"
           @change="$emit('toggle-select', user.uid)"
         />
+        <span class="checkmark"></span>
       </label>
 
       <div class="user-info-cell">
-        <UserIdentityBadge :user="user" :show-online="true" :show-days="false" />
+        <UserBadge :user="user" :show-online="true" :show-days="false" />
 
         <p v-if="lastMessage" class="last-msg">{{ lastMessage }}</p>
       </div>
@@ -24,7 +24,7 @@
       <div class="card-btns" @click.stop>
         <span v-if="unreadCount" class="unread-pill">{{ unreadCount }}</span>
         <button
-          class="mini-btn profile-btn"
+          class="mini-btn red-glass-btn profile-btn"
           :class="{ active: isProfileOpen }"
           @click="isProfileOpen = !isProfileOpen"
           :title="$t('chat.user_card_btn')"
@@ -36,37 +36,48 @@
 
     <div v-if="isProfileOpen" class="user-details-drawer" @click.stop>
       <div class="drawer-meta">
-        <span>
-          <strong>{{ $t('chat.role_label') }}:</strong> {{ $t(`chat.role_${user.role}`) }}
+        <span class="last-seen-slot">
+          <template v-if="!isVisibleOnline && formattedLastSeen">
+            {{ $t('chat.last_seen_at', { time: formattedLastSeen }) }}
+          </template>
         </span>
-        <span>
+
+        <span class="days-on-site-slot">
           <strong>{{ $t('chat.days_on_site', { days: getDaysOnSite(user.createdAt) }) }}</strong>
         </span>
       </div>
 
       <div class="drawer-actions">
-        <button v-if="!friendship" class="drawer-btn add" @click="friendsStore.addFriend(user.uid)">
-          ➕ {{ $t('chat.add_friend') }}
-        </button>
-        <button
-          v-else-if="friendship.status === 'accepted'"
-          class="drawer-btn danger"
-          @click="friendsStore.declineOrRemove(friendship.id)"
-        >
-          ✕ {{ $t('chat.remove_friend') }}
-        </button>
-        <span v-else class="pending-tag">{{ $t('chat.request_pending') }}</span>
+        <div class="top-actions-row">
+          <button
+            v-if="!friendship"
+            class="drawer-btn red-glass-btn"
+            @click="friendsStore.addFriend(user.uid)"
+          >
+            ➕ {{ $t('chat.add_friend') }}
+          </button>
+          <button
+            v-else-if="friendship.status === 'accepted'"
+            class="drawer-btn red-glass-btn"
+            @click="friendsStore.declineOrRemove(friendship.id)"
+          >
+            ✕ {{ $t('chat.remove_friend') }}
+          </button>
+          <span v-else class="pending-tag">{{ $t('chat.request_pending') }}</span>
 
-        <button v-if="!isBlockedByMe" class="drawer-btn warn" @click="handleBlock">
-          🚫 {{ $t('chat.block_user') }}
-        </button>
-        <button v-else class="drawer-btn success" @click="handleUnblock">
-          🔓 {{ $t('chat.unblock_user') }}
-        </button>
+          <template v-if="user.uid !== MAIN_ACCOUNT_ID && user.role !== 'owner'">
+            <button v-if="!isBlockedByMe" class="drawer-btn red-glass-btn" @click="handleBlock">
+              🚫 {{ $t('chat.block_user') }}
+            </button>
+            <button v-else class="drawer-btn red-glass-btn active" @click="handleUnblock">
+              🔓 {{ $t('chat.unblock_user') }}
+            </button>
+          </template>
+        </div>
 
         <button
           v-if="canManageRoles && user.uid !== MAIN_ACCOUNT_ID"
-          class="drawer-btn admin"
+          class="drawer-btn red-glass-btn full-width-btn"
           @click="toggleRightsPanel"
         >
           ⚙ {{ $t('chat.edit_rights') }}
@@ -90,15 +101,14 @@
           </label>
         </div>
 
-        <div class="admin-footer-btns">
-          <button class="save-rights-btn" @click="saveRights">
-            {{ $t('chat.save_rights') }}
-          </button>
-        </div>
+        <button class="save-rights-btn red-glass-btn full-width-btn" @click="saveRights">
+          {{ $t('chat.save_rights') }}
+        </button>
       </div>
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -110,15 +120,20 @@ import type { UserPermissions, UserProfile, UserRole } from '@/types/chat'
 import { getDaysOnSite, getDefaultPermissions } from '@/utils/userHelpers'
 import { blockUser, unblockUser, updateUserRoleAndPermissions } from '@/api/users'
 import { notificationStore } from '@/stores/notifications'
-import UserIdentityBadge from './UserIdentityBadge.vue'
+import UserBadge from './UserBadge.vue'
 
-const props = defineProps<{
-  user: UserProfile
-  selectionMode: boolean
-  selected: boolean
-  lastMessage?: string
-  unreadCount?: number
-}>()
+const props = withDefaults(
+  defineProps<{
+    user: UserProfile
+    selected?: boolean
+    showCheckbox?: boolean
+    lastMessage?: string
+    unreadCount?: number
+  }>(),
+  {
+    showCheckbox: true,
+  },
+)
 
 defineEmits<{
   (e: 'toggle-select', uid: string): void
@@ -148,6 +163,26 @@ const friendship = computed(() =>
 const canManageRoles = computed(() =>
   Boolean(chatStore.currentUserProfile?.permissions.canManageRoles),
 )
+
+const isVisibleOnline = computed(() => {
+  if (!props.user.isOnline) return false
+  const isFresh = Date.now() - (props.user.lastSeen || 0) < 75000
+  if (!isFresh) return false
+  if (!props.user.hideOnline) return true
+  const me = chatStore.currentUserProfile
+  return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
+})
+
+const formattedLastSeen = computed(() => {
+  if (!props.user.lastSeen) return ''
+  return new Date(props.user.lastSeen).toLocaleString([], {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+})
 
 const toggleRightsPanel = () => {
   showRightsPanel.value = !showRightsPanel.value
@@ -192,7 +227,7 @@ const saveRights = async () => {
 }
 </script>
 <style scoped>
-.user-row-card {
+.user-card {
   padding: 9px 11px;
   border-radius: 12px;
   background: var(--glass-card);
@@ -201,49 +236,85 @@ const saveRights = async () => {
     0 10px 22px rgba(0, 0, 0, 0.58),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  transition:
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.25s ease,
-    background-color 0.25s ease,
-    box-shadow 0.25s ease;
+  transition: all 0.2s ease;
 }
-.user-row-card:hover,
-.user-row-card.active {
-  transform: translateY(-2px);
-  border-color: var(--glass-border-bright);
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 16px 30px rgba(0, 0, 0, 0.78),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+
+.user-card:hover,
+.user-card.active {
+  border-color: var(--color-hover);
+  background-color: rgba(159, 27, 25, 0.16);
 }
-.user-row-card.blocked {
+
+.user-card.blocked {
   opacity: 0.65;
   border-color: rgba(175, 25, 25, 0.5);
 }
+
 .card-top {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 }
-.checkbox-slot {
+
+.custom-red-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+  cursor: pointer;
+}
+
+.custom-red-checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.custom-red-checkbox .checkmark {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--glass-border-bright);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.15s ease;
+  transition: all 0.18s ease;
 }
-.checkbox-slot.visible {
-  visibility: visible;
-  opacity: 1;
+
+.custom-red-checkbox:hover input:not(:disabled) ~ .checkmark {
+  border-color: var(--color-hover);
+  box-shadow: 0 0 8px rgba(255, 61, 0, 0.45);
 }
+
+.custom-red-checkbox input:checked ~ .checkmark {
+  background-color: var(--glass-red);
+  border-color: var(--color-hover);
+  box-shadow: 0 0 10px rgba(255, 61, 0, 0.55);
+}
+
+.custom-red-checkbox input:checked ~ .checkmark::after {
+  content: '✓';
+  color: var(--color-white);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.custom-red-checkbox input:disabled ~ .checkmark {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .user-info-cell {
   flex: 1;
   min-width: 0;
 }
+
 .last-msg {
   font-size: 12px;
   color: var(--color-light-grey);
@@ -252,37 +323,14 @@ const saveRights = async () => {
   text-overflow: ellipsis;
   margin-top: 3px;
 }
+
 .card-btns {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
 }
-.mini-btn {
-  padding: 5px 8px;
-  border-radius: 8px;
-  border: 1px solid var(--glass-border);
-  background-color: var(--glass-bg-light);
-  color: var(--color-white);
-  font-size: 12px;
-  cursor: pointer;
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  transition:
-    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.25s ease,
-    border-color 0.25s ease;
-}
-.mini-btn:hover,
-.mini-btn.active {
-  transform: translateY(-1px);
-  background-color: var(--glass-hover);
-  border-color: var(--glass-border-bright);
-}
-.mini-btn:active {
-  transform: translateY(1px) scale(0.95);
-}
+
 .unread-pill {
   background-color: var(--color-hover);
   color: var(--color-white);
@@ -290,8 +338,8 @@ const saveRights = async () => {
   font-weight: 800;
   padding: 2px 7px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
 }
+
 .user-details-drawer {
   margin-top: 9px;
   padding-top: 9px;
@@ -302,30 +350,52 @@ const saveRights = async () => {
   font-size: 12px;
   cursor: default;
 }
+
 .drawer-meta {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 8px;
   color: var(--color-light-grey);
 }
+
+.days-on-site-slot {
+  margin-left: auto;
+  text-align: right;
+  white-space: nowrap;
+}
+
 .drawer-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
+  width: 100%;
+}
+
+.top-actions-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.top-actions-row > * {
+  flex: 1;
+  width: 100%;
+}
+
+.full-width-btn {
+  width: 100%;
+}
+
+.red-glass-btn {
+  display: inline-flex;
   align-items: center;
-}
-.pending-tag {
-  font-size: 11px;
-  color: var(--color-light-grey);
-  padding: 4px 8px;
-  border-radius: 8px;
-  background-color: var(--glass-bg-light);
-  border: 1px solid var(--glass-border);
-}
-.drawer-btn {
-  padding: 5px 9px;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 9px;
   border-radius: 8px;
   border: 1px solid var(--glass-border);
-  background-color: var(--glass-bg-light);
+  background-color: var(--glass-red-soft);
   color: var(--color-white);
   font-size: 11px;
   font-weight: 600;
@@ -333,30 +403,27 @@ const saveRights = async () => {
   box-shadow:
     0 6px 14px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  transition:
-    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.25s ease,
-    border-color 0.25s ease;
+  transition: all 0.2s ease;
 }
-.drawer-btn:hover {
-  transform: translateY(-1px);
-  background-color: var(--glass-hover);
-  border-color: var(--glass-border-bright);
+
+.red-glass-btn:hover,
+.red-glass-btn.active {
+  background-color: var(--glass-red);
+  border-color: var(--color-hover);
 }
-.drawer-btn:active {
-  transform: translateY(1px) scale(0.96);
+
+.pending-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--color-light-grey);
+  padding: 6px 8px;
+  border-radius: 8px;
+  background-color: var(--glass-bg-light);
+  border: 1px solid var(--glass-border);
 }
-.drawer-btn.add,
-.drawer-btn.success {
-  background-color: var(--glass-green);
-}
-.drawer-btn.danger,
-.drawer-btn.warn {
-  background-color: var(--glass-red-soft);
-}
-.drawer-btn.admin {
-  background-color: var(--glass-blue);
-}
+
 .rights-panel {
   padding-top: 8px;
   border-top: 1px dashed var(--glass-border);
@@ -364,11 +431,13 @@ const saveRights = async () => {
   flex-direction: column;
   gap: 7px;
 }
+
 .role-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .role-select {
   background-color: var(--glass-modal);
   color: var(--color-white);
@@ -376,44 +445,21 @@ const saveRights = async () => {
   border-radius: 8px;
   padding: 4px 8px;
   outline: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
-.role-select:hover,
-.role-select:focus {
-  border-color: var(--color-hover);
-}
+
 .perms-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 5px;
 }
+
 .perm-item {
   display: flex;
   align-items: center;
   gap: 6px;
 }
-.admin-footer-btns {
-  display: flex;
-  gap: 6px;
-}
-.save-rights-btn {
-  flex: 1;
-  padding: 6px;
-  border-radius: 8px;
-  background-color: var(--glass-green);
-  border: 1px solid var(--glass-border);
-  color: var(--color-white);
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow:
-    0 8px 18px rgba(16, 155, 95, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  transition:
-    transform 0.2s ease,
-    background-color 0.25s ease;
-}
-.save-rights-btn:hover {
-  transform: translateY(-1px);
-  background-color: var(--glass-hover);
+
+.perm-item input {
+  accent-color: var(--color-hover);
 }
 </style>

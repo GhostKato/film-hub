@@ -1,24 +1,22 @@
 <template>
-  <div class="identity-wrap">
-    <div class="top-row">
-      <span v-if="showOnline" class="status-dot" :class="{ online: isVisibleOnline }"></span>
+  <div class="top-row">
+    <span v-if="showOnline" class="status-dot" :class="{ online: isVisibleOnline }"></span>
 
-      <span class="nickname">{{ user?.displayName }}</span>
+    <span class="nickname">{{ user?.displayName }}</span>
 
-      <span v-if="user" class="role-badge" :class="`role-${user.role}`">
-        {{ roleLabel }}
-      </span>
-    </div>
-
-    <span v-if="showDays" class="days-badge">
-      <template v-if="isVisibleOnline">
-        {{ $t('chat.days_on_site', { days: daysCount }) }} • {{ $t('chat.online') }}
-      </template>
-      <template v-else>
-        {{ $t('chat.last_seen_at', { time: formattedLastSeen }) }}
-      </template>
+    <span v-if="user" class="role-badge" :class="`role-${user.role}`">
+      {{ roleLabel }}
     </span>
   </div>
+
+  <span v-if="showDays" class="days-badge">
+    <template v-if="isVisibleOnline">
+      {{ $t('chat.days_on_site', { days: daysCount }) }} • {{ $t('chat.online') }}
+    </template>
+    <template v-else>
+      {{ $t('chat.last_seen_at', { time: formattedLastSeen }) }}
+    </template>
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -83,11 +81,11 @@ const formattedLastSeen = computed(() => {
 const roleLabel = computed(() => {
   switch (props.user?.role) {
     case 'owner':
-      return `🎬 ${t('chat.role_owner')}`
+      return `👑 ${t('chat.role_owner')}`
     case 'admin':
-      return `🎥 ${t('chat.role_admin')}`
+      return `🛡 ${t('chat.role_admin')}`
     case 'moderator':
-      return `📢 ${t('chat.role_moderator')}`
+      return `🎬 ${t('chat.role_moderator')}`
     case 'user':
       return `🍿 ${t('chat.role_user')}`
     default:
