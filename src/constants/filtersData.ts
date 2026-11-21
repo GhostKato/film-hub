@@ -17,4 +17,8 @@ export const genres = [
   { id: 16, name: 'filters_bar.animation' },
 ]
 
-export const years = Array.from({ length: 2028 - 1980 + 1 }, (_, i) => 2028 - i)
+const currentYear = new Date().getFullYear()
+const maxYear = currentYear + 5
+const minYear = 1980
+
+export const years = Array.from({ length: maxYear - minYear + 1 }, (_, index) => maxYear - index)

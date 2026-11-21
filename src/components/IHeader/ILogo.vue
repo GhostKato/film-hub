@@ -19,12 +19,10 @@ import logo from '@/assets/images/logo.png'
   animation: logoGlowPulse 3.8s ease-in-out infinite;
 }
 
-.logo-wrapper:hover {
-  transform: translateY(-2px) scale(1.04);
-}
-
 .logo-wrapper:active {
   transform: translateY(1px) scale(0.97);
+  animation: none;
+  filter: none;
   transition-duration: 0.08s;
 }
 

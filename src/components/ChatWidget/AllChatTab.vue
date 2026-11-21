@@ -1,7 +1,7 @@
 <template>
   <div class="all-chat-tab">
-    <div class="dialogs-scroll">
-      <div class="dialogs-section">
+    <div class="chats-scroll">
+      <div class="chats-section">
         <p class="section-label">🔔 {{ $t('chat.tab_system') }}</p>
         <div
           class="system-entry-card"
@@ -24,7 +24,7 @@
         </div>
       </div>
 
-      <div v-if="groupItems.length" class="dialogs-section">
+      <div v-if="groupItems.length" class="chats-section">
         <p class="section-label">👥 {{ $t('chat.group_chats') }}</p>
         <ChatCard
           v-for="item in groupItems"
@@ -38,7 +38,7 @@
         />
       </div>
 
-      <div v-if="friendDirectItems.length" class="dialogs-section">
+      <div v-if="friendDirectItems.length" class="chats-section">
         <p class="section-label">🤝 {{ $t('chat.tab_friends') }}</p>
         <ChatCard
           v-for="item in friendDirectItems"
@@ -48,11 +48,11 @@
           :last-message="item.room.lastMessage"
           :updated-at="item.room.updatedAt"
           :unread="item.unread"
-          @select="item.peerUid && chatStore.openDialogWith(item.peerUid)"
+          @select="item.peerUid && chatStore.openChatWith(item.peerUid)"
         />
       </div>
 
-      <div v-if="otherDirectItems.length" class="dialogs-section">
+      <div v-if="otherDirectItems.length" class="chats-section">
         <p class="section-label">💬 {{ $t('chat.tab_all') }}</p>
         <ChatCard
           v-for="item in otherDirectItems"
@@ -62,11 +62,11 @@
           :last-message="item.room.lastMessage"
           :updated-at="item.room.updatedAt"
           :unread="item.unread"
-          @select="item.peerUid && chatStore.openDialogWith(item.peerUid)"
+          @select="item.peerUid && chatStore.openChatWith(item.peerUid)"
         />
       </div>
 
-      <p v-if="!allItems.length" class="empty-dialogs-hint">
+      <p v-if="!allItems.length" class="empty-chats-hint">
         {{ $t('chat.select_friend_hint') }}
       </p>
     </div>
@@ -186,7 +186,7 @@ const otherDirectItems = computed(() =>
   overflow: hidden;
 }
 
-.dialogs-scroll {
+.chats-scroll {
   flex: 1;
   overflow-y: auto;
   padding: 10px 12px;
@@ -203,9 +203,7 @@ const otherDirectItems = computed(() =>
   border-radius: 12px;
   background: var(--glass-card);
   border: 1px solid var(--glass-border);
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -218,9 +216,8 @@ const otherDirectItems = computed(() =>
 .system-entry-card.has-unread {
   border-color: var(--color-hover);
   box-shadow:
-    0 10px 24px rgba(0, 0, 0, 0.65),
-    0 0 14px rgba(255, 61, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    0 0 12px rgba(255, 61, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 .system-avatar {
@@ -279,7 +276,7 @@ const otherDirectItems = computed(() =>
   flex-shrink: 0;
 }
 
-.empty-dialogs-hint {
+.empty-chats-hint {
   margin: auto;
   padding: 20px;
   text-align: center;
@@ -287,7 +284,7 @@ const otherDirectItems = computed(() =>
   color: var(--color-light-grey);
 }
 
-.dialogs-section {
+.chats-section {
   display: flex;
   flex-direction: column;
   gap: 8px;

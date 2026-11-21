@@ -81,7 +81,7 @@ const handleClick = (e: Event) => {
     inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
-/* Плавное всплытие при наведении только для активных кнопок */
+/* Подсветка при наведении без подпрыгивания */
 .big-btn-collection:hover:not(.is-disabled),
 .small-btn-collection:hover:not(.is-disabled),
 .form-submit-btn:hover:not(.is-disabled),
@@ -96,7 +96,6 @@ const handleClick = (e: Event) => {
 .small-search-btn:hover:not(.is-disabled),
 .release-clear-all-btn:hover:not(.is-disabled),
 .pagination-btn:hover:not(.is-disabled):not(:disabled) {
-  transform: translateY(-2px);
   border-color: var(--glass-border-bright);
   box-shadow:
     0 16px 30px rgba(0, 0, 0, 0.8),
@@ -104,29 +103,11 @@ const handleClick = (e: Event) => {
     inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 
-/* Тактильный эффект нажатия для активных кнопок */
+/* При нажатии — пропадание теней */
 .base:active:not(.is-disabled):not(:disabled) {
-  transform: translateY(1px) scale(0.96);
+  transform: translateY(1px) scale(0.97);
+  box-shadow: none !important;
   transition-duration: 0.08s;
-}
-
-.big-btn-collection:active:not(.is-disabled),
-.small-btn-collection:active:not(.is-disabled),
-.form-submit-btn:active:not(.is-disabled),
-.menu-auth-btn:active:not(.is-disabled),
-.menu-edit-btn:active:not(.is-disabled),
-.language-btn:active:not(.is-disabled),
-.share-btn:active:not(.is-disabled),
-.recommend-btn:active:not(.is-disabled),
-.auth-nav-btn:active:not(.is-disabled),
-.tab-btn:active:not(.is-disabled),
-.big-search-btn:active:not(.is-disabled),
-.small-search-btn:active:not(.is-disabled),
-.release-clear-all-btn:active:not(.is-disabled),
-.pagination-btn:active:not(.is-disabled):not(:disabled) {
-  box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.7),
-    inset 0 2px 4px rgba(0, 0, 0, 0.45);
 }
 
 /* Полупрозрачное рубиновое стекло для акцентных кнопок и активной пагинации */
@@ -212,6 +193,7 @@ const handleClick = (e: Event) => {
   }
 }
 </style>
+
 <style scoped src="./styles/header.css"></style>
 <style scoped src="./styles/search.css"></style>
 <style scoped src="./styles/collection.css"></style>

@@ -14,7 +14,7 @@ import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import type { FirebaseItemType } from '@/types/media'
 import { updateProfile as fbUpdateProfile, updatePassword } from 'firebase/auth'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
-import type { FeaturedCuratorConfig } from '@/types/chat'
+import type { FeaturedCinephileConfig } from '@/types/chat'
 
 // Registration
 export const register = async (
@@ -122,22 +122,22 @@ export const loadRecommended = async (): Promise<FirebaseItemType[]> => {
   return []
 }
 
-export const loadUserMediaForCurator = async (userId: string): Promise<FirebaseItemType[]> => {
+export const loadUserMediaForCinephile = async (userId: string): Promise<FirebaseItemType[]> => {
   const ref = doc(db, 'media', userId)
   const snap = await getDoc(ref)
   if (snap.exists()) return snap.data()?.media || []
   return []
 }
 
-export const subscribeFeaturedCurator = (callback: (config: FeaturedCuratorConfig) => void) => {
-  const ref = doc(db, 'recommended', 'curator')
+export const subscribeFeaturedCinephile = (callback: (config: FeaturedCinephileConfig) => void) => {
+  const ref = doc(db, 'recommended', 'cinephile')
   return onSnapshot(ref, (snap) => {
     if (snap.exists()) {
-      callback(snap.data() as FeaturedCuratorConfig)
+      callback(snap.data() as FeaturedCinephileConfig)
     } else {
       callback({
-        curatorUid: MAIN_ACCOUNT_ID,
-        curatorName: '',
+        cinephileUid: MAIN_ACCOUNT_ID,
+        cinephileName: '',
         updatedAt: Date.now(),
         updatedBy: MAIN_ACCOUNT_ID,
       })
@@ -145,7 +145,7 @@ export const subscribeFeaturedCurator = (callback: (config: FeaturedCuratorConfi
   })
 }
 
-export const saveFeaturedCuratorConfig = async (config: FeaturedCuratorConfig) => {
-  const ref = doc(db, 'recommended', 'curator')
+export const saveFeaturedCinephileConfig = async (config: FeaturedCinephileConfig) => {
+  const ref = doc(db, 'recommended', 'cinephile')
   await setDoc(ref, config)
 }

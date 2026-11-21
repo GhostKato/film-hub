@@ -36,10 +36,13 @@ import { notificationStore } from '@/stores/notifications'
   font-size: 15px;
   min-width: 260px;
   max-width: 350px;
-  background-color: var(--color-transparent-grey);
-  backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid var(--color-grey);
-  transform-origin: right center;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(159, 27, 25, 0.2) 0%, transparent 55%),
+    var(--glass-modal);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--glass-border-bright);
+  transform-origin: left center;
   cursor: pointer;
 }
 .icon {
@@ -47,21 +50,30 @@ import { notificationStore } from '@/stores/notifications'
   opacity: 0.9;
 }
 .success {
-  box-shadow: 0 0 12px var(--color-shadow-green);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.75),
+    0 0 14px var(--color-shadow-green),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .success .icon {
   font-size: 30px;
   color: var(--color-green);
 }
 .info {
-  box-shadow: 0 0 12px var(--color-shadow-blue);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.75),
+    0 0 14px var(--color-shadow-blue),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .info .icon {
   font-size: 40px;
   color: var(--color-blue);
 }
 .added {
-  box-shadow: 0 0 12px var(--color-shadow-green);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.75),
+    0 0 14px var(--color-shadow-green),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .added .icon {
   font-size: 40px;
@@ -69,7 +81,10 @@ import { notificationStore } from '@/stores/notifications'
   color: var(--color-green);
 }
 .removed {
-  box-shadow: 0 0 12px var(--color-shadow-red);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.75),
+    0 0 14px var(--color-shadow-red),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .removed .icon {
   font-size: 40px;
@@ -77,12 +92,15 @@ import { notificationStore } from '@/stores/notifications'
   color: var(--color-red);
 }
 .error {
-  box-shadow: 0 0 12px var(--color-shadow-red);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.75),
+    0 0 14px var(--color-shadow-red),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
   color: var(--color-red);
 }
 .pop-enter-from {
   opacity: 0;
-  transform: translateX(50%) scale(0.8);
+  transform: translateX(-30%) scale(0.88);
 }
 .pop-enter-active {
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
@@ -90,6 +108,6 @@ import { notificationStore } from '@/stores/notifications'
 .pop-leave-active {
   transition: all 0.3s ease;
   opacity: 0;
-  transform: translateX(40%) scale(0.95);
+  transform: translateX(-25%) scale(0.95);
 }
 </style>

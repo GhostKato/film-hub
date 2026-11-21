@@ -1,7 +1,7 @@
 <template>
   <div class="chat-tab">
-    <div v-if="chatStore.activeChatId" class="dialog-header">
-      <div class="dialog-head-left">
+    <div v-if="chatStore.activeChatId" class="chat-header">
+      <div class="chat-head-left">
         <UserBadge v-if="peerProfile" :user="peerProfile" />
         <div v-else-if="chatStore.activeRoom?.isGroup" class="group-header-info">
           <span class="group-title">👥 {{ groupTitleText }}</span>
@@ -11,18 +11,17 @@
         </div>
       </div>
 
-      <div class="dialog-head-right">
+      <div class="chat-head-right">
         <span v-if="typingText" class="typing-indicator">{{ typingText }}</span>
 
         <div class="edit-mode-group">
           <button
-            v-if="chatStore.activeRoom?.isGroup"
-            class="header-action-btn danger-action leave-group-btn"
-            :class="{ confirming: isConfirmingLeave }"
-            @click="handleLeaveGroup"
-            :title="$t('chat.leave_group')"
+            v-if="!isEditMode && hasMyMessages"
+            class="header-action-btn edit-toggle-btn"
+            @click="toggleEditMode"
+            :title="$t('chat.edit_chat_mode')"
           >
-            {{ isConfirmingLeave ? `🚪 ${$t('chat.leave_group_confirm')}` : '🚪' }}
+            ✏️
           </button>
 
           <button
@@ -35,22 +34,23 @@
           </button>
 
           <button
-            v-if="!isEditMode"
-            class="header-action-btn edit-toggle-btn"
-            @click="toggleEditMode"
-            :title="$t('chat.edit_chat_mode')"
+            v-if="chatStore.activeRoom?.isGroup"
+            class="header-action-btn danger-action leave-group-btn"
+            :class="{ confirming: isConfirmingLeave }"
+            @click="handleLeaveGroup"
+            :title="$t('chat.leave_group')"
           >
-            ✏️
+            {{ isConfirmingLeave ? `🚪 ${$t('chat.leave_group_confirm')}` : '🚪' }}
           </button>
         </div>
 
         <button
-          class="header-action-btn close-dialog-btn"
+          class="header-action-btn close-chat-btn"
           :class="{ 'finish-edit-state': isEditMode }"
-          @click="isEditMode ? toggleEditMode() : handleCloseDialog()"
-          :title="isEditMode ? $t('chat.finish_edit') : $t('chat.close_dialog')"
+          @click="isEditMode ? toggleEditMode() : handleCloseChat()"
+          :title="isEditMode ? $t('chat.finish_edit') : $t('chat.close_chat')"
         >
-          {{ isEditMode ? $t('chat.finish_edit_short') : $t('chat.close_dialog') }}
+          {{ isEditMode ? $t('chat.finish_edit_short') : $t('chat.close_chat') }}
         </button>
       </div>
     </div>
@@ -194,6 +194,10 @@ let leaveConfirmTimer: ReturnType<typeof setTimeout> | null = null
 
 const isMyMessage = (msg: ChatMessage) => msg.senderId === authStore.user?.uid
 
+const hasMyMessages = computed(() =>
+  chatStore.activeMessages.some((msg) => !msg.isSystem && msg.senderId === authStore.user?.uid),
+)
+
 const isMessageReadByOthers = (msg: ChatMessage) => {
   const myUid = authStore.user?.uid
   if (!myUid || !msg.readBy) return false
@@ -252,13 +256,12 @@ const handleClearChat = async () => {
   cancelEditingMsg()
 }
 
-const handleCloseDialog = () => {
+const handleCloseChat = () => {
   isEditMode.value = false
   resetLeaveConfirm()
   cancelEditingMsg()
-  chatStore.closeDialog()
+  chatStore.closeChat()
 }
-
 const peerProfile = computed(() => {
   if (!chatStore.activePeerUid) return null
   return (
@@ -335,6 +338,13 @@ watch(
   },
 )
 
+watch(hasMyMessages, (has) => {
+  if (!has && isEditMode.value) {
+    isEditMode.value = false
+    cancelEditingMsg()
+  }
+})
+
 watch(
   () => chatStore.activeMessages.length,
   async () => {
@@ -356,7 +366,7 @@ const formatTime = (ts: number) =>
   height: 100%;
   overflow: hidden;
 }
-.dialog-header {
+.chat-header {
   position: relative;
   padding: 9px 12px;
   display: flex;
@@ -365,7 +375,7 @@ const formatTime = (ts: number) =>
   gap: 8px;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.16) 100%);
 }
-.dialog-header::after {
+.chat-header::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -379,16 +389,16 @@ const formatTime = (ts: number) =>
     transparent 100%
   );
 }
-.dialog-head-left {
+.chat-head-left {
   min-width: 0;
   flex: 1;
 }
-.group-header-info {
+.chat-header-info {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
-.group-title {
+.chat-title {
   font-size: 13px;
   font-weight: 700;
   color: var(--color-white);
@@ -400,7 +410,7 @@ const formatTime = (ts: number) =>
   font-size: 11px;
   color: var(--color-light-grey);
 }
-.dialog-head-right {
+.chat-head-right {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -428,28 +438,26 @@ const formatTime = (ts: number) =>
   cursor: pointer;
   font-size: 12px;
   white-space: nowrap;
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
     transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.25s ease,
-    border-color 0.25s ease;
+    border-color 0.25s ease,
+    box-shadow 0.2s ease;
 }
 .header-action-btn:hover {
-  transform: translateY(-1px);
   background-color: var(--glass-hover);
   border-color: var(--glass-border-bright);
 }
 .header-action-btn:active {
   transform: translateY(1px) scale(0.95);
+  box-shadow: none;
+  transition-duration: 0.08s;
 }
 .edit-toggle-btn.active {
   background-color: var(--glass-green);
   border-color: var(--glass-border-bright);
-  box-shadow:
-    0 8px 18px rgba(16, 155, 95, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .danger-action {
   background-color: var(--glass-red-soft);
@@ -462,18 +470,16 @@ const formatTime = (ts: number) =>
 .leave-group-btn.confirming {
   font-weight: 700;
 }
-.close-dialog-btn {
+.close-chat-btn {
   width: 108px;
   text-align: center;
   font-weight: 700;
   margin-left: 2px;
 }
-.close-dialog-btn.finish-edit-state {
+.close-chat-btn.finish-edit-state {
   background-color: var(--glass-green);
   border-color: var(--glass-border-bright);
-  box-shadow:
-    0 8px 18px rgba(16, 155, 95, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .messages-area {
   flex: 1;
@@ -511,9 +517,7 @@ const formatTime = (ts: number) =>
   border-radius: 12px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, var(--glass-bg) 100%);
   border: 1px solid var(--glass-border);
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -523,10 +527,7 @@ const formatTime = (ts: number) =>
   align-self: flex-end;
   background: linear-gradient(180deg, rgba(175, 25, 25, 0.42) 0%, var(--glass-red-soft) 100%);
   border-color: rgba(255, 95, 70, 0.45);
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.6),
-    0 4px 12px rgba(159, 27, 25, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 .msg-top {
   height: 18px;
@@ -585,7 +586,14 @@ const formatTime = (ts: number) =>
   color: var(--color-white);
   font-size: 11px;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.inline-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.95);
+  box-shadow: none;
 }
 .inline-btn.save {
   background-color: var(--glass-green);
@@ -604,21 +612,21 @@ const formatTime = (ts: number) =>
   border-radius: 10px;
   background: var(--glass-card);
   border: 1px solid var(--glass-border);
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   cursor: pointer;
   transition:
     border-color 0.25s ease,
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.25s ease;
+    background-color 0.25s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .media-share-card:hover {
   border-color: var(--glass-border-bright);
-  transform: translateY(-2px) scale(1.01);
-  box-shadow:
-    0 14px 28px rgba(0, 0, 0, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.media-share-card:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: none;
 }
 .share-poster {
   width: 48px;
@@ -684,13 +692,10 @@ const formatTime = (ts: number) =>
   background-color: var(--glass-bg);
   color: var(--color-white);
   outline: none;
-  box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
     border-color 0.2s ease,
-    background-color 0.25s ease,
-    box-shadow 0.25s ease;
+    background-color 0.25s ease;
 }
 .chat-input::placeholder {
   color: rgba(255, 255, 255, 0.55);
@@ -702,10 +707,6 @@ const formatTime = (ts: number) =>
 .chat-input:focus {
   border-color: var(--color-red);
   background-color: var(--glass-modal);
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.75),
-    0 0 12px rgba(159, 27, 25, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .send-btn {
   width: 40px;
@@ -715,21 +716,21 @@ const formatTime = (ts: number) =>
   color: var(--color-white);
   cursor: pointer;
   font-size: 16px;
-  box-shadow:
-    0 8px 18px rgba(159, 27, 25, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
   transition:
     transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.25s ease,
-    border-color 0.25s ease;
+    border-color 0.25s ease,
+    box-shadow 0.2s ease;
 }
 .send-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
   background-color: var(--glass-hover);
   border-color: var(--glass-border-bright);
 }
 .send-btn:active:not(:disabled) {
   transform: translateY(1px) scale(0.95);
+  box-shadow: none;
+  transition-duration: 0.08s;
 }
 .send-btn:disabled {
   background-color: rgba(255, 255, 255, 0.04);

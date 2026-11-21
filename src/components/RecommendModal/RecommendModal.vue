@@ -147,51 +147,71 @@ const sendRecommendation = async () => {
   position: relative;
   width: 100%;
   max-width: 420px;
-  background-color: var(--glass-modal);
-  backdrop-filter: blur(18px) saturate(150%);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(159, 27, 25, 0.24) 0%, transparent 48%),
+    radial-gradient(circle at 92% 100%, rgba(25, 85, 235, 0.18) 0%, transparent 52%),
+    var(--glass-modal);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
   border: 1px solid var(--glass-border-bright);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
   box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    0 28px 65px rgba(0, 0, 0, 0.92),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .close-btn {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: transparent;
-  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg-light);
   color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: all 0.2s ease;
 }
 .close-btn:hover {
-  color: var(--color-hover);
+  background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
 }
 .rec-title {
   text-align: center;
-  font-size: 18px;
+  font-size: 17px;
+  font-weight: 700;
 }
 .media-preview {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px;
-  border-radius: 10px;
-  background-color: var(--glass-bg);
+  padding: 9px 11px;
+  border-radius: 12px;
+  background: var(--glass-card);
   border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 .poster {
   width: 44px;
   height: 66px;
-  border-radius: 6px;
+  border-radius: 8px;
   object-fit: cover;
+  border: 1px solid var(--glass-border);
+}
+.meta h4 {
+  font-size: 14px;
+  margin-bottom: 3px;
 }
 .meta span {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-light-grey);
 }
 .friends-selector {
@@ -210,22 +230,44 @@ const sendRecommendation = async () => {
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg);
   color: var(--color-white);
+  font-size: 13px;
   outline: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+.glass-input:hover {
+  border-color: var(--color-hover);
+  background-color: var(--glass-modal);
 }
 .glass-input:focus {
   border-color: var(--color-red);
+  background-color: var(--glass-modal);
+  box-shadow:
+    0 0 10px rgba(159, 27, 25, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 .select-all-btn {
-  padding: 0 10px;
+  padding: 0 11px;
   border-radius: 8px;
-  background-color: var(--glass-bg-light);
+  background-color: var(--glass-red-soft);
   border: 1px solid var(--glass-border);
   color: var(--color-white);
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: all 0.2s ease;
 }
 .select-all-btn:hover {
-  background-color: var(--glass-hover);
+  background-color: var(--glass-red);
+  border-color: var(--color-hover);
 }
 .friends-list {
   max-height: 190px;
@@ -238,15 +280,17 @@ const sendRecommendation = async () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background-color: var(--glass-bg);
+  padding: 9px 11px;
+  border-radius: 12px;
+  background: var(--glass-card);
   border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .friend-option:hover {
   border-color: var(--color-hover);
+  background-color: rgba(159, 27, 25, 0.16);
 }
 .custom-red-checkbox {
   position: relative;
@@ -294,22 +338,30 @@ const sendRecommendation = async () => {
 .submit-btn {
   padding: 10px;
   border-radius: 8px;
-  background-color: var(--glass-purple);
+  background-color: var(--glass-red);
   border: 1px solid var(--glass-border-bright);
   color: var(--color-white);
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: all 0.2s ease;
 }
 .submit-btn:hover:not(:disabled) {
   background-color: var(--glass-hover);
+  border-color: var(--color-hover);
 }
 .submit-btn:disabled {
-  opacity: 0.45;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.35);
+  box-shadow: none;
   cursor: not-allowed;
 }
 .empty-friends {
   text-align: center;
   color: var(--color-light-grey);
   padding: 16px 0;
+  font-size: 13px;
 }
 </style>

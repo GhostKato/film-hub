@@ -110,16 +110,13 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 .select-trigger:hover,
 .select-trigger.open {
   border-color: var(--color-hover);
-  transform: translateY(-2px);
   box-shadow:
     0 16px 30px rgba(0, 0, 0, 0.8),
     inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 .select-trigger:active {
   transform: translateY(1px) scale(0.97);
-  box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.7),
-    inset 0 2px 4px rgba(0, 0, 0, 0.45);
+  box-shadow: none;
   transition-duration: 0.08s;
 }
 .options-dropdown {

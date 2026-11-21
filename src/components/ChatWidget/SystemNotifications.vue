@@ -4,7 +4,7 @@
       <span class="system-title">🔔 {{ $t('chat.tab_system') }}</span>
 
       <button type="button" class="red-chat-btn close-system-btn" @click="$emit('close')">
-        {{ $t('chat.close_dialog') }}
+        {{ $t('chat.close_chat') }}
       </button>
     </div>
 
@@ -152,18 +152,24 @@ const formatTime = (ts: number) =>
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .red-chat-btn:hover {
   background-color: var(--glass-red);
   border-color: var(--glass-border-bright);
-  box-shadow:
-    0 10px 24px rgba(159, 27, 25, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.red-chat-btn:active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: none;
+  transition-duration: 0.08s;
 }
 
 .close-system-btn {
@@ -208,17 +214,23 @@ const formatTime = (ts: number) =>
   border: 1px solid var(--glass-border);
   color: var(--color-white);
   cursor: pointer;
-  box-shadow:
-    0 6px 14px rgba(159, 27, 25, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition:
-    transform 0.2s ease,
-    background-color 0.25s ease;
+    transform 0.15s ease,
+    background-color 0.25s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .clear-btn:hover {
-  transform: translateY(-1px);
   background-color: var(--glass-hover);
+  border-color: var(--glass-border-bright);
+}
+
+.clear-btn:active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: none;
+  transition-duration: 0.08s;
 }
 
 .sys-card {
@@ -229,15 +241,13 @@ const formatTime = (ts: number) =>
   border-radius: 12px;
   background: var(--glass-card);
   border: 1px solid var(--glass-border);
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   margin-bottom: 8px;
   position: relative;
   transition:
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.15s ease,
     border-color 0.25s ease,
-    box-shadow 0.25s ease;
+    box-shadow 0.2s ease;
 }
 
 .sys-card.clickable {
@@ -245,19 +255,21 @@ const formatTime = (ts: number) =>
 }
 
 .sys-card.clickable:hover {
-  transform: translateY(-2px);
   border-color: var(--glass-border-bright);
-  box-shadow:
-    0 16px 30px rgba(0, 0, 0, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.sys-card.clickable:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: none;
+  transition-duration: 0.08s;
 }
 
 .sys-card.unread {
   border-color: var(--color-hover);
   box-shadow:
-    0 10px 24px rgba(0, 0, 0, 0.65),
-    0 0 14px rgba(255, 61, 0, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    0 0 12px rgba(255, 61, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 .mini-poster {
@@ -306,12 +318,15 @@ const formatTime = (ts: number) =>
   cursor: pointer;
   transition:
     border-color 0.25s ease,
-    transform 0.2s ease;
+    transform 0.15s ease;
 }
 
 .attached-media:hover {
-  transform: translateY(-1px);
   border-color: var(--color-hover);
+}
+
+.attached-media:active {
+  transform: translateY(1px) scale(0.98);
 }
 
 .close-mini {

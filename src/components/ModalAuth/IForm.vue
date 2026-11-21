@@ -143,12 +143,8 @@ const submitBtnText = computed(() => {
   color: var(--color-white);
   padding-left: 10px;
   padding-right: 10px;
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.65),
-    0 4px 8px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.25s ease,
     border-color 0.2s ease,
     background-color 0.25s ease;
@@ -156,21 +152,14 @@ const submitBtnText = computed(() => {
 .field:hover {
   border-color: var(--color-hover);
   background-color: var(--glass-modal);
-  transform: translateY(-2px);
-  box-shadow:
-    0 16px 30px rgba(0, 0, 0, 0.8),
-    0 6px 12px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .field:focus {
   outline: none;
   border-color: var(--color-red);
   background-color: var(--glass-modal);
-  transform: translateY(-2px);
   box-shadow:
-    0 16px 32px rgba(0, 0, 0, 0.85),
-    0 0 14px rgba(159, 27, 25, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 0 10px rgba(159, 27, 25, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 .error {
   position: absolute;

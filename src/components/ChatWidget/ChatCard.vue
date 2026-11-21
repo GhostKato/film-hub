@@ -68,9 +68,7 @@ const formattedDate = computed(() => {
   border-radius: 12px;
   background: var(--glass-card);
   border: 1px solid var(--glass-border);
-  box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.52),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -139,6 +137,5 @@ const formattedDate = computed(() => {
   font-weight: 800;
   padding: 1px 7px;
   border-radius: 999px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
 }
 </style>

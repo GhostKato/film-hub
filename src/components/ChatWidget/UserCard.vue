@@ -93,11 +93,12 @@
         <template v-if="canEditTargetRights">
           <div class="role-row">
             <span>{{ $t('chat.role_label') }}:</span>
-            <select v-model="editRole" @change="onRolePresetChange" class="role-select">
-              <option value="user">{{ $t('chat.role_user') }}</option>
-              <option value="moderator">{{ $t('chat.role_moderator') }}</option>
-              <option value="admin">{{ $t('chat.role_admin') }}</option>
-            </select>
+            <ISelect
+              class="role-select"
+              v-model="editRole"
+              :options="roleOptions"
+              @update:model-value="onRolePresetChange"
+            />
           </div>
 
           <div class="perms-grid">
@@ -112,17 +113,17 @@
           </button>
         </template>
 
-        <template v-if="chatStore.canManageCurator">
+        <template v-if="chatStore.canManageCinephile">
           <button
-            v-if="!isTargetActiveCurator"
+            v-if="!isTargetActiveCinephile"
             type="button"
             class="drawer-btn red-glass-btn full-width-btn"
-            :disabled="isAssigningCurator"
-            @click="handleMakeCurator"
+            :disabled="isAssigningCinephile"
+            @click="handleMakeCinephile"
           >
-            ⭐ {{ $t('chat.make_curator') }}
+            ⭐ {{ $t('chat.make_cinephile') }}
           </button>
-          <div v-else class="active-curator-tag">⭐ {{ $t('chat.active_curator_badge') }}</div>
+          <div v-else class="active-cinephile-tag">⭐ {{ $t('chat.active_cinephile_badge') }}</div>
         </template>
       </div>
     </div>
@@ -141,6 +142,7 @@ import { getDaysOnSite, getDefaultPermissions } from '@/utils/userHelpers'
 import { blockUser, unblockUser, updateUserRoleAndPermissions } from '@/api/users'
 import { notificationStore } from '@/stores/notifications'
 import UserBadge from './UserBadge.vue'
+import ISelect from '@/components/ISelect/ISelect.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -168,8 +170,13 @@ const { t } = useI18n()
 const cardRef = ref<HTMLElement | null>(null)
 const isProfileOpen = ref(false)
 const showRightsPanel = ref(false)
-const isAssigningCurator = ref(false)
+const isAssigningCinephile = ref(false)
 const editRole = ref<UserRole>(props.user.role)
+const roleOptions = computed<{ label: string; value: UserRole }[]>(() => [
+  { label: t('chat.role_user'), value: 'user' },
+  { label: t('chat.role_moderator'), value: 'moderator' },
+  { label: t('chat.role_admin'), value: 'admin' },
+])
 const editPerms = ref<UserPermissions>({
   ...getDefaultPermissions(props.user.role),
   ...props.user.permissions,
@@ -214,10 +221,9 @@ const canEditTargetRights = computed(() => {
   if (props.user.role === 'owner' || props.user.permissions?.hasImmunity) return false
   return true
 })
+const canOpenManagePanel = computed(() => canEditTargetRights.value || chatStore.canManageCinephile)
 
-const canOpenManagePanel = computed(() => canEditTargetRights.value || chatStore.canManageCurator)
-
-const isTargetActiveCurator = computed(() => mediaStore.featuredCuratorUid === props.user.uid)
+const isTargetActiveCinephile = computed(() => mediaStore.featuredCinephileUid === props.user.uid)
 
 const visiblePermissionKeys = computed<(keyof UserPermissions)[]>(() => {
   const baseKeys: (keyof UserPermissions)[] = [
@@ -225,7 +231,7 @@ const visiblePermissionKeys = computed<(keyof UserPermissions)[]>(() => {
     'canSendSystemMessages',
     'canManageRoles',
     'canUseStealth',
-    'canManageCurator',
+    'canManageCinephile',
   ]
   if (isMeOwner.value) {
     baseKeys.push('hasImmunity')
@@ -268,14 +274,14 @@ const handleRowClick = () => {
     isProfileOpen.value = !isProfileOpen.value
     return
   }
-  chatStore.openDialogWith(props.user.uid)
+  chatStore.openChatWith(props.user.uid)
 }
 
 const handleBlock = async () => {
   const myUid = authStore.user?.uid
   if (!myUid) return
   await blockUser(myUid, props.user.uid)
-  if (chatStore.activePeerUid === props.user.uid) chatStore.closeDialog()
+  if (chatStore.activePeerUid === props.user.uid) chatStore.closeChat()
 }
 
 const handleUnblock = async () => {
@@ -315,30 +321,27 @@ const saveRights = async () => {
   notificationStore.success(t('notification_message.updated_profile_success'))
 }
 
-const handleMakeCurator = async () => {
-  if (isAssigningCurator.value) return
-  isAssigningCurator.value = true
+const handleMakeCinephile = async () => {
+  if (isAssigningCinephile.value) return
+  isAssigningCinephile.value = true
   try {
-    await chatStore.assignFeaturedCurator({
+    await chatStore.assignFeaturedCinephile({
       uid: props.user.uid,
       displayName: props.user.displayName,
     })
     notificationStore.success(t('notification_message.updated_profile_success'))
   } finally {
-    isAssigningCurator.value = false
+    isAssigningCinephile.value = false
   }
 }
 </script>
-
 <style scoped>
 .user-card {
   padding: 9px 11px;
   border-radius: 12px;
   background: var(--glass-card);
   border: 1px solid var(--glass-border);
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -447,7 +450,6 @@ const handleMakeCurator = async () => {
   font-size: 12px;
   cursor: default;
 }
-
 .drawer-meta {
   display: flex;
   align-items: center;
@@ -455,7 +457,6 @@ const handleMakeCurator = async () => {
   gap: 8px;
   color: var(--color-light-grey);
 }
-
 .days-on-site-slot {
   margin-left: auto;
   text-align: right;
@@ -497,9 +498,7 @@ const handleMakeCurator = async () => {
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition: all 0.2s ease;
 }
 
@@ -515,7 +514,7 @@ const handleMakeCurator = async () => {
 }
 
 .pending-tag,
-.active-curator-tag {
+.active-cinephile-tag {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -528,7 +527,7 @@ const handleMakeCurator = async () => {
   width: 100%;
 }
 
-.active-curator-tag {
+.active-cinephile-tag {
   color: var(--color-white);
   border-color: var(--color-hover);
 }
@@ -548,12 +547,28 @@ const handleMakeCurator = async () => {
 }
 
 .role-select {
+  width: auto;
+  min-width: 125px;
+}
+
+.role-select :deep(.select-trigger) {
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
   background-color: var(--glass-modal);
-  color: var(--color-white);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  padding: 4px 8px;
-  outline: none;
+}
+
+.role-select :deep(.options-dropdown) {
+  left: auto;
+  right: 0;
+  min-width: 100%;
+  width: max-content;
+}
+
+.role-select :deep(.option) {
+  padding: 6px 10px;
+  font-size: 12px;
 }
 
 .perms-grid {

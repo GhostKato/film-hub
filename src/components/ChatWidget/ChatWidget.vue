@@ -87,7 +87,7 @@
               </div>
             </div>
 
-            <div class="dialog-pane">
+            <div class="chat-pane">
               <ChatTab v-if="chatStore.activeChatId" />
               <SystemNotifications v-else-if="isSystemOpen" @close="isSystemOpen = false" />
               <AllUsersTab
@@ -229,7 +229,7 @@ const isChatsTabActive = computed(() => {
 const selectAllUsersTab = () => {
   chatStore.chatSubTab = 'all'
   if (!chatStore.isExpanded) {
-    if (chatStore.activeChatId) chatStore.closeDialog()
+    if (chatStore.activeChatId) chatStore.closeChat()
     isSystemOpen.value = false
     compactSection.value = 'all'
   }
@@ -238,14 +238,14 @@ const selectAllUsersTab = () => {
 const selectFriendsTab = () => {
   chatStore.chatSubTab = 'friends'
   if (!chatStore.isExpanded) {
-    if (chatStore.activeChatId) chatStore.closeDialog()
+    if (chatStore.activeChatId) chatStore.closeChat()
     isSystemOpen.value = false
     compactSection.value = 'friends'
   }
 }
 
 const selectChatsTab = () => {
-  if (chatStore.activeChatId) chatStore.closeDialog()
+  if (chatStore.activeChatId) chatStore.closeChat()
   isSystemOpen.value = false
   compactSection.value = 'chats'
 }
@@ -360,9 +360,7 @@ onUnmounted(() => {
   background-color: var(--glass-bg-light);
   color: var(--color-light-grey);
   cursor: pointer;
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
     transform 0.2s ease,
     background-color 0.25s ease,
@@ -376,18 +374,22 @@ onUnmounted(() => {
   opacity: 1;
 }
 .stealth-btn:not(:disabled):hover {
-  transform: translateY(-1px);
   border-color: var(--color-purple);
   background-color: rgba(135, 55, 215, 0.28);
   color: var(--color-white);
+}
+.stealth-btn:not(:disabled):active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: none;
+  transition-duration: 0.08s;
 }
 .stealth-btn.active {
   background-color: var(--glass-purple);
   color: var(--color-white);
   border-color: var(--color-purple);
   box-shadow:
-    0 8px 18px rgba(135, 55, 215, 0.52),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    0 0 12px rgba(135, 55, 215, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 .header-actions {
   display: flex;
@@ -406,21 +408,21 @@ onUnmounted(() => {
   justify-content: center;
   cursor: pointer;
   font-size: 15px;
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
     transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.25s ease,
-    border-color 0.25s ease;
+    border-color 0.25s ease,
+    box-shadow 0.2s ease;
 }
 .icon-btn:hover {
-  transform: translateY(-2px);
   background-color: var(--glass-hover);
   border-color: var(--glass-border-bright);
 }
 .icon-btn:active {
   transform: translateY(1px) scale(0.94);
+  box-shadow: none;
+  transition-duration: 0.08s;
 }
 .tabs-bar {
   display: flex;
@@ -525,7 +527,7 @@ onUnmounted(() => {
 .chat-window:not(.expanded) .sidebar-pane {
   display: none;
 }
-.dialog-pane {
+.chat-pane {
   flex: 1;
   display: flex;
   flex-direction: column;

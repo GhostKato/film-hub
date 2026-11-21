@@ -91,15 +91,15 @@ autoClose('menu')
   align-items: flex-start;
   padding-top: 60px;
   padding-right: 10px;
-  background-color: rgba(5, 7, 10, 0.65);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(5, 7, 10, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 60;
   pointer-events: all;
 }
 .modal-menu {
   padding: 6px;
-  border-radius: 16px;
+  border-radius: 18px;
   pointer-events: all;
   display: flex;
   flex-direction: column;
@@ -126,15 +126,17 @@ autoClose('menu')
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  background-color: var(--glass-modal);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(159, 27, 25, 0.24) 0%, transparent 48%),
+    radial-gradient(circle at 92% 100%, rgba(25, 85, 235, 0.18) 0%, transparent 52%),
+    var(--glass-modal);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
   padding: 16px 18px;
-  border-radius: 16px;
-  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  border: 1px solid var(--glass-border-bright);
   box-shadow:
-    0 24px 48px rgba(0, 0, 0, 0.88),
-    0 10px 20px rgba(0, 0, 0, 0.65),
+    0 24px 55px rgba(0, 0, 0, 0.9),
     inset 0 1px 0 rgba(255, 255, 255, 0.26);
 }
 .auth-container {

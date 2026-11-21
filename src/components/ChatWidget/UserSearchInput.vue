@@ -34,9 +34,7 @@ const onInput = (event: Event) => {
   color: var(--color-white);
   font-size: 13px;
   outline: none;
-  box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
     border-color 0.2s ease,
     background-color 0.25s ease,
@@ -56,8 +54,7 @@ const onInput = (event: Event) => {
   border-color: var(--color-red);
   background-color: var(--glass-modal);
   box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.75),
-    0 0 12px rgba(159, 27, 25, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    0 0 10px rgba(159, 27, 25, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 </style>

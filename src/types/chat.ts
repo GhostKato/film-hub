@@ -6,12 +6,12 @@ export interface UserPermissions {
   canManageRoles: boolean
   canUseStealth: boolean
   hasImmunity: boolean
-  canManageCurator: boolean
+  canManageCinephile: boolean
 }
 
-export interface FeaturedCuratorConfig {
-  curatorUid: string
-  curatorName: string
+export interface FeaturedCinephileConfig {
+  cinephileUid: string
+  cinephileName: string
   updatedAt: number
   updatedBy: string
 }

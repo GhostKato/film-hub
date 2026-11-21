@@ -38,16 +38,13 @@ import IPagination from '@/components/IPagination/IPagination.vue'
 import IButton from '@/components/IButton/IButton.vue'
 import FiltersBar from '@/components/FiltersBar/FiltersBar.vue'
 import { useMediaStore } from '@/stores/media'
-import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
-import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import { useSearchStore } from '@/stores/search'
 import { sortCollectionArray } from '@/utils/sortCollectionArray'
 import type { FiltersType } from '@/types/filter'
 import { getSortTypeFromLS, saveSortTypeToLS } from '@/utils/sortTypeStorage'
 
 const mediaStore = useMediaStore()
-const authStore = useAuthStore()
 const searchStore = useSearchStore()
 const { t } = useI18n()
 const route = useRoute()
@@ -65,17 +62,18 @@ const tabs = computed<Tab[]>(() => {
     { key: 'favorites', label: t('collection_page.favorites') },
     { key: 'watch_later', label: t('collection_page.watch_later') },
   ]
-  if (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID) {
+  if (!mediaStore.isCurrentUserCinephile) {
     baseTabs.unshift({ key: 'recommended', label: t('collection_page.recommended') })
   }
   return baseTabs
 })
 
 const activeTab = computed<TabKey>(() => {
-  return (
-    (route.query.category as TabKey) ||
-    (!authStore.user || authStore.user.uid !== MAIN_ACCOUNT_ID ? 'recommended' : 'favorites')
-  )
+  const queryCategory = route.query.category as TabKey | undefined
+  if (queryCategory === 'recommended' && mediaStore.isCurrentUserCinephile) {
+    return 'favorites'
+  }
+  return queryCategory || (!mediaStore.isCurrentUserCinephile ? 'recommended' : 'favorites')
 })
 
 const changeTab = (tab: TabKey) => {
@@ -85,18 +83,28 @@ const changeTab = (tab: TabKey) => {
 }
 
 watch(
-  () => authStore.user?.uid,
-  (newUid) => {
-    if (route.query.category) return
-    const isMain = newUid === MAIN_ACCOUNT_ID
-    const newCategory = isMain ? 'favorites' : 'recommended'
-    router.replace({
-      query: { ...route.query, category: newCategory, page: 1 },
-    })
+  () => [mediaStore.isCurrentUserCinephile, mediaStore.featuredCinephileUid] as const,
+  ([isCinephile]) => {
+    if (!isCinephile) {
+      mediaStore.fetchRecommended()
+    }
+
+    if (isCinephile && route.query.category === 'recommended') {
+      router.replace({
+        query: { ...route.query, category: 'favorites', page: 1 },
+      })
+      return
+    }
+
+    if (!route.query.category) {
+      const newCategory = isCinephile ? 'favorites' : 'recommended'
+      router.replace({
+        query: { ...route.query, category: newCategory, page: 1 },
+      })
+    }
   },
   { immediate: true },
 )
-
 const filters = ref<FiltersType>({
   filterType: (route.query.filterType as FiltersType['filterType']) || 'all',
   genre: (route.query.genre as string) || '',
@@ -248,7 +256,6 @@ onMounted(() => {
   searchStore.hideNotification()
 })
 </script>
-
 <style scoped>
 .collection-page {
   display: flex;

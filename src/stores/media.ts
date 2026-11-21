@@ -8,7 +8,7 @@ import {
   updateMediaItem,
   saveRecommended,
   loadRecommended,
-  subscribeFeaturedCurator,
+  subscribeFeaturedCinephile,
 } from '@/api/firebase'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import type { FirebaseItemType } from '@/types/media'
@@ -85,26 +85,26 @@ export const useMediaStore = defineStore('media', () => {
     JSON.parse(localStorage.getItem('media') || '[]') as FirebaseItemType[],
   )
   const recommended = ref<FirebaseItemType[]>([])
-  const featuredCuratorUid = ref<string>(MAIN_ACCOUNT_ID)
-  const featuredCuratorName = ref<string>('')
+  const featuredCinephileUid = ref<string>(MAIN_ACCOUNT_ID)
+  const featuredCinephileName = ref<string>('')
   const authStore = useAuthStore()
 
-  let unsubCurator: (() => void) | null = null
+  let unsubCinephile: (() => void) | null = null
 
-  const ensureCuratorSubscription = () => {
-    if (unsubCurator) return
-    unsubCurator = subscribeFeaturedCurator((cfg) => {
-      featuredCuratorUid.value = cfg.curatorUid || MAIN_ACCOUNT_ID
-      featuredCuratorName.value = cfg.curatorName || ''
+  const ensureCinephileSubscription = () => {
+    if (unsubCinephile) return
+    unsubCinephile = subscribeFeaturedCinephile((cfg) => {
+      featuredCinephileUid.value = cfg.cinephileUid || MAIN_ACCOUNT_ID
+      featuredCinephileName.value = cfg.cinephileName || ''
     })
   }
 
-  ensureCuratorSubscription()
+  ensureCinephileSubscription()
 
-  const isCurrentUserCurator = computed(() => {
+  const isCurrentUserCinephile = computed(() => {
     const uid = authStore.user?.uid
     if (!uid) return false
-    return uid === featuredCuratorUid.value
+    return uid === featuredCinephileUid.value
   })
 
   const save = async () => {
@@ -116,7 +116,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   const updateRecommended = async () => {
-    if (!isCurrentUserCurator.value) return
+    if (!isCurrentUserCinephile.value) return
     const list = media.value.filter((m) => m.favorite)
     const clean = list.map(sanitizeForDb)
     await saveRecommended(clean)
@@ -141,7 +141,7 @@ export const useMediaStore = defineStore('media', () => {
         if (uid) await removeMediaItem(uid, sanitizeForDb(existing))
         else await save()
 
-        if (isCurrentUserCurator.value) await updateRecommended()
+        if (isCurrentUserCinephile.value) await updateRecommended()
 
         notificationStore.removed(
           i18n.global.t(
@@ -156,7 +156,7 @@ export const useMediaStore = defineStore('media', () => {
       if (uid) await updateMediaItem(uid, sanitizeForDb(existing))
       else await save()
 
-      if (isCurrentUserCurator.value && key === 'favorite') await updateRecommended()
+      if (isCurrentUserCinephile.value && key === 'favorite') await updateRecommended()
 
       notificationStore[newValue ? 'added' : 'removed'](
         i18n.global.t(
@@ -190,7 +190,7 @@ export const useMediaStore = defineStore('media', () => {
     if (uid) await updateMediaItem(uid, draftItem)
     else await save()
 
-    if (isCurrentUserCurator.value && key === 'favorite') await updateRecommended()
+    if (isCurrentUserCinephile.value && key === 'favorite') await updateRecommended()
 
     notificationStore.added(
       i18n.global.t(
@@ -202,7 +202,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   const load = async () => {
-    ensureCuratorSubscription()
+    ensureCinephileSubscription()
     const uid = authStore.user?.uid
 
     if (uid) {
@@ -227,7 +227,7 @@ export const useMediaStore = defineStore('media', () => {
       await saveMedia(uid, media.value)
       localStorage.removeItem('media')
 
-      if (isCurrentUserCurator.value) await updateRecommended()
+      if (isCurrentUserCinephile.value) await updateRecommended()
     } else {
       const stored: FirebaseItemType[] = (
         JSON.parse(localStorage.getItem('media') || '[]') as unknown[]
@@ -241,7 +241,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   const fetchRecommended = async () => {
-    ensureCuratorSubscription()
+    ensureCinephileSubscription()
     const rec: FirebaseItemType[] = (await loadRecommended()).map(sanitizeForDb)
     recommended.value = rec
   }
@@ -250,7 +250,7 @@ export const useMediaStore = defineStore('media', () => {
     media.value = []
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, [])
-      if (isCurrentUserCurator.value) await updateRecommended()
+      if (isCurrentUserCinephile.value) await updateRecommended()
     } else {
       localStorage.setItem('media', '[]')
     }
@@ -273,7 +273,7 @@ export const useMediaStore = defineStore('media', () => {
 
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, media.value)
-      if (isCurrentUserCurator.value) await updateRecommended()
+      if (isCurrentUserCinephile.value) await updateRecommended()
     } else {
       localStorage.setItem('media', JSON.stringify(media.value))
     }
@@ -281,15 +281,15 @@ export const useMediaStore = defineStore('media', () => {
 
   const favoriteList = () => media.value.filter((m) => m.favorite)
   const watchLaterList = () => media.value.filter((m) => m.watch_later)
-  const recommendedList = () => (isCurrentUserCurator.value ? [] : recommended.value)
+  const recommendedList = () => (isCurrentUserCinephile.value ? [] : recommended.value)
   const releaseList = () => media.value.filter((m) => m.release)
 
   return {
     media,
     recommended,
-    featuredCuratorUid,
-    featuredCuratorName,
-    isCurrentUserCurator,
+    featuredCinephileUid,
+    featuredCinephileName,
+    isCurrentUserCinephile,
     toggleMedia,
     favoriteList,
     watchLaterList,

@@ -39,7 +39,11 @@ import {
   toggleHideOnline,
   updateOnlineStatus,
 } from '@/api/users'
-import { loadUserMediaForCurator, saveFeaturedCuratorConfig, saveRecommended } from '@/api/firebase'
+import {
+  loadUserMediaForCinephile,
+  saveFeaturedCinephileConfig,
+  saveRecommended,
+} from '@/api/firebase'
 import { getChatId } from '@/utils/userHelpers'
 import { playBellSound } from '@/utils/playBellSound'
 
@@ -95,21 +99,21 @@ export const useChatStore = defineStore('chat', () => {
     return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
   })
 
-  const canManageCurator = computed(
-    () => isOwner.value || Boolean(currentUserProfile.value?.permissions?.canManageCurator),
+  const canManageCinephile = computed(
+    () => isOwner.value || Boolean(currentUserProfile.value?.permissions?.canManageCinephile),
   )
 
-  const assignFeaturedCurator = async (target: { uid: string; displayName: string }) => {
+  const assignFeaturedCinephile = async (target: { uid: string; displayName: string }) => {
     const actor = currentUserProfile.value
-    if (!actor || !canManageCurator.value) return
+    if (!actor || !canManageCinephile.value) return
 
-    const userMedia = await loadUserMediaForCurator(target.uid)
+    const userMedia = await loadUserMediaForCinephile(target.uid)
     const cleanFavorites = userMedia.filter((m) => m.favorite).map(sanitizeForDb)
 
     await saveRecommended(cleanFavorites)
-    await saveFeaturedCuratorConfig({
-      curatorUid: target.uid,
-      curatorName: target.displayName,
+    await saveFeaturedCinephileConfig({
+      cinephileUid: target.uid,
+      cinephileName: target.displayName,
       updatedAt: Date.now(),
       updatedBy: actor.uid,
     })
@@ -117,9 +121,9 @@ export const useChatStore = defineStore('chat', () => {
     mediaStore.recommended = cleanFavorites
   }
 
-  const resetCuratorToOwner = async () => {
+  const resetCinephileToOwner = async () => {
     if (!isOwner.value || !currentUserProfile.value) return
-    await assignFeaturedCurator({
+    await assignFeaturedCinephile({
       uid: currentUserProfile.value.uid,
       displayName: currentUserProfile.value.displayName,
     })
@@ -306,7 +310,7 @@ export const useChatStore = defineStore('chat', () => {
     await markChatAsRead(chatId, uid)
   }
 
-  const openDialogWith = async (peerUid: string) => {
+  const openChatWith = async (peerUid: string) => {
     const uid = authStore.user?.uid
     if (!uid) return
     const peer =
@@ -335,7 +339,7 @@ export const useChatStore = defineStore('chat', () => {
 
     const firstOther = others[0]
     if (others.length === 1 && firstOther) {
-      await openDialogWith(firstOther)
+      await openChatWith(firstOther)
       return
     }
 
@@ -348,7 +352,7 @@ export const useChatStore = defineStore('chat', () => {
     await subscribeToRoom(chatId, null)
   }
 
-  const closeDialog = () => {
+  const closeChat = () => {
     if (unsubMessages) {
       unsubMessages()
       unsubMessages = null
@@ -441,13 +445,13 @@ export const useChatStore = defineStore('chat', () => {
   const clearCurrentChat = async () => {
     if (!activeChatId.value || !authStore.user?.uid) return
     await clearChatHistoryForUser(activeChatId.value, authStore.user.uid)
-    closeDialog()
+    closeChat()
   }
 
   const leaveCurrentGroupChat = async () => {
     if (!activeChatId.value || !currentUserProfile.value || !activeRoom.value?.isGroup) return
     const targetChatId = activeChatId.value
-    closeDialog()
+    closeChat()
     await leaveGroupChat(targetChatId, currentUserProfile.value)
   }
 
@@ -474,9 +478,9 @@ export const useChatStore = defineStore('chat', () => {
     canSeeAllUsers,
     canUseStealth,
     isOwner,
-    canManageCurator,
-    assignFeaturedCurator,
-    resetCuratorToOwner,
+    canManageCinephile,
+    assignFeaturedCinephile,
+    resetCinephileToOwner,
     isOpen,
     isExpanded,
     activeTab,
@@ -493,10 +497,10 @@ export const useChatStore = defineStore('chat', () => {
     systemTabUnreadCount,
     init,
     cleanup,
-    openDialogWith,
+    openChatWith,
     openGroupRoom,
     startChatWithSelected,
-    closeDialog,
+    closeChat,
     sendMessage,
     sendDirectBroadcast,
     recommendMediaToFriends,

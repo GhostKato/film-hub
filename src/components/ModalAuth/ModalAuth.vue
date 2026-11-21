@@ -59,17 +59,19 @@ autoClose('auth', 50000)
 }
 .modal-content {
   position: relative;
-  background-color: var(--glass-modal);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(159, 27, 25, 0.24) 0%, transparent 48%),
+    radial-gradient(circle at 92% 100%, rgba(25, 85, 235, 0.18) 0%, transparent 52%),
+    var(--glass-modal);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
   padding: 40px 18px 20px 18px;
-  border-radius: 16px;
+  border-radius: 18px;
   width: 320px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--glass-border-bright);
   box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.9),
-    0 12px 24px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    0 28px 65px rgba(0, 0, 0, 0.92),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .switch-buttons {
   display: flex;
