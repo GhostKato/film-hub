@@ -128,14 +128,14 @@ export const useChatStore = defineStore('chat', () => {
     mediaStore.recommended = cleanFavorites
     mediaStore.recommendedSourceUid = sourceUid
   }
+
   const resetCinephileToOwner = async () => {
-    if (!isOwner.value || !currentUserProfile.value) return
+    if (!canManageCinephile.value || !currentUserProfile.value) return
     await assignFeaturedCinephile({
       uid: currentUserProfile.value.uid,
       displayName: currentUserProfile.value.displayName,
     })
   }
-
   watch(canSeeAllUsers, (allowed) => {
     if (unsubAllUsers) {
       unsubAllUsers()
@@ -250,6 +250,7 @@ export const useChatStore = defineStore('chat', () => {
       systemMessages.value = items
     })
   }
+
   const cleanup = () => {
     if (unsubChats) unsubChats()
     if (unsubMessages) unsubMessages()
@@ -285,7 +286,6 @@ export const useChatStore = defineStore('chat', () => {
     activeChatId.value = null
     activePeerUid.value = null
   }
-
   const subscribeToRoom = async (chatId: string, peerUid: string | null) => {
     const uid = authStore.user?.uid
     if (!uid) return
@@ -389,6 +389,7 @@ export const useChatStore = defineStore('chat', () => {
       })
     }
   }
+
   const sendDirectBroadcast = async (recipientUids: string[], text: string) => {
     if (!currentUserProfile.value || !recipientUids.length || !text.trim()) return
     await sendDirectMessageBulk({

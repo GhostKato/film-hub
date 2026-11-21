@@ -29,6 +29,28 @@
                   : `🟢 ${$t('chat.online')}`
               }}
             </button>
+
+            <span
+              v-if="chatStore.currentUserProfile"
+              class="header-role-badge"
+              :class="`role-${chatStore.currentUserProfile.role}`"
+              :title="currentRoleText"
+            >
+              {{ chatStore.isExpanded ? `${currentRoleIcon} ${currentRoleText}` : currentRoleIcon }}
+            </span>
+
+            <span
+              v-if="showHeaderCinephileStar"
+              class="cinephile-header-btn"
+              :class="{
+                active: mediaStore.isCurrentUserCinephile,
+                clickable: canClaimCinephile,
+              }"
+              :title="cinephileStarTitle"
+              @click="handleClaimCinephile"
+            >
+              ⭐
+            </span>
           </div>
 
           <div class="header-actions">
@@ -104,12 +126,15 @@
     </Transition>
   </template>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useChatStore } from '@/stores/chat'
 import { useFriendsStore } from '@/stores/friends'
+import { useMediaStore } from '@/stores/media'
+import { notificationStore } from '@/stores/notifications'
+import { getRoleIcon, getRoleTranslationKey } from '@/utils/userHelpers'
 import ChatBatton from './ChatBatton.vue'
 import SystemNotifications from './SystemNotifications.vue'
 import FriendsTab from './FriendsTab.vue'
@@ -121,9 +146,44 @@ import XIcon from '@/components/icons/XIcon.vue'
 const authStore = useAuthStore()
 const chatStore = useChatStore()
 const friendsStore = useFriendsStore()
+const mediaStore = useMediaStore()
+const { t } = useI18n()
 
 const compactSection = ref<'all' | 'friends' | 'chats'>('chats')
 const isSystemOpen = ref(false)
+const isClaimingCinephile = ref(false)
+
+const currentRoleIcon = computed(() => getRoleIcon(chatStore.currentUserProfile?.role))
+
+const currentRoleText = computed(() => {
+  const key = getRoleTranslationKey(chatStore.currentUserProfile?.role)
+  return key ? t(key) : ''
+})
+
+const showHeaderCinephileStar = computed(
+  () => mediaStore.isCurrentUserCinephile || chatStore.canManageCinephile,
+)
+
+const canClaimCinephile = computed(
+  () => chatStore.canManageCinephile && !mediaStore.isCurrentUserCinephile,
+)
+
+const cinephileStarTitle = computed(() =>
+  mediaStore.isCurrentUserCinephile
+    ? t('chat.active_cinephile_badge')
+    : t('chat.reset_cinephile_hint'),
+)
+
+const handleClaimCinephile = async () => {
+  if (!canClaimCinephile.value || isClaimingCinephile.value) return
+  isClaimingCinephile.value = true
+  try {
+    await chatStore.resetCinephileToOwner()
+    notificationStore.success(t('notification_message.updated_profile_success'))
+  } finally {
+    isClaimingCinephile.value = false
+  }
+}
 
 const chatWindowRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
@@ -284,7 +344,6 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize)
 })
 </script>
-
 <style scoped>
 .chat-window {
   position: fixed;
@@ -344,22 +403,28 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 .window-title {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.2px;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
 }
 .stealth-btn {
+  display: inline-flex;
+  align-items: center;
   font-size: 11px;
   font-weight: 600;
+  line-height: 1.2;
   padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg-light);
   color: var(--color-light-grey);
   cursor: pointer;
+  white-space: nowrap;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
     transform 0.2s ease,
@@ -390,6 +455,80 @@ onUnmounted(() => {
   box-shadow:
     0 0 12px rgba(135, 55, 215, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+.header-role-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  color: var(--color-white);
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  white-space: nowrap;
+  user-select: none;
+}
+.chat-window.expanded .header-role-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.header-role-badge.role-owner {
+  background-color: var(--glass-red);
+  box-shadow:
+    0 4px 12px rgba(159, 27, 25, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.header-role-badge.role-admin {
+  background-color: var(--glass-blue);
+  box-shadow:
+    0 4px 12px rgba(25, 95, 215, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.header-role-badge.role-moderator {
+  background-color: var(--glass-green);
+  box-shadow:
+    0 4px 12px rgba(16, 165, 100, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.header-role-badge.role-user {
+  background-color: var(--glass-bg-light);
+  color: var(--color-light-grey);
+}
+.cinephile-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  color: var(--color-white);
+  cursor: default;
+  user-select: none;
+  transition:
+    transform 0.2s ease,
+    filter 0.25s ease;
+}
+.cinephile-header-btn:not(.active) {
+  filter: grayscale(1) opacity(0.55);
+}
+.cinephile-header-btn.active {
+  filter: drop-shadow(0 0 6px rgba(255, 200, 40, 0.9)) drop-shadow(0 0 12px rgba(255, 180, 0, 0.55));
+}
+.cinephile-header-btn.clickable {
+  cursor: pointer;
+}
+.cinephile-header-btn.clickable:hover {
+  filter: grayscale(0) opacity(1) drop-shadow(0 0 8px rgba(255, 200, 40, 0.85));
+  transform: scale(1.15);
+}
+.cinephile-header-btn.clickable:active {
+  transform: scale(0.95);
 }
 .header-actions {
   display: flex;

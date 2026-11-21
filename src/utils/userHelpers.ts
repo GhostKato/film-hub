@@ -1,6 +1,17 @@
 import type { UserPermissions, UserRole } from '@/types/chat'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 
+export const ROLE_ICONS: Record<UserRole, string> = {
+  owner: '👑',
+  admin: '🛡',
+  moderator: '🎬',
+  user: '🍿',
+}
+
+export const getRoleIcon = (role?: UserRole): string => (role ? ROLE_ICONS[role] : '')
+
+export const getRoleTranslationKey = (role?: UserRole): string => (role ? `chat.role_${role}` : '')
+
 export const getDefaultPermissions = (role: UserRole): UserPermissions => {
   switch (role) {
     case 'owner':

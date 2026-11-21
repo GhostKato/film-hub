@@ -27,7 +27,7 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { UserProfile } from '@/types/chat'
-import { getDaysOnSite } from '@/utils/userHelpers'
+import { getDaysOnSite, getRoleIcon, getRoleTranslationKey } from '@/utils/userHelpers'
 import { useChatStore } from '@/stores/chat'
 import { useMediaStore } from '@/stores/media'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
@@ -89,18 +89,9 @@ const formattedLastSeen = computed(() => {
 })
 
 const roleLabel = computed(() => {
-  switch (props.user?.role) {
-    case 'owner':
-      return `👑 ${t('chat.role_owner')}`
-    case 'admin':
-      return `🛡 ${t('chat.role_admin')}`
-    case 'moderator':
-      return `🎬 ${t('chat.role_moderator')}`
-    case 'user':
-      return `🍿 ${t('chat.role_user')}`
-    default:
-      return ''
-  }
+  const role = props.user?.role
+  if (!role) return ''
+  return `${getRoleIcon(role)} ${t(getRoleTranslationKey(role))}`
 })
 </script>
 <style scoped>
