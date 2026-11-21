@@ -62,7 +62,7 @@ const tabs = computed<Tab[]>(() => {
     { key: 'favorites', label: t('collection_page.favorites') },
     { key: 'watch_later', label: t('collection_page.watch_later') },
   ]
-  if (!mediaStore.isCurrentUserCinephile) {
+  if (!mediaStore.shouldHideRecommendedTab) {
     baseTabs.unshift({ key: 'recommended', label: t('collection_page.recommended') })
   }
   return baseTabs
@@ -70,10 +70,10 @@ const tabs = computed<Tab[]>(() => {
 
 const activeTab = computed<TabKey>(() => {
   const queryCategory = route.query.category as TabKey | undefined
-  if (queryCategory === 'recommended' && mediaStore.isCurrentUserCinephile) {
+  if (queryCategory === 'recommended' && mediaStore.shouldHideRecommendedTab) {
     return 'favorites'
   }
-  return queryCategory || (!mediaStore.isCurrentUserCinephile ? 'recommended' : 'favorites')
+  return queryCategory || (!mediaStore.shouldHideRecommendedTab ? 'recommended' : 'favorites')
 })
 
 const changeTab = (tab: TabKey) => {
@@ -83,13 +83,21 @@ const changeTab = (tab: TabKey) => {
 }
 
 watch(
-  () => [mediaStore.isCurrentUserCinephile, mediaStore.featuredCinephileUid] as const,
-  ([isCinephile]) => {
-    if (!isCinephile) {
+  () =>
+    [
+      mediaStore.isCinephileLoaded,
+      mediaStore.isRecommendedLoaded,
+      mediaStore.shouldHideRecommendedTab,
+    ] as const,
+  ([isCinephileReady, isRecReady, shouldHide]) => {
+    if (!isCinephileReady) return
+
+    if (!isRecReady) {
       mediaStore.fetchRecommended()
+      return
     }
 
-    if (isCinephile && route.query.category === 'recommended') {
+    if (shouldHide && route.query.category === 'recommended') {
       router.replace({
         query: { ...route.query, category: 'favorites', page: 1 },
       })
@@ -97,7 +105,7 @@ watch(
     }
 
     if (!route.query.category) {
-      const newCategory = isCinephile ? 'favorites' : 'recommended'
+      const newCategory = shouldHide ? 'favorites' : 'recommended'
       router.replace({
         query: { ...route.query, category: newCategory, page: 1 },
       })

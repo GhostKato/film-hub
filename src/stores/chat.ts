@@ -108,9 +108,16 @@ export const useChatStore = defineStore('chat', () => {
     if (!actor || !canManageCinephile.value) return
 
     const userMedia = await loadUserMediaForCinephile(target.uid)
-    const cleanFavorites = userMedia.filter((m) => m.favorite).map(sanitizeForDb)
+    let cleanFavorites = userMedia.filter((m) => m.favorite).map(sanitizeForDb)
+    let sourceUid = target.uid
 
-    await saveRecommended(cleanFavorites)
+    if (!cleanFavorites.length && target.uid !== MAIN_ACCOUNT_ID) {
+      const ownerMedia = await loadUserMediaForCinephile(MAIN_ACCOUNT_ID)
+      cleanFavorites = ownerMedia.filter((m) => m.favorite).map(sanitizeForDb)
+      sourceUid = MAIN_ACCOUNT_ID
+    }
+
+    await saveRecommended(cleanFavorites, sourceUid)
     await saveFeaturedCinephileConfig({
       cinephileUid: target.uid,
       cinephileName: target.displayName,
@@ -119,8 +126,8 @@ export const useChatStore = defineStore('chat', () => {
     })
 
     mediaStore.recommended = cleanFavorites
+    mediaStore.recommendedSourceUid = sourceUid
   }
-
   const resetCinephileToOwner = async () => {
     if (!isOwner.value || !currentUserProfile.value) return
     await assignFeaturedCinephile({
@@ -382,7 +389,6 @@ export const useChatStore = defineStore('chat', () => {
       })
     }
   }
-
   const sendDirectBroadcast = async (recipientUids: string[], text: string) => {
     if (!currentUserProfile.value || !recipientUids.length || !text.trim()) return
     await sendDirectMessageBulk({

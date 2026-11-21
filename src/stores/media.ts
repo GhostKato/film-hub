@@ -8,7 +8,9 @@ import {
   updateMediaItem,
   saveRecommended,
   loadRecommended,
+  subscribeRecommended,
   subscribeFeaturedCinephile,
+  loadUserMediaForCinephile,
 } from '@/api/firebase'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import type { FirebaseItemType } from '@/types/media'
@@ -85,18 +87,32 @@ export const useMediaStore = defineStore('media', () => {
     JSON.parse(localStorage.getItem('media') || '[]') as FirebaseItemType[],
   )
   const recommended = ref<FirebaseItemType[]>([])
+  const recommendedSourceUid = ref<string>(MAIN_ACCOUNT_ID)
   const featuredCinephileUid = ref<string>(MAIN_ACCOUNT_ID)
   const featuredCinephileName = ref<string>('')
+  const isCinephileLoaded = ref<boolean>(false)
+  const isRecommendedLoaded = ref<boolean>(false)
   const authStore = useAuthStore()
 
   let unsubCinephile: (() => void) | null = null
+  let unsubRecommended: (() => void) | null = null
 
   const ensureCinephileSubscription = () => {
-    if (unsubCinephile) return
-    unsubCinephile = subscribeFeaturedCinephile((cfg) => {
-      featuredCinephileUid.value = cfg.cinephileUid || MAIN_ACCOUNT_ID
-      featuredCinephileName.value = cfg.cinephileName || ''
-    })
+    if (!unsubCinephile) {
+      unsubCinephile = subscribeFeaturedCinephile((cfg) => {
+        featuredCinephileUid.value = cfg.cinephileUid || MAIN_ACCOUNT_ID
+        featuredCinephileName.value = cfg.cinephileName || ''
+        isCinephileLoaded.value = true
+      })
+    }
+
+    if (!unsubRecommended) {
+      unsubRecommended = subscribeRecommended((payload) => {
+        recommended.value = payload.recommended.map(sanitizeForDb)
+        recommendedSourceUid.value = payload.sourceUid || MAIN_ACCOUNT_ID
+        isRecommendedLoaded.value = true
+      })
+    }
   }
 
   ensureCinephileSubscription()
@@ -107,6 +123,11 @@ export const useMediaStore = defineStore('media', () => {
     return uid === featuredCinephileUid.value
   })
 
+  const shouldHideRecommendedTab = computed(() => {
+    const uid = authStore.user?.uid
+    if (!uid) return false
+    return isCurrentUserCinephile.value || uid === recommendedSourceUid.value
+  })
   const save = async () => {
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, media.value.map(sanitizeForDb))
@@ -116,11 +137,21 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   const updateRecommended = async () => {
-    if (!isCurrentUserCinephile.value) return
+    const uid = authStore.user?.uid
+    if (!isCurrentUserCinephile.value || !uid) return
     const list = media.value.filter((m) => m.favorite)
-    const clean = list.map(sanitizeForDb)
-    await saveRecommended(clean)
+    let clean = list.map(sanitizeForDb)
+    let sourceUid = uid
+
+    if (!clean.length && uid !== MAIN_ACCOUNT_ID) {
+      const ownerMedia = await loadUserMediaForCinephile(MAIN_ACCOUNT_ID)
+      clean = ownerMedia.filter((m) => m.favorite).map(sanitizeForDb)
+      sourceUid = MAIN_ACCOUNT_ID
+    }
+
+    await saveRecommended(clean, sourceUid)
     recommended.value = clean
+    recommendedSourceUid.value = sourceUid
   }
 
   const toggleMedia = async (item: TmdbLikeItem, key: 'favorite' | 'watch_later') => {
@@ -200,7 +231,6 @@ export const useMediaStore = defineStore('media', () => {
       ),
     )
   }
-
   const load = async () => {
     ensureCinephileSubscription()
     const uid = authStore.user?.uid
@@ -242,8 +272,11 @@ export const useMediaStore = defineStore('media', () => {
 
   const fetchRecommended = async () => {
     ensureCinephileSubscription()
-    const rec: FirebaseItemType[] = (await loadRecommended()).map(sanitizeForDb)
-    recommended.value = rec
+    if (isRecommendedLoaded.value) return
+    const payload = await loadRecommended()
+    recommended.value = payload.recommended.map(sanitizeForDb)
+    recommendedSourceUid.value = payload.sourceUid || MAIN_ACCOUNT_ID
+    isRecommendedLoaded.value = true
   }
 
   const clear = async () => {
@@ -281,15 +314,19 @@ export const useMediaStore = defineStore('media', () => {
 
   const favoriteList = () => media.value.filter((m) => m.favorite)
   const watchLaterList = () => media.value.filter((m) => m.watch_later)
-  const recommendedList = () => (isCurrentUserCinephile.value ? [] : recommended.value)
+  const recommendedList = () => (shouldHideRecommendedTab.value ? [] : recommended.value)
   const releaseList = () => media.value.filter((m) => m.release)
 
   return {
     media,
     recommended,
+    recommendedSourceUid,
     featuredCinephileUid,
     featuredCinephileName,
+    isCinephileLoaded,
+    isRecommendedLoaded,
     isCurrentUserCinephile,
+    shouldHideRecommendedTab,
     toggleMedia,
     favoriteList,
     watchLaterList,

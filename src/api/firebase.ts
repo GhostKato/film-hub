@@ -103,23 +103,47 @@ export const removeMediaItem = async (userId: string, item: FirebaseItemType) =>
   const filtered = existing.filter((m) => !(m.id === item.id && m.media_type === item.media_type))
   await setDoc(ref, { media: filtered }, { merge: true })
 }
-
-// Save recommendations (master account only)
-export const saveRecommended = async (media: FirebaseItemType[]) => {
+// Save recommendations with real sourceUid
+export const saveRecommended = async (media: FirebaseItemType[], sourceUid: string) => {
   const ref = doc(db, 'recommended', 'mainId')
-  await setDoc(ref, { recommended: media })
+  await setDoc(ref, { recommended: media, sourceUid })
 }
 
-// Reads recommendations
-export const loadRecommended = async (): Promise<FirebaseItemType[]> => {
+// Reads recommendations once
+export const loadRecommended = async (): Promise<{
+  recommended: FirebaseItemType[]
+  sourceUid: string
+}> => {
   const ref = doc(db, 'recommended', 'mainId')
   const snap = await getDoc(ref)
 
   if (snap.exists()) {
-    return snap.data()?.recommended || []
+    const data = snap.data()
+    return {
+      recommended: data?.recommended || [],
+      sourceUid: data?.sourceUid || MAIN_ACCOUNT_ID,
+    }
   }
 
-  return []
+  return { recommended: [], sourceUid: MAIN_ACCOUNT_ID }
+}
+
+// Live subscription to recommendations
+export const subscribeRecommended = (
+  callback: (payload: { recommended: FirebaseItemType[]; sourceUid: string }) => void,
+) => {
+  const ref = doc(db, 'recommended', 'mainId')
+  return onSnapshot(ref, (snap) => {
+    if (snap.exists()) {
+      const data = snap.data()
+      callback({
+        recommended: data?.recommended || [],
+        sourceUid: data?.sourceUid || MAIN_ACCOUNT_ID,
+      })
+    } else {
+      callback({ recommended: [], sourceUid: MAIN_ACCOUNT_ID })
+    }
+  })
 }
 
 export const loadUserMediaForCinephile = async (userId: string): Promise<FirebaseItemType[]> => {
