@@ -6,6 +6,14 @@ export interface UserPermissions {
   canManageRoles: boolean
   canUseStealth: boolean
   hasImmunity: boolean
+  canManageCurator: boolean
+}
+
+export interface FeaturedCuratorConfig {
+  curatorUid: string
+  curatorName: string
+  updatedAt: number
+  updatedBy: string
 }
 
 export interface UserProfile {

@@ -39,7 +39,7 @@
       </div>
 
       <div v-if="otherDirectItems.length" class="dialogs-section">
-        <p class="section-label">📩 {{ $t('chat.tab_all') }}</p>
+        <p class="section-label">💬 {{ $t('chat.tab_all') }}</p>
         <ChatCard
           v-for="item in otherDirectItems"
           :key="item.room.id"
@@ -101,9 +101,7 @@ const friendsStore = useFriendsStore()
 const mediaStore = useMediaStore()
 const { t } = useI18n()
 
-const totalSystemUnread = computed(() => {
-  return chatStore.systemTabUnreadCount + friendsStore.incomingRequests.length
-})
+const totalSystemUnread = computed(() => chatStore.systemTabUnreadCount)
 
 const latestSystemMessage = computed(() => {
   if (!chatStore.systemMessages.length) return null
@@ -117,9 +115,6 @@ const latestSystemTime = computed(() => {
 })
 
 const systemPreviewText = computed(() => {
-  if (friendsStore.incomingRequests.length) {
-    return `${t('chat.incoming_requests')}: ${friendsStore.incomingRequests.length}`
-  }
   if (latestSystemMessage.value) {
     return latestSystemMessage.value.title || latestSystemMessage.value.text
   }

@@ -10,6 +10,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canManageRoles: true,
         canUseStealth: true,
         hasImmunity: true,
+        canManageCurator: true,
       }
     case 'admin':
       return {
@@ -18,6 +19,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canManageRoles: true,
         canUseStealth: true,
         hasImmunity: false,
+        canManageCurator: false,
       }
     case 'moderator':
       return {
@@ -26,6 +28,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canManageRoles: false,
         canUseStealth: false,
         hasImmunity: false,
+        canManageCurator: false,
       }
     default:
       return {
@@ -34,6 +37,7 @@ export const getDefaultPermissions = (role: UserRole): UserPermissions => {
         canManageRoles: false,
         canUseStealth: false,
         hasImmunity: false,
+        canManageCurator: false,
       }
   }
 }

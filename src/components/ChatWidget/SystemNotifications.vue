@@ -9,35 +9,6 @@
     </div>
 
     <div class="scroll-area">
-      <div v-if="friendsStore.incomingRequests.length" class="block">
-        <p class="block-title">🤝 {{ $t('chat.incoming_requests') }}</p>
-        <div
-          v-for="req in friendsStore.incomingRequests"
-          :key="req.friendshipId"
-          class="sys-card friend-req-card"
-        >
-          <div class="card-body">
-            <UserBadge v-if="req.user" :user="req.user" />
-          </div>
-          <div class="req-actions">
-            <button
-              type="button"
-              class="red-mini-btn"
-              @click="friendsStore.acceptRequest(req.friendshipId)"
-            >
-              ✔
-            </button>
-            <button
-              type="button"
-              class="red-mini-btn"
-              @click="friendsStore.declineOrRemove(req.friendshipId)"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div v-if="releaseList.length" class="block">
         <div class="block-head">
           <span class="block-title">🎬 {{ $t('modal_release.title') }}</span>
@@ -107,14 +78,7 @@
         </div>
       </div>
 
-      <p
-        v-if="
-          !friendsStore.incomingRequests.length &&
-          !releaseList.length &&
-          !chatStore.systemMessages.length
-        "
-        class="empty-text"
-      >
+      <p v-if="!releaseList.length && !chatStore.systemMessages.length" class="empty-text">
         {{ $t('notification_message.release_empty_info') }}
       </p>
     </div>
@@ -126,9 +90,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMediaStore } from '@/stores/media'
 import { useChatStore } from '@/stores/chat'
-import { useFriendsStore } from '@/stores/friends'
 import { getImageUrl } from '@/utils/getImageUrl'
-import UserBadge from './UserBadge.vue'
 
 defineEmits<{
   (e: 'close'): void
@@ -136,7 +98,6 @@ defineEmits<{
 
 const mediaStore = useMediaStore()
 const chatStore = useChatStore()
-const friendsStore = useFriendsStore()
 const router = useRouter()
 
 const releaseList = computed(() => mediaStore.releaseList())
@@ -277,33 +238,6 @@ const formatTime = (ts: number) =>
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.25s ease,
     box-shadow 0.25s ease;
-}
-
-.friend-req-card {
-  align-items: center;
-}
-
-.req-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.red-mini-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-red-soft);
-  color: var(--color-white);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.red-mini-btn:hover {
-  background: var(--glass-red);
-  border-color: var(--color-hover);
 }
 
 .sys-card.clickable {

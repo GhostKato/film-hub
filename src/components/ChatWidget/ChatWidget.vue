@@ -205,11 +205,7 @@ const handleWindowResize = () => {
 }
 
 const totalChatsTabBadge = computed(() => {
-  return (
-    chatStore.chatUnreadCount +
-    chatStore.systemTabUnreadCount +
-    friendsStore.incomingRequests.length
-  )
+  return chatStore.chatUnreadCount + chatStore.systemTabUnreadCount
 })
 
 const isAllTabActive = computed(() => {

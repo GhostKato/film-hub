@@ -82,7 +82,7 @@
         </div>
 
         <button
-          v-if="canEditTargetRights"
+          v-if="canOpenManagePanel"
           class="drawer-btn red-glass-btn full-width-btn"
           @click="toggleRightsPanel"
         >
@@ -90,26 +90,41 @@
         </button>
       </div>
 
-      <div v-if="showRightsPanel && canEditTargetRights" class="rights-panel">
-        <div class="role-row">
-          <span>{{ $t('chat.role_label') }}:</span>
-          <select v-model="editRole" @change="onRolePresetChange" class="role-select">
-            <option value="user">{{ $t('chat.role_user') }}</option>
-            <option value="moderator">{{ $t('chat.role_moderator') }}</option>
-            <option value="admin">{{ $t('chat.role_admin') }}</option>
-          </select>
-        </div>
+      <div v-if="showRightsPanel && canOpenManagePanel" class="rights-panel">
+        <template v-if="canEditTargetRights">
+          <div class="role-row">
+            <span>{{ $t('chat.role_label') }}:</span>
+            <select v-model="editRole" @change="onRolePresetChange" class="role-select">
+              <option value="user">{{ $t('chat.role_user') }}</option>
+              <option value="moderator">{{ $t('chat.role_moderator') }}</option>
+              <option value="admin">{{ $t('chat.role_admin') }}</option>
+            </select>
+          </div>
 
-        <div class="perms-grid">
-          <label v-for="key in visiblePermissionKeys" :key="key" class="perm-item">
-            <input type="checkbox" v-model="editPerms[key]" />
-            <span>{{ $t(`chat.perm_${key}`) }}</span>
-          </label>
-        </div>
+          <div class="perms-grid">
+            <label v-for="key in visiblePermissionKeys" :key="key" class="perm-item">
+              <input type="checkbox" v-model="editPerms[key]" />
+              <span>{{ $t(`chat.perm_${key}`) }}</span>
+            </label>
+          </div>
 
-        <button class="save-rights-btn red-glass-btn full-width-btn" @click="saveRights">
-          {{ $t('chat.save_rights') }}
-        </button>
+          <button class="save-rights-btn red-glass-btn full-width-btn" @click="saveRights">
+            {{ $t('chat.save_rights') }}
+          </button>
+        </template>
+
+        <template v-if="chatStore.canManageCurator">
+          <button
+            v-if="!isTargetActiveCurator"
+            type="button"
+            class="drawer-btn red-glass-btn full-width-btn"
+            :disabled="isAssigningCurator"
+            @click="handleMakeCurator"
+          >
+            ⭐ {{ $t('chat.make_curator') }}
+          </button>
+          <div v-else class="active-curator-tag">⭐ {{ $t('chat.active_curator_badge') }}</div>
+        </template>
       </div>
     </div>
   </div>
@@ -121,6 +136,7 @@ import { useI18n } from 'vue-i18n'
 import { useChatStore } from '@/stores/chat'
 import { useAuthStore } from '@/stores/auth'
 import { useFriendsStore } from '@/stores/friends'
+import { useMediaStore } from '@/stores/media'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import type { UserPermissions, UserProfile, UserRole } from '@/types/chat'
 import { getDaysOnSite, getDefaultPermissions } from '@/utils/userHelpers'
@@ -148,10 +164,12 @@ defineEmits<{
 const chatStore = useChatStore()
 const authStore = useAuthStore()
 const friendsStore = useFriendsStore()
+const mediaStore = useMediaStore()
 const { t } = useI18n()
 
 const isProfileOpen = ref(false)
 const showRightsPanel = ref(false)
+const isAssigningCurator = ref(false)
 const editRole = ref<UserRole>(props.user.role)
 const editPerms = ref<UserPermissions>({
   ...getDefaultPermissions(props.user.role),
@@ -182,12 +200,17 @@ const canEditTargetRights = computed(() => {
   return true
 })
 
+const canOpenManagePanel = computed(() => canEditTargetRights.value || chatStore.canManageCurator)
+
+const isTargetActiveCurator = computed(() => mediaStore.featuredCuratorUid === props.user.uid)
+
 const visiblePermissionKeys = computed<(keyof UserPermissions)[]>(() => {
   const baseKeys: (keyof UserPermissions)[] = [
     'canSeeAllUsers',
     'canSendSystemMessages',
     'canManageRoles',
     'canUseStealth',
+    'canManageCurator',
   ]
   if (isMeOwner.value) {
     baseKeys.push('hasImmunity')
@@ -264,8 +287,21 @@ const saveRights = async () => {
   showRightsPanel.value = false
   notificationStore.success(t('notification_message.updated_profile_success'))
 }
-</script>
 
+const handleMakeCurator = async () => {
+  if (isAssigningCurator.value) return
+  isAssigningCurator.value = true
+  try {
+    await chatStore.assignFeaturedCurator({
+      uid: props.user.uid,
+      displayName: props.user.displayName,
+    })
+    notificationStore.success(t('notification_message.updated_profile_success'))
+  } finally {
+    isAssigningCurator.value = false
+  }
+}
+</script>
 <style scoped>
 .user-card {
   padding: 9px 11px;
@@ -452,7 +488,13 @@ const saveRights = async () => {
   border-color: var(--color-hover);
 }
 
-.pending-tag {
+.red-glass-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pending-tag,
+.active-curator-tag {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -462,6 +504,12 @@ const saveRights = async () => {
   border-radius: 8px;
   background-color: var(--glass-bg-light);
   border: 1px solid var(--glass-border);
+  width: 100%;
+}
+
+.active-curator-tag {
+  color: var(--color-white);
+  border-color: var(--color-hover);
 }
 
 .rights-panel {

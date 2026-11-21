@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuthStore } from './auth'
 import {
   loadMedia,
@@ -8,6 +8,7 @@ import {
   updateMediaItem,
   saveRecommended,
   loadRecommended,
+  subscribeFeaturedCurator,
 } from '@/api/firebase'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import type { FirebaseItemType } from '@/types/media'
@@ -24,7 +25,7 @@ const normalizeGenres = (item: TmdbLikeItem): number[] => {
   return []
 }
 
-const sanitizeForDb = (item: unknown): FirebaseItemType => {
+export const sanitizeForDb = (item: unknown): FirebaseItemType => {
   const i = item as Partial<FirebaseItemType>
 
   const clean: FirebaseItemType = {
@@ -84,7 +85,27 @@ export const useMediaStore = defineStore('media', () => {
     JSON.parse(localStorage.getItem('media') || '[]') as FirebaseItemType[],
   )
   const recommended = ref<FirebaseItemType[]>([])
+  const featuredCuratorUid = ref<string>(MAIN_ACCOUNT_ID)
+  const featuredCuratorName = ref<string>('')
   const authStore = useAuthStore()
+
+  let unsubCurator: (() => void) | null = null
+
+  const ensureCuratorSubscription = () => {
+    if (unsubCurator) return
+    unsubCurator = subscribeFeaturedCurator((cfg) => {
+      featuredCuratorUid.value = cfg.curatorUid || MAIN_ACCOUNT_ID
+      featuredCuratorName.value = cfg.curatorName || ''
+    })
+  }
+
+  ensureCuratorSubscription()
+
+  const isCurrentUserCurator = computed(() => {
+    const uid = authStore.user?.uid
+    if (!uid) return false
+    return uid === featuredCuratorUid.value
+  })
 
   const save = async () => {
     if (authStore.user?.uid) {
@@ -95,7 +116,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   const updateRecommended = async () => {
-    if (authStore.user?.uid !== MAIN_ACCOUNT_ID) return
+    if (!isCurrentUserCurator.value) return
     const list = media.value.filter((m) => m.favorite)
     const clean = list.map(sanitizeForDb)
     await saveRecommended(clean)
@@ -104,7 +125,6 @@ export const useMediaStore = defineStore('media', () => {
 
   const toggleMedia = async (item: TmdbLikeItem, key: 'favorite' | 'watch_later') => {
     const uid = authStore.user?.uid
-    const isMain = uid === MAIN_ACCOUNT_ID
 
     const existing = media.value.find((m) => m.id === item.id && m.media_type === item.media_type)
 
@@ -121,7 +141,7 @@ export const useMediaStore = defineStore('media', () => {
         if (uid) await removeMediaItem(uid, sanitizeForDb(existing))
         else await save()
 
-        if (isMain) await updateRecommended()
+        if (isCurrentUserCurator.value) await updateRecommended()
 
         notificationStore.removed(
           i18n.global.t(
@@ -136,7 +156,7 @@ export const useMediaStore = defineStore('media', () => {
       if (uid) await updateMediaItem(uid, sanitizeForDb(existing))
       else await save()
 
-      if (isMain && key === 'favorite') await updateRecommended()
+      if (isCurrentUserCurator.value && key === 'favorite') await updateRecommended()
 
       notificationStore[newValue ? 'added' : 'removed'](
         i18n.global.t(
@@ -170,7 +190,7 @@ export const useMediaStore = defineStore('media', () => {
     if (uid) await updateMediaItem(uid, draftItem)
     else await save()
 
-    if (isMain && key === 'favorite') await updateRecommended()
+    if (isCurrentUserCurator.value && key === 'favorite') await updateRecommended()
 
     notificationStore.added(
       i18n.global.t(
@@ -182,6 +202,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   const load = async () => {
+    ensureCuratorSubscription()
     const uid = authStore.user?.uid
 
     if (uid) {
@@ -206,7 +227,7 @@ export const useMediaStore = defineStore('media', () => {
       await saveMedia(uid, media.value)
       localStorage.removeItem('media')
 
-      if (uid === MAIN_ACCOUNT_ID) await updateRecommended()
+      if (isCurrentUserCurator.value) await updateRecommended()
     } else {
       const stored: FirebaseItemType[] = (
         JSON.parse(localStorage.getItem('media') || '[]') as unknown[]
@@ -220,6 +241,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   const fetchRecommended = async () => {
+    ensureCuratorSubscription()
     const rec: FirebaseItemType[] = (await loadRecommended()).map(sanitizeForDb)
     recommended.value = rec
   }
@@ -228,7 +250,7 @@ export const useMediaStore = defineStore('media', () => {
     media.value = []
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, [])
-      if (authStore.user?.uid === MAIN_ACCOUNT_ID) await updateRecommended()
+      if (isCurrentUserCurator.value) await updateRecommended()
     } else {
       localStorage.setItem('media', '[]')
     }
@@ -251,7 +273,7 @@ export const useMediaStore = defineStore('media', () => {
 
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, media.value)
-      if (authStore.user?.uid === MAIN_ACCOUNT_ID) await updateRecommended()
+      if (isCurrentUserCurator.value) await updateRecommended()
     } else {
       localStorage.setItem('media', JSON.stringify(media.value))
     }
@@ -259,12 +281,15 @@ export const useMediaStore = defineStore('media', () => {
 
   const favoriteList = () => media.value.filter((m) => m.favorite)
   const watchLaterList = () => media.value.filter((m) => m.watch_later)
-  const recommendedList = () => recommended.value
+  const recommendedList = () => (isCurrentUserCurator.value ? [] : recommended.value)
   const releaseList = () => media.value.filter((m) => m.release)
 
   return {
     media,
     recommended,
+    featuredCuratorUid,
+    featuredCuratorName,
+    isCurrentUserCurator,
     toggleMedia,
     favoriteList,
     watchLaterList,

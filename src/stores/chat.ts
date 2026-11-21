@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import { useAuthStore } from './auth'
-import { useMediaStore } from './media'
+import { useMediaStore, sanitizeForDb } from './media'
 import { useFriendsStore } from './friends'
+import { MAIN_ACCOUNT_ID } from '@/constants/env'
 import type {
   ChatMessage,
   ChatRoom,
@@ -37,6 +38,7 @@ import {
   toggleHideOnline,
   updateOnlineStatus,
 } from '@/api/users'
+import { loadUserMediaForCurator, saveFeaturedCuratorConfig, saveRecommended } from '@/api/firebase'
 import { getChatId } from '@/utils/userHelpers'
 import { playBellSound } from '@/utils/playBellSound'
 
@@ -87,6 +89,41 @@ export const useChatStore = defineStore('chat', () => {
     Boolean(currentUserProfile.value?.permissions?.canUseStealth),
   )
 
+  const isOwner = computed(() => {
+    const me = currentUserProfile.value
+    return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
+  })
+
+  const canManageCurator = computed(
+    () => isOwner.value || Boolean(currentUserProfile.value?.permissions?.canManageCurator),
+  )
+
+  const assignFeaturedCurator = async (target: { uid: string; displayName: string }) => {
+    const actor = currentUserProfile.value
+    if (!actor || !canManageCurator.value) return
+
+    const userMedia = await loadUserMediaForCurator(target.uid)
+    const cleanFavorites = userMedia.filter((m) => m.favorite).map(sanitizeForDb)
+
+    await saveRecommended(cleanFavorites)
+    await saveFeaturedCuratorConfig({
+      curatorUid: target.uid,
+      curatorName: target.displayName,
+      updatedAt: Date.now(),
+      updatedBy: actor.uid,
+    })
+
+    mediaStore.recommended = cleanFavorites
+  }
+
+  const resetCuratorToOwner = async () => {
+    if (!isOwner.value || !currentUserProfile.value) return
+    await assignFeaturedCurator({
+      uid: currentUserProfile.value.uid,
+      displayName: currentUserProfile.value.displayName,
+    })
+  }
+
   watch(canSeeAllUsers, (allowed) => {
     if (unsubAllUsers) {
       unsubAllUsers()
@@ -114,8 +151,7 @@ export const useChatStore = defineStore('chat', () => {
   const chatUnreadCount = computed(() => {
     const uid = authStore.user?.uid
     if (!uid) return 0
-    const chatsUnread = chats.value.reduce((sum, room) => sum + (room.unreadCount?.[uid] || 0), 0)
-    return chatsUnread + friendsStore.incomingRequests.length
+    return chats.value.reduce((sum, room) => sum + (room.unreadCount?.[uid] || 0), 0)
   })
 
   const systemTabUnreadCount = computed(() => {
@@ -126,7 +162,7 @@ export const useChatStore = defineStore('chat', () => {
 
   const totalUnreadCount = computed(() => {
     if (!authStore.user?.uid) return 0
-    return chatUnreadCount.value + systemTabUnreadCount.value
+    return chatUnreadCount.value + systemTabUnreadCount.value + friendsStore.incomingRequests.length
   })
 
   const init = async () => {
@@ -431,6 +467,10 @@ export const useChatStore = defineStore('chat', () => {
     allUsers,
     canSeeAllUsers,
     canUseStealth,
+    isOwner,
+    canManageCurator,
+    assignFeaturedCurator,
+    resetCuratorToOwner,
     isOpen,
     isExpanded,
     activeTab,

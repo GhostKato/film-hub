@@ -10,9 +10,11 @@ import {
 } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { db } from '@/firebase'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import type { FirebaseItemType } from '@/types/media'
 import { updateProfile as fbUpdateProfile, updatePassword } from 'firebase/auth'
+import { MAIN_ACCOUNT_ID } from '@/constants/env'
+import type { FeaturedCuratorConfig } from '@/types/chat'
 
 // Registration
 export const register = async (
@@ -118,4 +120,32 @@ export const loadRecommended = async (): Promise<FirebaseItemType[]> => {
   }
 
   return []
+}
+
+export const loadUserMediaForCurator = async (userId: string): Promise<FirebaseItemType[]> => {
+  const ref = doc(db, 'media', userId)
+  const snap = await getDoc(ref)
+  if (snap.exists()) return snap.data()?.media || []
+  return []
+}
+
+export const subscribeFeaturedCurator = (callback: (config: FeaturedCuratorConfig) => void) => {
+  const ref = doc(db, 'recommended', 'curator')
+  return onSnapshot(ref, (snap) => {
+    if (snap.exists()) {
+      callback(snap.data() as FeaturedCuratorConfig)
+    } else {
+      callback({
+        curatorUid: MAIN_ACCOUNT_ID,
+        curatorName: '',
+        updatedAt: Date.now(),
+        updatedBy: MAIN_ACCOUNT_ID,
+      })
+    }
+  })
+}
+
+export const saveFeaturedCuratorConfig = async (config: FeaturedCuratorConfig) => {
+  const ref = doc(db, 'recommended', 'curator')
+  await setDoc(ref, config)
 }
