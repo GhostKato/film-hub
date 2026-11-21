@@ -125,6 +125,7 @@
     "perm_canManageCinephile": "Назначать киногида",
     "make_cinephile": "Назначить киногидом",
     "active_cinephile_badge": "Активный киногид",
+    "cinephile_badge": "Киногид",
     "reset_cinephile_hint": "Вернуть рекомендации владельцу",
     "leave_group": "Покинуть групповой чат",
     "leave_group_confirm": "Выйти?",

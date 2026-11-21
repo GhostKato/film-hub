@@ -7,6 +7,10 @@
     <span v-if="user" class="role-badge" :class="`role-${user.role}`">
       {{ roleLabel }}
     </span>
+
+    <span v-if="isFeaturedCinephile" class="cinephile-star" :title="$t('chat.cinephile_badge')">
+      ⭐
+    </span>
   </div>
 
   <span v-if="showDays" class="days-badge">
@@ -25,6 +29,7 @@ import { useI18n } from 'vue-i18n'
 import type { UserProfile } from '@/types/chat'
 import { getDaysOnSite } from '@/utils/userHelpers'
 import { useChatStore } from '@/stores/chat'
+import { useMediaStore } from '@/stores/media'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 
 const props = withDefaults(
@@ -41,6 +46,11 @@ const props = withDefaults(
 
 const { t } = useI18n()
 const chatStore = useChatStore()
+const mediaStore = useMediaStore()
+
+const isFeaturedCinephile = computed(
+  () => Boolean(props.user?.uid) && props.user?.uid === mediaStore.featuredCinephileUid,
+)
 
 const now = ref(Date.now())
 let tickTimer: ReturnType<typeof setInterval> | null = null
@@ -93,7 +103,6 @@ const roleLabel = computed(() => {
   }
 })
 </script>
-
 <style scoped>
 .identity-wrap {
   display: flex;
@@ -165,6 +174,16 @@ const roleLabel = computed(() => {
 .role-user {
   background-color: var(--glass-bg-light);
   color: var(--color-light-grey);
+}
+.cinephile-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(255, 200, 40, 0.75));
+  cursor: help;
+  flex-shrink: 0;
 }
 .days-badge {
   font-size: 11px;

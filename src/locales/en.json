@@ -125,6 +125,7 @@
     "perm_canManageCinephile": "Assign Cinephile",
     "make_cinephile": "Make Cinephile",
     "active_cinephile_badge": "Active Cinephile",
+    "cinephile_badge": "Cinephile",
     "reset_cinephile_hint": "Reset recommendations to owner",
     "leave_group": "Leave group chat",
     "leave_group_confirm": "Leave?",
