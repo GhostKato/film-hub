@@ -7,10 +7,12 @@
         :selected-count="selectedFriendUids.length"
         :is-all-selected="isAllSelected"
         :allow-broadcast="false"
+        :allow-direct-bulk="true"
         :is-submitting="isCreating"
         @create-group="handleCreateGroupChat"
         @toggle-all="handleToggleSelectButton"
         @clear="selectedFriendUids = []"
+        @send-broadcast="handleDirectBroadcast"
       />
     </div>
 
@@ -56,27 +58,6 @@
         </div>
       </div>
 
-      <div v-if="chatStore.groupChats.length" class="section-block">
-        <p class="section-label">
-          {{ $t('chat.group_chats') }} ({{ chatStore.groupChats.length }})
-        </p>
-        <div
-          v-for="room in chatStore.groupChats"
-          :key="room.id"
-          class="user-row clickable"
-          :class="{ active: chatStore.activeChatId === room.id }"
-          @click="chatStore.openGroupRoom(room.id)"
-        >
-          <div class="friend-info">
-            <span class="group-row-title">👥 {{ getGroupRoomTitle(room) }}</span>
-            <p v-if="room.lastMessage" class="last-msg">{{ room.lastMessage }}</p>
-          </div>
-          <span v-if="getUnreadForRoom(room.id)" class="unread-pill">
-            {{ getUnreadForRoom(room.id) }}
-          </span>
-        </div>
-      </div>
-
       <div class="section-block">
         <p v-if="!friendsStore.acceptedFriends.length" class="hint-text">
           {{ $t('chat.no_friends_yet') }}
@@ -99,11 +80,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useFriendsStore } from '@/stores/friends'
 import { useChatStore } from '@/stores/chat'
 import { useAuthStore } from '@/stores/auth'
+import { notificationStore } from '@/stores/notifications'
 import { getChatId } from '@/utils/userHelpers'
-import type { ChatRoom } from '@/types/chat'
 import UserSearchInput from './UserSearchInput.vue'
 import UserBadge from './UserBadge.vue'
 import UserCard from './UserCard.vue'
@@ -112,6 +94,7 @@ import BulkSelectionBar from './BulkSelectionBar.vue'
 const friendsStore = useFriendsStore()
 const chatStore = useChatStore()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 const searchQuery = ref('')
 const selectedFriendUids = ref<string[]>([])
@@ -162,23 +145,21 @@ const handleCreateGroupChat = async () => {
   }
 }
 
-const getGroupRoomTitle = (room: ChatRoom) => {
-  if (room.groupTitle) return room.groupTitle
-  const myUid = authStore.user?.uid
-  const names = room.participants
-    .filter((id) => id !== myUid)
-    .map((id) => {
-      const user = chatStore.allUsers.find((u) => u.uid === id) || friendsStore.profilesMap[id]
-      return user?.displayName || id.slice(0, 6)
-    })
-  return names.join(', ')
-}
-
-const getUnreadForRoom = (roomId: string) => {
-  const myUid = authStore.user?.uid
-  if (!myUid) return 0
-  const room = chatStore.chats.find((c) => c.id === roomId)
-  return room?.unreadCount?.[myUid] || 0
+const handleDirectBroadcast = async (payload: {
+  type: 'direct' | 'system'
+  title: string
+  text: string
+  isAnonymous: boolean
+}) => {
+  if (selectedFriendUids.value.length < 2 || !payload.text.trim()) return
+  isCreating.value = true
+  try {
+    await chatStore.sendDirectBroadcast([...selectedFriendUids.value], payload.text)
+    notificationStore.success(t('chat.friends_broadcast_sent'))
+    selectedFriendUids.value = []
+  } finally {
+    isCreating.value = false
+  }
 }
 
 const getUnreadForFriend = (friendUid: string) => {

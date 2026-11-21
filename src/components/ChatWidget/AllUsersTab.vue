@@ -126,7 +126,7 @@ const submitBroadcast = async (payload: {
     } else {
       await chatStore.sendDirectBroadcast(selectedUids.value, payload.text)
     }
-    notificationStore.success(t('chat.broadcast_sent'))
+    notificationStore.success(t('chat.all_broadcast_sent'))
     selectedUids.value = []
   } finally {
     isSending.value = false

@@ -260,8 +260,33 @@ export const clearChatHistoryForUser = async (chatId: string, uid: string) => {
   const chatRef = doc(db, 'chats', chatId)
   const snap = await getDoc(chatRef)
   if (!snap.exists()) return
+
+  const roomData = snap.data() as ChatRoom
+  const now = Date.now()
+  const updatedClearedAt = {
+    ...(roomData.clearedAt || {}),
+    [uid]: now,
+  }
+
+  const allCleared =
+    !roomData.isGroup &&
+    roomData.participants.length > 0 &&
+    roomData.participants.every((pid) => (updatedClearedAt[pid] || 0) >= (roomData.updatedAt || 0))
+
+  if (allCleared) {
+    const messagesSnap = await getDocs(collection(db, 'chats', chatId, 'messages'))
+    const docs = messagesSnap.docs
+    for (let i = 0; i < docs.length; i += 450) {
+      const batch = writeBatch(db)
+      docs.slice(i, i + 450).forEach((d) => batch.delete(d.ref))
+      await batch.commit()
+    }
+    await deleteDoc(chatRef)
+    return
+  }
+
   await updateDoc(chatRef, {
-    [`clearedAt.${uid}`]: Date.now(),
+    [`clearedAt.${uid}`]: now,
     [`unreadCount.${uid}`]: 0,
   })
 }
@@ -327,6 +352,30 @@ export const deleteMessageForMe = async (chatId: string, messageId: string, uid:
   await updateDoc(doc(db, 'chats', chatId, 'messages', messageId), {
     deletedFor: arrayUnion(uid),
   })
+}
+
+export const deleteMessageForEveryone = async (chatId: string, messageId: string) => {
+  await deleteDoc(doc(db, 'chats', chatId, 'messages', messageId))
+
+  const remainingSnap = await getDocs(
+    query(collection(db, 'chats', chatId, 'messages'), orderBy('createdAt', 'desc')),
+  )
+  const latestDoc = remainingSnap.docs[0]
+  if (!latestDoc) {
+    await updateDoc(doc(db, 'chats', chatId), {
+      lastMessage: '',
+    }).catch(() => {})
+    return
+  }
+
+  const latestData = latestDoc.data() as Omit<ChatMessage, 'id'>
+  const previewText =
+    latestData.text?.trim() || (latestData.mediaCard ? `🎬 ${latestData.mediaCard.title}` : '')
+
+  await updateDoc(doc(db, 'chats', chatId), {
+    lastMessage: previewText,
+    lastSenderId: latestData.senderId,
+  }).catch(() => {})
 }
 
 export const editChatMessage = async (chatId: string, messageId: string, newText: string) => {

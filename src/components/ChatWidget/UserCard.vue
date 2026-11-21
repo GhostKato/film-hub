@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="cardRef"
     class="user-card"
     :class="{ active: chatStore.activePeerUid === user.uid, blocked: isBlockedByMe }"
     @click="handleRowClick"
@@ -17,8 +18,6 @@
 
       <div class="user-info-cell">
         <UserBadge :user="user" :show-online="true" :show-days="false" />
-
-        <p v-if="lastMessage" class="last-msg">{{ lastMessage }}</p>
       </div>
 
       <div class="card-btns" @click.stop>
@@ -103,7 +102,7 @@
 
           <div class="perms-grid">
             <label v-for="key in visiblePermissionKeys" :key="key" class="perm-item">
-              <input type="checkbox" v-model="editPerms[key]" />
+              <input type="checkbox" v-model="editPerms[key]" @change="onPermissionToggle(key)" />
               <span>{{ $t(`chat.perm_${key}`) }}</span>
             </label>
           </div>
@@ -129,9 +128,8 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useChatStore } from '@/stores/chat'
 import { useAuthStore } from '@/stores/auth'
@@ -167,6 +165,7 @@ const friendsStore = useFriendsStore()
 const mediaStore = useMediaStore()
 const { t } = useI18n()
 
+const cardRef = ref<HTMLElement | null>(null)
 const isProfileOpen = ref(false)
 const showRightsPanel = ref(false)
 const isAssigningCurator = ref(false)
@@ -174,6 +173,22 @@ const editRole = ref<UserRole>(props.user.role)
 const editPerms = ref<UserPermissions>({
   ...getDefaultPermissions(props.user.role),
   ...props.user.permissions,
+})
+
+const handleOutsideClick = (e: MouseEvent) => {
+  if (!isProfileOpen.value) return
+  if (cardRef.value && !cardRef.value.contains(e.target as Node)) {
+    isProfileOpen.value = false
+    showRightsPanel.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleOutsideClick)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleOutsideClick)
 })
 
 const isBlockedByMe = computed(() =>
@@ -277,7 +292,19 @@ const onRolePresetChange = () => {
   }
 }
 
+const onPermissionToggle = (key: keyof UserPermissions) => {
+  if (key === 'canSeeAllUsers' && !editPerms.value.canSeeAllUsers) {
+    editPerms.value.canSendSystemMessages = false
+  }
+  if (key === 'canSendSystemMessages' && editPerms.value.canSendSystemMessages) {
+    editPerms.value.canSeeAllUsers = true
+  }
+}
+
 const saveRights = async () => {
+  if (!editPerms.value.canSeeAllUsers) {
+    editPerms.value.canSendSystemMessages = false
+  }
   await updateUserRoleAndPermissions(
     props.user.uid,
     editRole.value,
@@ -302,6 +329,7 @@ const handleMakeCurator = async () => {
   }
 }
 </script>
+
 <style scoped>
 .user-card {
   padding: 9px 11px;
@@ -389,15 +417,8 @@ const handleMakeCurator = async () => {
 .user-info-cell {
   flex: 1;
   min-width: 0;
-}
-
-.last-msg {
-  font-size: 12px;
-  color: var(--color-light-grey);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 3px;
+  display: flex;
+  align-items: center;
 }
 
 .card-btns {

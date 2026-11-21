@@ -31,25 +31,26 @@
             @click="handleClearChat"
             :title="$t('chat.clear_history')"
           >
-            🗑
+            🧹
           </button>
 
           <button
+            v-if="!isEditMode"
             class="header-action-btn edit-toggle-btn"
-            :class="{ active: isEditMode }"
             @click="toggleEditMode"
-            :title="isEditMode ? $t('chat.finish_edit') : $t('chat.edit_chat_mode')"
+            :title="$t('chat.edit_chat_mode')"
           >
-            {{ isEditMode ? '✔' : '✏️' }}
+            ✏️
           </button>
         </div>
 
         <button
           class="header-action-btn close-dialog-btn"
-          @click="handleCloseDialog"
-          :title="$t('chat.close_dialog')"
+          :class="{ 'finish-edit-state': isEditMode }"
+          @click="isEditMode ? toggleEditMode() : handleCloseDialog()"
+          :title="isEditMode ? $t('chat.finish_edit') : $t('chat.close_dialog')"
         >
-          ✕
+          {{ isEditMode ? $t('chat.finish_edit_short') : $t('chat.close_dialog') }}
         </button>
       </div>
     </div>
@@ -79,7 +80,14 @@
                 @click="chatStore.removeMessage(msg.id)"
                 :title="$t('chat.delete_for_me')"
               >
-                🗑
+                🧹
+              </button>
+              <button
+                class="del-btn"
+                @click="chatStore.removeMessageForEveryone(msg.id)"
+                :title="$t('chat.delete_for_everyone')"
+              >
+                🗑️
               </button>
             </div>
           </div>
@@ -138,7 +146,7 @@
               class="read-ticks"
               :class="{ read: isMessageReadByOthers(msg) }"
             >
-              {{ isMessageReadByOthers(msg) ? '✓✓' : '✓' }}
+              ✓
             </span>
           </span>
         </div>
@@ -455,8 +463,17 @@ const formatTime = (ts: number) =>
   font-weight: 700;
 }
 .close-dialog-btn {
+  width: 108px;
+  text-align: center;
   font-weight: 700;
   margin-left: 2px;
+}
+.close-dialog-btn.finish-edit-state {
+  background-color: var(--glass-green);
+  border-color: var(--glass-border-bright);
+  box-shadow:
+    0 8px 18px rgba(16, 155, 95, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 .messages-area {
   flex: 1;
@@ -465,6 +482,9 @@ const formatTime = (ts: number) =>
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background:
+    linear-gradient(180deg, rgba(8, 4, 4, 0.82) 0%, rgba(8, 4, 4, 0.88) 100%),
+    url('/chat-bg.jpg') center / cover no-repeat;
 }
 .system-event-pill {
   align-self: center;
@@ -483,6 +503,8 @@ const formatTime = (ts: number) =>
   font-size: 10px;
 }
 .msg-bubble {
+  min-width: 190px;
+  min-height: 80px;
   max-width: 82%;
   align-self: flex-start;
   padding: 8px 12px;
@@ -494,6 +516,7 @@ const formatTime = (ts: number) =>
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 4px;
 }
 .msg-bubble.mine {
@@ -506,6 +529,7 @@ const formatTime = (ts: number) =>
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 .msg-top {
+  height: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -514,6 +538,7 @@ const formatTime = (ts: number) =>
 .msg-author {
   font-size: 11px;
   font-weight: 700;
+  line-height: 1;
   color: var(--color-light-grey);
 }
 .msg-controls {
@@ -634,7 +659,6 @@ const formatTime = (ts: number) =>
 .read-ticks {
   margin-left: 4px;
   font-weight: 700;
-  letter-spacing: -1px;
   color: rgba(255, 255, 255, 0.55);
 }
 .read-ticks.read {

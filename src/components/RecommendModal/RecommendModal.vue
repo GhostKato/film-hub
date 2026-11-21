@@ -40,8 +40,16 @@
 
           <div class="friends-list">
             <label v-for="friend in filteredFriends" :key="friend.friendUid" class="friend-option">
-              <input type="checkbox" :value="friend.friendUid" v-model="selectedUids" />
-              <UserBadge v-if="friend.user" :user="friend.user" />
+              <span class="custom-red-checkbox">
+                <input type="checkbox" :value="friend.friendUid" v-model="selectedUids" />
+                <span class="checkmark"></span>
+              </span>
+              <UserBadge
+                v-if="friend.user"
+                :user="friend.user"
+                :show-online="true"
+                :show-days="false"
+              />
             </label>
           </div>
 
@@ -123,7 +131,6 @@ const sendRecommendation = async () => {
   }
 }
 </script>
-
 <style scoped>
 .rec-backdrop {
   position: fixed;
@@ -236,9 +243,53 @@ const sendRecommendation = async () => {
   background-color: var(--glass-bg);
   border: 1px solid var(--glass-border);
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .friend-option:hover {
   border-color: var(--color-hover);
+}
+.custom-red-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.custom-red-checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.custom-red-checkbox .checkmark {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--glass-border-bright);
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+}
+.friend-option:hover .custom-red-checkbox input:not(:disabled) ~ .checkmark {
+  border-color: var(--color-hover);
+  box-shadow: 0 0 8px rgba(255, 61, 0, 0.45);
+}
+.custom-red-checkbox input:checked ~ .checkmark {
+  background-color: var(--glass-red);
+  border-color: var(--color-hover);
+  box-shadow: 0 0 10px rgba(255, 61, 0, 0.55);
+}
+.custom-red-checkbox input:checked ~ .checkmark::after {
+  content: '✓';
+  color: var(--color-white);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
 }
 .submit-btn {
   padding: 10px;

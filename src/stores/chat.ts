@@ -15,6 +15,7 @@ import {
   clearChatHistoryForUser,
   createOrOpenGroupChat,
   deleteMessageForMe,
+  deleteMessageForEveryone,
   deleteSystemMessage,
   editChatMessage,
   leaveGroupChat,
@@ -432,10 +433,15 @@ export const useChatStore = defineStore('chat', () => {
     await deleteMessageForMe(activeChatId.value, messageId, authStore.user.uid)
   }
 
+  const removeMessageForEveryone = async (messageId: string) => {
+    if (!activeChatId.value || !authStore.user?.uid) return
+    await deleteMessageForEveryone(activeChatId.value, messageId)
+  }
+
   const clearCurrentChat = async () => {
     if (!activeChatId.value || !authStore.user?.uid) return
     await clearChatHistoryForUser(activeChatId.value, authStore.user.uid)
-    activeMessages.value = []
+    closeDialog()
   }
 
   const leaveCurrentGroupChat = async () => {
@@ -498,6 +504,7 @@ export const useChatStore = defineStore('chat', () => {
     setTyping,
     editMessage,
     removeMessage,
+    removeMessageForEveryone,
     clearCurrentChat,
     leaveCurrentGroupChat,
     toggleStealthMode,

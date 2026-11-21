@@ -38,10 +38,10 @@
         />
       </div>
 
-      <div v-if="otherDirectItems.length" class="dialogs-section">
-        <p class="section-label">💬 {{ $t('chat.tab_all') }}</p>
+      <div v-if="friendDirectItems.length" class="dialogs-section">
+        <p class="section-label">🤝 {{ $t('chat.tab_friends') }}</p>
         <ChatCard
-          v-for="item in otherDirectItems"
+          v-for="item in friendDirectItems"
           :key="item.room.id"
           :title="item.title"
           :peer-user="item.peerUser"
@@ -52,10 +52,10 @@
         />
       </div>
 
-      <div v-if="friendDirectItems.length" class="dialogs-section">
-        <p class="section-label">🤝 {{ $t('chat.tab_friends') }}</p>
+      <div v-if="otherDirectItems.length" class="dialogs-section">
+        <p class="section-label">💬 {{ $t('chat.tab_all') }}</p>
         <ChatCard
-          v-for="item in friendDirectItems"
+          v-for="item in otherDirectItems"
           :key="item.room.id"
           :title="item.title"
           :peer-user="item.peerUser"
@@ -138,7 +138,12 @@ const allItems = computed<ChatSummaryItem[]>(() => {
   if (!myUid) return []
 
   return [...chatStore.chats]
-    .filter((r) => Boolean(r.lastMessage) || (r.unreadCount?.[myUid] || 0) > 0 || r.isGroup)
+    .filter((r) => {
+      if (r.isGroup) return true
+      const clearedAt = r.clearedAt?.[myUid] || 0
+      if (clearedAt > 0 && (r.updatedAt || 0) <= clearedAt) return false
+      return Boolean(r.lastMessage) || (r.unreadCount?.[myUid] || 0) > 0
+    })
     .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
     .map((room) => {
       const unread = room.unreadCount?.[myUid] || 0

@@ -2,26 +2,6 @@
   <div v-if="selectedCount > 0" class="bulk-wrapper">
     <div class="bulk-top-bar">
       <button
-        v-if="selectedCount >= 2"
-        type="button"
-        class="action-pill primary"
-        :disabled="isSubmitting"
-        @click="$emit('create-group')"
-      >
-        👥 {{ $t('chat.group_chats') }} ({{ selectedCount }})
-      </button>
-
-      <button
-        v-if="allowBroadcast"
-        type="button"
-        class="action-pill"
-        :class="{ active: isBroadcastOpen }"
-        @click="isBroadcastOpen = !isBroadcastOpen"
-      >
-        📢 {{ $t('chat.group_send_btn') }} ({{ selectedCount }})
-      </button>
-
-      <button
         type="button"
         class="icon-pill"
         @click="$emit('toggle-all')"
@@ -38,10 +18,43 @@
       >
         ✕
       </button>
+
+      <button
+        v-if="allowBroadcast"
+        type="button"
+        class="action-pill"
+        :class="{ active: isBroadcastOpen }"
+        @click="isBroadcastOpen = !isBroadcastOpen"
+      >
+        📢 {{ $t('chat.broadcast_btn') }} ({{ selectedCount }})
+      </button>
+
+      <button
+        v-else-if="allowDirectBulk && selectedCount >= 2"
+        type="button"
+        class="action-pill"
+        :class="{ active: isBroadcastOpen }"
+        @click="toggleDirectBulk"
+      >
+        💬 {{ $t('chat.broadcast_direct_type') }} ({{ selectedCount }})
+      </button>
+
+      <button
+        v-if="selectedCount >= 2"
+        type="button"
+        class="action-pill primary"
+        :disabled="isSubmitting"
+        @click="$emit('create-group')"
+      >
+        👥 {{ $t('chat.group_chats') }} ({{ selectedCount }})
+      </button>
     </div>
 
-    <div v-if="allowBroadcast && isBroadcastOpen" class="broadcast-box">
-      <div v-if="canSendSystem" class="broadcast-type-row">
+    <div
+      v-if="isBroadcastOpen && (allowBroadcast || (allowDirectBulk && selectedCount >= 2))"
+      class="broadcast-box"
+    >
+      <div v-if="allowBroadcast && canSendSystem" class="broadcast-type-row">
         <button
           type="button"
           class="type-pill"
@@ -61,7 +74,7 @@
       </div>
 
       <input
-        v-if="modeType === 'system' && canSendSystem"
+        v-if="allowBroadcast && modeType === 'system' && canSendSystem"
         v-model="title"
         type="text"
         class="glass-input"
@@ -75,7 +88,7 @@
         :placeholder="$t('chat.broadcast_text_placeholder')"
       ></textarea>
 
-      <label v-if="modeType === 'system' && canSendSystem" class="checkbox-row">
+      <label v-if="allowBroadcast && modeType === 'system' && canSendSystem" class="checkbox-row">
         <input type="checkbox" v-model="isAnonymous" />
         <span>{{ $t('chat.send_anonymously') }}</span>
       </label>
@@ -99,6 +112,7 @@ const props = defineProps<{
   selectedCount: number
   isAllSelected: boolean
   allowBroadcast?: boolean
+  allowDirectBulk?: boolean
   canSendSystem?: boolean
   isSubmitting?: boolean
 }>()
@@ -119,10 +133,15 @@ const title = ref('')
 const text = ref('')
 const isAnonymous = ref(true)
 
+const toggleDirectBulk = () => {
+  modeType.value = 'direct'
+  isBroadcastOpen.value = !isBroadcastOpen.value
+}
+
 watch(
   () => props.selectedCount,
   (count) => {
-    if (count === 0) {
+    if (count === 0 || (!props.allowBroadcast && count < 2)) {
       isBroadcastOpen.value = false
       title.value = ''
       text.value = ''
@@ -140,7 +159,7 @@ const handleClear = () => {
 const submit = () => {
   if (!text.value.trim()) return
   emit('send-broadcast', {
-    type: modeType.value,
+    type: props.allowBroadcast ? modeType.value : 'direct',
     title: title.value,
     text: text.value,
     isAnonymous: isAnonymous.value,
