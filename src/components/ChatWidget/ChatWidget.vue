@@ -40,7 +40,7 @@
             </span>
 
             <span
-              v-if="showHeaderCinephileStar"
+              v-if="chatStore.currentUserProfile"
               class="cinephile-header-btn"
               :class="{
                 active: mediaStore.isCurrentUserCinephile,
@@ -160,19 +160,15 @@ const currentRoleText = computed(() => {
   return key ? t(key) : ''
 })
 
-const showHeaderCinephileStar = computed(
-  () => mediaStore.isCurrentUserCinephile || chatStore.canManageCinephile,
-)
-
 const canClaimCinephile = computed(
   () => chatStore.canManageCinephile && !mediaStore.isCurrentUserCinephile,
 )
 
-const cinephileStarTitle = computed(() =>
-  mediaStore.isCurrentUserCinephile
-    ? t('chat.active_cinephile_badge')
-    : t('chat.reset_cinephile_hint'),
-)
+const cinephileStarTitle = computed(() => {
+  if (mediaStore.isCurrentUserCinephile) return t('chat.active_cinephile_badge')
+  if (canClaimCinephile.value) return t('chat.reset_cinephile_hint')
+  return t('chat.cinephile_badge')
+})
 
 const handleClaimCinephile = async () => {
   if (!canClaimCinephile.value || isClaimingCinephile.value) return
@@ -374,7 +370,7 @@ onUnmounted(() => {
     height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .chat-window.expanded {
-  width: 800px;
+  width: 880px;
   height: 630px;
 }
 .window-header {
@@ -484,6 +480,12 @@ onUnmounted(() => {
     0 4px 12px rgba(159, 27, 25, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
+.header-role-badge.role-superadmin {
+  background-color: var(--glass-red);
+  box-shadow:
+    0 4px 12px rgba(159, 27, 25, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
 .header-role-badge.role-admin {
   background-color: var(--glass-blue);
   box-shadow:
@@ -494,6 +496,12 @@ onUnmounted(() => {
   background-color: var(--glass-green);
   box-shadow:
     0 4px 12px rgba(16, 165, 100, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.header-role-badge.role-vip {
+  background-color: var(--glass-orange);
+  box-shadow:
+    0 4px 12px rgba(255, 255, 255, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .header-role-badge.role-user {
@@ -584,7 +592,7 @@ onUnmounted(() => {
   padding: 0 10px 0 6px;
 }
 .chat-window.expanded .tabs-left-group {
-  width: 300px;
+  width: 380px;
   flex: none;
   padding: 0 10px;
   border-right: 1px solid var(--glass-border);
@@ -657,7 +665,7 @@ onUnmounted(() => {
   overflow: hidden;
 }
 .sidebar-pane {
-  width: 300px;
+  width: 380px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;

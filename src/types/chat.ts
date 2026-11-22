@@ -1,4 +1,4 @@
-export type UserRole = 'owner' | 'admin' | 'moderator' | 'user'
+export type UserRole = 'owner' | 'superadmin' | 'admin' | 'moderator' | 'vip' | 'user'
 
 export interface UserPermissions {
   canSeeAllUsers: boolean

@@ -174,8 +174,10 @@ const isAssigningCinephile = ref(false)
 const editRole = ref<UserRole>(props.user.role)
 const roleOptions = computed<{ label: string; value: UserRole }[]>(() => [
   { label: t('chat.role_user'), value: 'user' },
+  { label: t('chat.role_vip'), value: 'vip' },
   { label: t('chat.role_moderator'), value: 'moderator' },
   { label: t('chat.role_admin'), value: 'admin' },
+  { label: t('chat.role_superadmin'), value: 'superadmin' },
 ])
 const editPerms = ref<UserPermissions>({
   ...getDefaultPermissions(props.user.role),

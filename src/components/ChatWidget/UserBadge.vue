@@ -144,7 +144,8 @@ const roleLabel = computed(() => {
     inset 0 1px 0 rgba(255, 255, 255, 0.24);
   white-space: nowrap;
 }
-.role-owner {
+.role-owner,
+.role-superadmin {
   background-color: var(--glass-red);
   box-shadow:
     0 4px 12px rgba(159, 27, 25, 0.5),
@@ -160,6 +161,12 @@ const roleLabel = computed(() => {
   background-color: var(--glass-green);
   box-shadow:
     0 4px 12px rgba(16, 165, 100, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.role-vip {
+  background-color: var(--glass-orange);
+  box-shadow:
+    0 4px 12px rgba(255, 255, 255, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .role-user {
