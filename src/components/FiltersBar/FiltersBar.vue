@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-bar">
+  <div class="filter-bar" :class="{ 'is-collection': isCollectionPage }">
     <div class="select-container">
       <ISelect v-model="filterType" :options="typeOptions" />
       <ISelect v-model="genre" :options="genreOptions" />
@@ -7,20 +7,21 @@
       <ISelect v-model="year" :options="yearOptions" />
     </div>
 
-    <div class="position">
-      <input
-        class="input"
-        v-if="isCollectionPage"
-        type="text"
-        :placeholder="t('filters_bar.placeholder')"
-        v-model="query"
-      />
-      <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery">
-        <XIcon />
-      </IButton>
-    </div>
+    <div v-if="isCollectionPage" class="collection-controls">
+      <div class="position">
+        <input
+          class="input"
+          type="text"
+          :placeholder="t('filters_bar.placeholder')"
+          v-model="query"
+        />
+        <IButton v-if="query !== ''" variant="small-clean-btn" @click="clearQuery">
+          <XIcon />
+        </IButton>
+      </div>
 
-    <ISelect class="last" v-if="isCollectionPage" v-model="sortType" :options="sortOptions" />
+      <ISelect class="last" v-model="sortType" :options="sortOptions" />
+    </div>
   </div>
 </template>
 
@@ -136,6 +137,11 @@ function clearQuery() {
   align-items: center;
   gap: 10px;
 }
+.collection-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .position {
   position: relative;
 }
@@ -184,23 +190,73 @@ function clearQuery() {
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 @media (max-width: 767px) {
-  .position {
+  .filter-bar:not(.is-collection) {
     width: 100%;
   }
-  .filter-bar {
-    padding: 0 10px;
+  .filter-bar:not(.is-collection) .select-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .filter-bar:not(.is-collection) .select-container :deep(.custom-select) {
+    width: 100%;
   }
 }
-@media (min-width: 768px) and (max-width: 1279px) {
-  .filter-bar {
+@media (max-width: 814px) {
+  .filter-bar.is-collection {
     width: 100%;
   }
-  .last {
-    margin-left: auto;
+  .filter-bar.is-collection .select-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .filter-bar.is-collection .select-container :deep(.custom-select) {
+    width: 100%;
+  }
+  .filter-bar.is-collection .collection-controls {
+    width: 100%;
+  }
+  .filter-bar.is-collection .position {
+    flex: 1;
+    min-width: 0;
+  }
+  .filter-bar.is-collection .last {
+    width: auto;
+    min-width: 90px;
+    flex-shrink: 0;
+  }
+  .filter-bar.is-collection .last :deep(.select-trigger) {
+    padding: 0 10px;
+    white-space: nowrap;
+  }
+  .filter-bar.is-collection .last :deep(.options-dropdown) {
+    left: auto;
+    right: 0;
+    min-width: 100%;
+    width: max-content;
   }
 }
 @media (min-width: 768px) {
-  .filter-bar {
+  .filter-bar:not(.is-collection) {
+    flex-direction: row;
+  }
+}
+@media (min-width: 815px) and (max-width: 1499px) {
+  .filter-bar.is-collection {
+    width: 100%;
+  }
+  .filter-bar.is-collection .collection-controls {
+    flex: 1;
+  }
+  .filter-bar.is-collection .last {
+    margin-left: auto;
+  }
+}
+@media (min-width: 815px) {
+  .filter-bar.is-collection {
     flex-direction: row;
   }
   .input {
@@ -220,6 +276,12 @@ function clearQuery() {
   .input {
     width: 260px;
     height: 43px;
+  }
+}
+@media (min-width: 768px) and (max-width: 814px) {
+  .last :deep(.select-trigger) {
+    height: auto;
+    padding: 5px 10px;
   }
 }
 </style>

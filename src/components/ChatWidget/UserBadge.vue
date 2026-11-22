@@ -4,12 +4,12 @@
 
     <span class="nickname">{{ user?.displayName }}</span>
 
-    <span v-if="user" class="role-badge" :class="`role-${user.role}`">
-      {{ roleLabel }}
-    </span>
-
     <span v-if="isFeaturedCinephile" class="cinephile-star" :title="$t('chat.cinephile_badge')">
       ⭐
+    </span>
+
+    <span v-if="user" class="role-badge" :class="`role-${user.role}`">
+      {{ roleLabel }}
     </span>
   </div>
 
@@ -106,6 +106,7 @@ const roleLabel = computed(() => {
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+  width: 100%;
 }
 .status-dot {
   width: 8px;
@@ -128,11 +129,10 @@ const roleLabel = computed(() => {
   font-size: 14px;
   color: var(--color-white);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .role-badge {
+  margin-left: auto;
+  flex-shrink: 0;
   font-size: 11px;
   font-weight: 600;
   padding: 2px 8px;

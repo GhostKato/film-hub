@@ -411,10 +411,12 @@ onUnmounted(() => {
 .stealth-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 90px;
   font-size: 11px;
   font-weight: 600;
   line-height: 1.2;
-  padding: 4px 10px;
+  padding: 4px 8px;
   border-radius: 999px;
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg-light);

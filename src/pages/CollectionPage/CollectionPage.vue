@@ -289,6 +289,19 @@ onMounted(() => {
   align-items: center;
   gap: 5px;
 }
+@media (max-width: 814px) {
+  .header-page {
+    width: 100%;
+    padding: 0 10px;
+  }
+  .tabs {
+    width: 100%;
+  }
+  .tabs :deep(.tab-btn) {
+    flex: 1;
+    white-space: nowrap;
+  }
+}
 @media (min-width: 768px) {
   .collection-page {
     display: block;
@@ -313,7 +326,7 @@ onMounted(() => {
     gap: 10px;
   }
 }
-@media (min-width: 1280px) {
+@media (min-width: 1500px) {
   .header-page {
     flex-direction: row;
     justify-content: space-between;

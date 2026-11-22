@@ -186,6 +186,21 @@ onMounted(() => {
   gap: 5px;
 }
 
+@media (max-width: 767px) {
+  .header-page {
+    width: 100%;
+    padding: 0 10px;
+  }
+  .tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .tabs :deep(.tab-btn) {
+    flex: 1;
+    white-space: nowrap;
+  }
+}
+
 @media (min-width: 768px) {
   .series-page {
     display: block;

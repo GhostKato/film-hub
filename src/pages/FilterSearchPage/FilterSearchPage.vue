@@ -184,6 +184,13 @@ watch(
   font-size: 16px;
 }
 
+@media (max-width: 767px) {
+  .header-page {
+    width: 100%;
+    padding: 0 10px;
+  }
+}
+
 @media (min-width: 768px) {
   .filter-search-page {
     display: block;

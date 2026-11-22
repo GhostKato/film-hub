@@ -196,6 +196,20 @@ const filterOptions = [
 .option:checked {
   background-color: var(--color-red);
 }
+@media (max-width: 767px) {
+  .search-bar {
+    width: 100%;
+  }
+  .position {
+    flex: 1;
+    min-width: 0;
+  }
+  .small-search-bar {
+    width: 100%;
+    flex: 1;
+    min-width: 0;
+  }
+}
 @media (min-width: 768px) {
   .search-bar {
     gap: 10px;

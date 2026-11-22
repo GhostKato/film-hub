@@ -172,13 +172,25 @@ const isProfileOpen = ref(false)
 const showRightsPanel = ref(false)
 const isAssigningCinephile = ref(false)
 const editRole = ref<UserRole>(props.user.role)
-const roleOptions = computed<{ label: string; value: UserRole }[]>(() => [
-  { label: t('chat.role_user'), value: 'user' },
-  { label: t('chat.role_vip'), value: 'vip' },
-  { label: t('chat.role_moderator'), value: 'moderator' },
-  { label: t('chat.role_admin'), value: 'admin' },
-  { label: t('chat.role_superadmin'), value: 'superadmin' },
-])
+
+const isMeOwner = computed(() => {
+  const me = chatStore.currentUserProfile
+  return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
+})
+
+const roleOptions = computed<{ label: string; value: UserRole }[]>(() => {
+  const base: { label: string; value: UserRole }[] = [
+    { label: t('chat.role_user'), value: 'user' },
+    { label: t('chat.role_vip'), value: 'vip' },
+    { label: t('chat.role_moderator'), value: 'moderator' },
+    { label: t('chat.role_admin'), value: 'admin' },
+  ]
+  if (isMeOwner.value) {
+    base.push({ label: t('chat.role_superadmin'), value: 'superadmin' })
+  }
+  return base
+})
+
 const editPerms = ref<UserPermissions>({
   ...getDefaultPermissions(props.user.role),
   ...props.user.permissions,
@@ -208,11 +220,6 @@ const friendship = computed(() =>
   friendsStore.friendships.find((f) => f.users.includes(props.user.uid)),
 )
 
-const isMeOwner = computed(() => {
-  const me = chatStore.currentUserProfile
-  return me?.role === 'owner' || me?.uid === MAIN_ACCOUNT_ID
-})
-
 const canManageRoles = computed(() =>
   Boolean(chatStore.currentUserProfile?.permissions.canManageRoles),
 )
@@ -220,7 +227,13 @@ const canManageRoles = computed(() =>
 const canEditTargetRights = computed(() => {
   if (!canManageRoles.value || props.user.uid === MAIN_ACCOUNT_ID) return false
   if (isMeOwner.value) return true
-  if (props.user.role === 'owner' || props.user.permissions?.hasImmunity) return false
+  if (
+    props.user.role === 'owner' ||
+    props.user.role === 'superadmin' ||
+    props.user.permissions?.hasImmunity
+  ) {
+    return false
+  }
   return true
 })
 const canOpenManagePanel = computed(() => canEditTargetRights.value || chatStore.canManageCinephile)
@@ -337,6 +350,7 @@ const handleMakeCinephile = async () => {
   }
 }
 </script>
+
 <style scoped>
 .user-card {
   padding: 9px 11px;

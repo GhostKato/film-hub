@@ -133,7 +133,6 @@ export const subscribeAllUsers = (callback: (users: UserProfile[]) => void) => {
     callback(list)
   })
 }
-
 export const updateUserRoleAndPermissions = async (
   targetUid: string,
   role: UserRole,
@@ -151,10 +150,16 @@ export const updateUserRoleAndPermissions = async (
   const safePermissions: UserPermissions = { ...permissions }
 
   if (!isActorOwner) {
-    if (targetData.role === 'owner' || targetData.permissions?.hasImmunity) {
+    if (
+      targetData.role === 'owner' ||
+      targetData.role === 'superadmin' ||
+      targetData.permissions?.hasImmunity ||
+      role === 'owner' ||
+      role === 'superadmin'
+    ) {
       return
     }
-    safePermissions.hasImmunity = false
+    safePermissions.hasImmunity = targetData.permissions?.hasImmunity ?? false
   }
 
   await updateDoc(ref, { role, permissions: safePermissions, updatedAt: Date.now() })
