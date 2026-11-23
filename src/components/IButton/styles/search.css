@@ -42,8 +42,8 @@
   }
 
   .small-search-btn {
-    width: 29px;
-    height: 29px;
+    width: 34px;
+    height: 34px;
   }
 
   .big-clean-btn {
@@ -51,14 +51,14 @@
     top: 4px;
   }
   .small-clean-btn {
-    top: -6px;
+    top: -5px;
   }
 }
 
 @media (min-width: 1024px) {
   .small-search-btn {
-    width: 33px;
-    height: 33px;
+    width: 36px;
+    height: 36px;
   }
 
   .small-clean-btn {

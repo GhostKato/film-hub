@@ -40,12 +40,21 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { Form, Field, ErrorMessage } from 'vee-validate'
+import type { GenericObject } from 'vee-validate'
 import * as yup from 'yup'
 import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modal'
 import IButton from '../IButton/IButton.vue'
 import { useLoaderStore } from '@/stores/loader'
 import { useI18n } from 'vue-i18n'
+
+interface AuthFormValues extends GenericObject {
+  nickname?: string
+  email: string
+  password: string
+  currentPassword?: string
+}
+
 const { t } = useI18n()
 
 const authStore = useAuthStore()
@@ -81,17 +90,18 @@ const schema = computed(() => {
   }
 })
 
-const onSubmit = async (values: any) => {
+const onSubmit = async (rawValues: GenericObject) => {
+  const values = rawValues as AuthFormValues
   loaderStore.showLoader()
   try {
     if (authStore.mode === 'register') {
-      await authStore.register(values.nickname, values.email, values.password)
+      await authStore.register(values.nickname || '', values.email, values.password)
     } else if (authStore.mode === 'edit') {
       await authStore.updateProfile({
         displayName: values.nickname || undefined,
         email: values.email || undefined,
         password: values.password || undefined,
-        currentPassword: values.currentPassword,
+        currentPassword: values.currentPassword || '',
       })
     } else {
       await authStore.login(values.email, values.password)
@@ -105,6 +115,7 @@ const onSubmit = async (values: any) => {
     loaderStore.hideLoader()
   }
 }
+
 const submitBtnText = computed(() => {
   switch (authStore.mode) {
     case 'register':

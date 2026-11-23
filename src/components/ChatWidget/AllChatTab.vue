@@ -12,10 +12,9 @@
 
           <div class="system-card-body">
             <div class="system-card-top">
-              <span class="system-card-title">{{ $t('chat.tab_system') }}</span>
+              <p class="system-card-preview">{{ systemPreviewText }}</p>
               <span v-if="latestSystemTime" class="system-card-time">{{ latestSystemTime }}</span>
             </div>
-            <p class="system-card-preview">{{ systemPreviewText }}</p>
           </div>
 
           <span v-if="totalSystemUnread > 0" class="unread-pill">
@@ -139,10 +138,10 @@ const allItems = computed<ChatSummaryItem[]>(() => {
 
   return [...chatStore.chats]
     .filter((r) => {
-      if (r.isGroup) return true
+      if (r.isGroup) return r.participants.length >= 2
       const clearedAt = r.clearedAt?.[myUid] || 0
       if (clearedAt > 0 && (r.updatedAt || 0) <= clearedAt) return false
-      return Boolean(r.lastMessage) || (r.unreadCount?.[myUid] || 0) > 0
+      return Boolean(r.lastMessage?.trim())
     })
     .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
     .map((room) => {
@@ -177,7 +176,6 @@ const otherDirectItems = computed(() =>
   ),
 )
 </script>
-
 <style scoped>
 .all-chat-tab {
   display: flex;
@@ -245,12 +243,6 @@ const otherDirectItems = computed(() =>
   gap: 8px;
 }
 
-.system-card-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-white);
-}
-
 .system-card-time {
   font-size: 11px;
   color: var(--color-light-grey);
@@ -258,9 +250,10 @@ const otherDirectItems = computed(() =>
 }
 
 .system-card-preview {
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--color-light-grey);
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-white);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

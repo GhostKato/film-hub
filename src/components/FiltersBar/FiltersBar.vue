@@ -80,10 +80,10 @@ const yearOptions = computed(() => [
 ])
 
 const sortOptions = computed(() => [
-  { label: `${t('filters_bar.release')} ▴`, value: 1 as const },
-  { label: `${t('filters_bar.release')} ▾`, value: 2 as const },
-  { label: `${t('filters_bar.date_added')} ▴`, value: 3 as const },
-  { label: `${t('filters_bar.date_added')} ▾`, value: 4 as const },
+  { label: `${t('filters_bar.release')} ▲`, value: 1 as const },
+  { label: `${t('filters_bar.release')} ▼`, value: 2 as const },
+  { label: `${t('filters_bar.date_added')} ▲`, value: 3 as const },
+  { label: `${t('filters_bar.date_added')} ▼`, value: 4 as const },
   { label: t('filters_bar.a_to_z'), value: 5 as const },
   { label: t('filters_bar.z_to_a'), value: 6 as const },
 ])
@@ -129,7 +129,6 @@ function clearQuery() {
   debouncedQuery.value = ''
 }
 </script>
-
 <style scoped>
 .filter-bar {
   display: flex;
@@ -159,7 +158,7 @@ function clearQuery() {
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   height: 34px;
-  padding: 5px 25px 5px 10px;
+  padding: 0 25px 0 10px;
   width: 100%;
   box-shadow:
     0 10px 22px rgba(0, 0, 0, 0.65),
@@ -264,7 +263,6 @@ function clearQuery() {
     flex-direction: row;
   }
   .input {
-    height: auto;
     width: 175px;
   }
   .last {
@@ -274,6 +272,7 @@ function clearQuery() {
 @media (min-width: 1024px) {
   .input {
     font-size: 20px;
+    height: 36px;
     width: 240px;
   }
 }
@@ -281,12 +280,6 @@ function clearQuery() {
   .input {
     width: 260px;
     height: 43px;
-  }
-}
-@media (min-width: 768px) and (max-width: 814px) {
-  .last :deep(.select-trigger) {
-    height: auto;
-    padding: 5px 10px;
   }
 }
 </style>

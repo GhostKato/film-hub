@@ -111,6 +111,7 @@ const toggleWatchLater = (item: FirebaseItemType) => {
 }
 .small-btn-item svg {
   color: var(--color-white);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.85));
   transition: color 0.3s ease;
 }
 

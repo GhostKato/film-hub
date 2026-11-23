@@ -83,13 +83,22 @@ const next = () => {
   if (props.currentPage < props.totalPages) goToPage(props.currentPage + 1)
 }
 
+const isTyping = (target: EventTarget | null) => {
+  if (!(target instanceof HTMLElement)) return false
+  return (
+    target.closest('input, textarea, select, [contenteditable="true"], [data-ignore-hotkeys]') !==
+    null
+  )
+}
+
 const handleKeyDown = (e: KeyboardEvent) => {
+  if (isTyping(e.target)) return
+  if (modalStore.modals.auth || modalStore.modals.menu || modalStore.modals.release) return
+
   if (e.key === 'ArrowRight') {
-    modalStore.closeAll()
     next()
   }
   if (e.key === 'ArrowLeft') {
-    modalStore.closeAll()
     prev()
   }
 }
@@ -97,7 +106,6 @@ const handleKeyDown = (e: KeyboardEvent) => {
 onMounted(() => window.addEventListener('keydown', handleKeyDown))
 onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyDown))
 </script>
-
 <style scoped>
 .pagination {
   display: flex;

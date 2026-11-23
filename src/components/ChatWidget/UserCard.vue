@@ -149,7 +149,6 @@ const props = withDefaults(
     user: UserProfile
     selected?: boolean
     showCheckbox?: boolean
-    lastMessage?: string
     unreadCount?: number
   }>(),
   {
@@ -261,7 +260,6 @@ const isVisibleOnline = computed(() => {
   if (!props.user.hideOnline) return true
   return isMeOwner.value
 })
-
 const formattedLastSeen = computed(() => {
   if (!props.user.lastSeen) return ''
   return new Date(props.user.lastSeen).toLocaleString([], {
@@ -396,7 +394,6 @@ const handleMakeCinephile = async () => {
   width: 0;
   height: 0;
 }
-
 .custom-red-checkbox .checkmark {
   width: 18px;
   height: 18px;

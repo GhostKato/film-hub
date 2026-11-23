@@ -79,7 +79,18 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
+/* Маленькие кнопки на постере */
 .small-btn-collection {
   border-radius: 8px;
   padding: 2px;
+  background-color: rgba(14, 16, 20, 0.72);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.small-btn-collection:hover {
+  background-color: rgba(24, 28, 34, 0.88);
+  border-color: var(--glass-border-bright);
 }

@@ -69,7 +69,6 @@
           v-show="friend.user"
           :user="friend.user!"
           :selected="selectedFriendUids.includes(friend.friendUid)"
-          :last-message="getLastMessage(friend.friendUid)"
           :unread-count="getUnreadForFriend(friend.friendUid)"
           @toggle-select="toggleFriendSelection"
         />
@@ -168,15 +167,7 @@ const getUnreadForFriend = (friendUid: string) => {
   const room = chatStore.chats.find((c) => c.id === getChatId(myUid, friendUid))
   return room?.unreadCount?.[myUid] || 0
 }
-
-const getLastMessage = (friendUid: string) => {
-  const myUid = authStore.user?.uid
-  if (!myUid) return ''
-  const room = chatStore.chats.find((c) => c.id === getChatId(myUid, friendUid))
-  return room?.lastMessage || ''
-}
 </script>
-
 <style scoped>
 .friends-tab {
   display: flex;
@@ -237,38 +228,9 @@ const getLastMessage = (friendUid: string) => {
   transition: all 0.2s ease;
 }
 
-.user-row.clickable {
-  cursor: pointer;
-}
-
-.user-row.clickable:hover,
-.user-row.active {
-  border-color: var(--color-hover);
-  background-color: rgba(159, 27, 25, 0.16);
-}
-
 .friend-info {
   flex: 1;
   min-width: 0;
-}
-
-.group-row-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-white);
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.last-msg {
-  font-size: 12px;
-  color: var(--color-light-grey);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 3px;
 }
 
 .row-actions {
@@ -292,14 +254,5 @@ const getLastMessage = (friendUid: string) => {
 .red-mini-btn:hover {
   background: var(--glass-red);
   border-color: var(--color-hover);
-}
-
-.unread-pill {
-  background-color: var(--color-hover);
-  color: var(--color-white);
-  font-size: 11px;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 999px;
 }
 </style>

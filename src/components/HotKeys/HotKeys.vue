@@ -13,10 +13,19 @@ const router = useRouter()
 const isTyping = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false
 
-  return target.closest('input, textarea, .modal-input, [data-ignore-hotkeys]') !== null
+  return (
+    target.closest(
+      'input, textarea, select, [contenteditable="true"], .modal-input, [data-ignore-hotkeys]',
+    ) !== null
+  )
 }
 
 const handleHotkeys = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    modalStore.closeAll()
+    return
+  }
+
   if (isTyping(e.target)) return
 
   switch (e.key) {
@@ -39,12 +48,6 @@ const handleHotkeys = (e: KeyboardEvent) => {
     case '5':
       modalStore.closeAll()
       router.push('/collection')
-      break
-    case '6':
-      modalStore.toggle('menu')
-      break
-    case 'Escape':
-      modalStore.closeAll()
       break
   }
 }

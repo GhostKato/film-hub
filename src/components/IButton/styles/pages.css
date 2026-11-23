@@ -47,8 +47,8 @@
 
 @media (min-width: 768px) {
   .tab-btn {
-    height: auto;
-    padding: 5px 10px;
+    height: 34px;
+    padding: 0 10px;
   }
 
   .share-btn {
@@ -56,10 +56,16 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .tab-btn {
+    height: 36px;
+  }
+}
+
 @media (min-width: 1920px) {
   .tab-btn {
     padding: 0;
-    height: 33px;
+    height: 36px;
     width: 210px;
   }
 }

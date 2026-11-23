@@ -64,7 +64,6 @@ const handleClickOutside = (event: MouseEvent) => {
 onMounted(() => document.addEventListener('click', handleClickOutside))
 onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>
-
 <style scoped>
 .custom-select {
   position: relative;
@@ -173,8 +172,8 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
     min-width: 65px;
   }
   .select-trigger {
-    height: auto;
-    padding: 5px 12px;
+    height: 34px;
+    padding: 0 12px;
     white-space: nowrap;
   }
   .options-dropdown {
@@ -191,6 +190,9 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   .select-trigger,
   .option {
     font-size: 20px;
+  }
+  .select-trigger {
+    height: 36px;
   }
 }
 @media (min-width: 2560px) {

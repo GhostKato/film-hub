@@ -127,7 +127,6 @@ export const createOrOpenGroupChat = async (params: {
   await setDoc(chatRef, newRoom)
   return chatId
 }
-
 export const sendRoomMessage = async (params: {
   chatId: string
   sender: UserProfile
@@ -215,6 +214,7 @@ export const sendSystemMessageBulk = async (params: {
 
   await batch.commit()
 }
+
 export const subscribeUserChats = (uid: string, callback: (chats: ChatRoom[]) => void) => {
   const q = query(collection(db, 'chats'), where('participants', 'array-contains', uid))
   return onSnapshot(q, (snap) => {
@@ -255,7 +255,6 @@ export const markMessagesAsRead = async (chatId: string, uid: string, messageIds
   })
   await batch.commit().catch(() => {})
 }
-
 export const clearChatHistoryForUser = async (chatId: string, uid: string) => {
   const chatRef = doc(db, 'chats', chatId)
   const snap = await getDoc(chatRef)
@@ -362,9 +361,15 @@ export const deleteMessageForEveryone = async (chatId: string, messageId: string
   )
   const latestDoc = remainingSnap.docs[0]
   if (!latestDoc) {
-    await updateDoc(doc(db, 'chats', chatId), {
-      lastMessage: '',
-    }).catch(() => {})
+    const chatRef = doc(db, 'chats', chatId)
+    const chatSnap = await getDoc(chatRef)
+    if (chatSnap.exists() && !(chatSnap.data() as ChatRoom).isGroup) {
+      await deleteDoc(chatRef).catch(() => {})
+    } else {
+      await updateDoc(doc(db, 'chats', chatId), {
+        lastMessage: '',
+      }).catch(() => {})
+    }
     return
   }
 

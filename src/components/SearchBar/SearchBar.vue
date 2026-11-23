@@ -93,7 +93,6 @@ const filterOptions = [
   { label: t('search_bar.series'), value: 'tv' },
 ]
 </script>
-
 <style scoped>
 .search-bar {
   display: flex;
@@ -160,7 +159,7 @@ const filterOptions = [
 }
 .small-search-bar {
   height: 34px;
-  padding: 5px 30px 5px 10px;
+  padding: 0 30px 0 10px;
   width: 312px;
 }
 .text-search {
@@ -227,7 +226,7 @@ const filterOptions = [
     width: 340px;
   }
   .small-search-bar {
-    height: auto;
+    height: 34px;
     width: 200px;
   }
   .select {
@@ -247,6 +246,7 @@ const filterOptions = [
     width: 700px;
   }
   .small-search-bar {
+    height: 36px;
     width: 250px;
   }
   .select {

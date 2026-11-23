@@ -128,7 +128,6 @@ export const useChatStore = defineStore('chat', () => {
     mediaStore.recommended = cleanFavorites
     mediaStore.recommendedSourceUid = sourceUid
   }
-
   const resetCinephileToOwner = async () => {
     if (!canManageCinephile.value || !currentUserProfile.value) return
     await assignFeaturedCinephile({
@@ -136,6 +135,7 @@ export const useChatStore = defineStore('chat', () => {
       displayName: currentUserProfile.value.displayName,
     })
   }
+
   watch(canSeeAllUsers, (allowed) => {
     if (unsubAllUsers) {
       unsubAllUsers()
@@ -250,7 +250,6 @@ export const useChatStore = defineStore('chat', () => {
       systemMessages.value = items
     })
   }
-
   const cleanup = () => {
     if (unsubChats) unsubChats()
     if (unsubMessages) unsubMessages()
@@ -286,6 +285,42 @@ export const useChatStore = defineStore('chat', () => {
     activeChatId.value = null
     activePeerUid.value = null
   }
+
+  const closeChat = () => {
+    if (activeChatId.value && authStore.user?.uid) {
+      setTypingStatus(activeChatId.value, authStore.user.uid, false)
+    }
+    if (unsubMessages) {
+      unsubMessages()
+      unsubMessages = null
+    }
+    activeChatId.value = null
+    activePeerUid.value = null
+    activeMessages.value = []
+  }
+
+  watch(
+    () => [activeChatId.value, chats.value] as const,
+    ([chatId, currentChats]) => {
+      if (!chatId) return
+      const room = currentChats.find((c) => c.id === chatId)
+      if (!room) {
+        if (chatId.startsWith('group_')) closeChat()
+        return
+      }
+      if (room.isGroup && room.participants.length < 2) {
+        closeChat()
+      }
+    },
+    { deep: true },
+  )
+
+  watch(isOpen, (opened) => {
+    if (!opened && activeChatId.value && authStore.user?.uid) {
+      setTypingStatus(activeChatId.value, authStore.user.uid, false)
+    }
+  })
+
   const subscribeToRoom = async (chatId: string, peerUid: string | null) => {
     const uid = authStore.user?.uid
     if (!uid) return
@@ -299,7 +334,8 @@ export const useChatStore = defineStore('chat', () => {
     activeMessages.value = []
 
     unsubMessages = subscribeChatMessages(chatId, (msgs) => {
-      const minTime = activeRoom.value?.clearedAt?.[uid] || 0
+      const room = chats.value.find((c) => c.id === chatId)
+      const minTime = room?.clearedAt?.[uid] || 0
       activeMessages.value = msgs.filter(
         (m) => !m.deletedFor?.includes(uid) && m.createdAt > minTime,
       )
@@ -311,7 +347,9 @@ export const useChatStore = defineStore('chat', () => {
       if (unreadIds.length) {
         markMessagesAsRead(chatId, uid, unreadIds)
       }
-      markChatAsRead(chatId, uid)
+      if ((room?.unreadCount?.[uid] || 0) > 0) {
+        markChatAsRead(chatId, uid)
+      }
     })
 
     await markChatAsRead(chatId, uid)
@@ -358,17 +396,6 @@ export const useChatStore = defineStore('chat', () => {
     })
     await subscribeToRoom(chatId, null)
   }
-
-  const closeChat = () => {
-    if (unsubMessages) {
-      unsubMessages()
-      unsubMessages = null
-    }
-    activeChatId.value = null
-    activePeerUid.value = null
-    activeMessages.value = []
-  }
-
   const sendMessage = async (text: string, mediaCard?: SharedMediaCard) => {
     if (!currentUserProfile.value || !activeChatId.value) return
     if (!text.trim() && !mediaCard) return
@@ -451,8 +478,9 @@ export const useChatStore = defineStore('chat', () => {
 
   const clearCurrentChat = async () => {
     if (!activeChatId.value || !authStore.user?.uid) return
-    await clearChatHistoryForUser(activeChatId.value, authStore.user.uid)
+    const targetChatId = activeChatId.value
     closeChat()
+    await clearChatHistoryForUser(targetChatId, authStore.user.uid)
   }
 
   const leaveCurrentGroupChat = async () => {

@@ -24,7 +24,6 @@
         :key="user.uid"
         :user="user"
         :selected="selectedUids.includes(user.uid)"
-        :last-message="getLastMessage(user.uid)"
         :unread-count="getUnreadForUser(user.uid)"
         @toggle-select="toggleUserSelection"
       />
@@ -138,13 +137,6 @@ const getUnreadForUser = (targetUid: string) => {
   if (!myUid) return 0
   const room = chatStore.chats.find((c) => c.id === getChatId(myUid, targetUid))
   return room?.unreadCount?.[myUid] || 0
-}
-
-const getLastMessage = (targetUid: string) => {
-  const myUid = authStore.user?.uid
-  if (!myUid) return ''
-  const room = chatStore.chats.find((c) => c.id === getChatId(myUid, targetUid))
-  return room?.lastMessage || ''
 }
 </script>
 
