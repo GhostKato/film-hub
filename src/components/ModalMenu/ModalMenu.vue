@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { useModalStore } from '@/stores/modal'
-import LanguageSwitcher from './LanguageSwitcher.vue'
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher.vue'
 import IButton from '../IButton/IButton.vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'

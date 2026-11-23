@@ -3,7 +3,7 @@ import { i18n } from '@/i18n'
 
 export const useLanguageStore = defineStore('language', {
   state: () => ({
-    lang: (localStorage.getItem('lang') as 'en' | 'uk' | 'ru') || 'uk',
+    lang: (localStorage.getItem('lang') as 'en' | 'uk' | 'ru') || 'en',
   }),
   actions: {
     setLanguage(newLang: 'en' | 'uk' | 'ru') {

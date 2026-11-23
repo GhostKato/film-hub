@@ -158,6 +158,7 @@ function clearQuery() {
   background-color: var(--glass-bg);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
+  height: 34px;
   padding: 5px 25px 5px 10px;
   width: 100%;
   box-shadow:
@@ -218,17 +219,20 @@ function clearQuery() {
   }
   .filter-bar.is-collection .collection-controls {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
   .filter-bar.is-collection .position {
-    flex: 1;
+    width: 100%;
     min-width: 0;
   }
   .filter-bar.is-collection .last {
-    width: auto;
-    min-width: 90px;
-    flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
   }
   .filter-bar.is-collection .last :deep(.select-trigger) {
+    width: 100%;
     padding: 0 10px;
     white-space: nowrap;
   }
@@ -260,6 +264,7 @@ function clearQuery() {
     flex-direction: row;
   }
   .input {
+    height: auto;
     width: 175px;
   }
   .last {

@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import ILogo from './ILogo.vue'
+import ILogo from '../ILogo/ILogo.vue'
 import IButton from '../IButton/IButton.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 import MenuButton from './MenuButton.vue'

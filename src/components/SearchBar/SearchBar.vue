@@ -159,6 +159,7 @@ const filterOptions = [
   width: 200px;
 }
 .small-search-bar {
+  height: 34px;
   padding: 5px 30px 5px 10px;
   width: 312px;
 }
@@ -197,10 +198,10 @@ const filterOptions = [
   background-color: var(--color-red);
 }
 @media (max-width: 767px) {
-  .search-bar {
+  .search-bar:has(.small-search-bar) {
     width: 100%;
   }
-  .position {
+  .search-bar:has(.small-search-bar) .position {
     flex: 1;
     min-width: 0;
   }
@@ -226,6 +227,7 @@ const filterOptions = [
     width: 340px;
   }
   .small-search-bar {
+    height: auto;
     width: 200px;
   }
   .select {

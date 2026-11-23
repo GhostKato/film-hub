@@ -73,7 +73,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 }
 .select-trigger {
   width: 100%;
-  height: 27px;
+  height: 34px;
   display: inline-grid;
   align-items: center;
   justify-items: center;
