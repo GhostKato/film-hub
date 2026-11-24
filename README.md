@@ -69,6 +69,14 @@ Film Hub is a website for searching and exploring movies and TV series. The plat
    - Authenticated users sync data with the cloud.
    - Language change updates both UI and API data, including trailer audio.
 
+9. **Chat & Notifications:**
+   - Real-time direct and group chats with typing indicators and read receipts.
+   - Friend system with nickname search, friend requests, and movie/series recommendations.
+   - System notifications for today's media releases and admin notices.
+   - Role-based permissions, online/invisible status, and user blocking.
+
+![Chat](/public/readme/chat.png)
+
 ---
 
 ### Color coding:
