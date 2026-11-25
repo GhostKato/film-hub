@@ -56,17 +56,24 @@ export const sanitizeForDb = (item: unknown): FirebaseItemType => {
 }
 
 const normalizeDate = (date: Date) => {
-  date.setHours(0, 0, 0, 0)
-  return date
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+
+const parseLocalDate = (dateStr: string): Date | null => {
+  const parts = dateStr.split('-').map(Number)
+  if (parts.length !== 3 || parts.some(isNaN)) return null
+  const [year, month, day] = parts as [number, number, number]
+  return new Date(year, month - 1, day)
 }
 
 const calculateReleaseHiddenOnCreate = (dateStr?: string): boolean => {
   if (!dateStr) return false
 
   const today = normalizeDate(new Date())
-  const releaseDate = normalizeDate(new Date(dateStr))
+  const releaseDate = parseLocalDate(dateStr)
+  if (!releaseDate) return false
 
-  return releaseDate < today
+  return releaseDate <= today
 }
 
 const calculateRelease = (item: FirebaseItemType): boolean => {
@@ -77,11 +84,11 @@ const calculateRelease = (item: FirebaseItemType): boolean => {
   if (!dateStr) return false
 
   const today = normalizeDate(new Date())
-  const releaseDate = normalizeDate(new Date(dateStr))
+  const releaseDate = parseLocalDate(dateStr)
+  if (!releaseDate) return false
 
-  return today.getTime() === releaseDate.getTime()
+  return today.getTime() >= releaseDate.getTime()
 }
-
 export const useMediaStore = defineStore('media', () => {
   const media = ref<FirebaseItemType[]>(
     JSON.parse(localStorage.getItem('media') || '[]') as FirebaseItemType[],
@@ -128,6 +135,7 @@ export const useMediaStore = defineStore('media', () => {
     if (!uid) return false
     return isCurrentUserCinephile.value || uid === recommendedSourceUid.value
   })
+
   const save = async () => {
     if (authStore.user?.uid) {
       await saveMedia(authStore.user.uid, media.value.map(sanitizeForDb))
@@ -183,7 +191,6 @@ export const useMediaStore = defineStore('media', () => {
         )
         return
       }
-
       if (uid) await updateMediaItem(uid, sanitizeForDb(existing))
       else await save()
 
@@ -231,6 +238,7 @@ export const useMediaStore = defineStore('media', () => {
       ),
     )
   }
+
   const load = async () => {
     ensureCinephileSubscription()
     const uid = authStore.user?.uid
