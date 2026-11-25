@@ -1,4 +1,4 @@
-import type { UserPermissions, UserRole } from '@/types/chat'
+import type { UserPermissions, UserProfile, UserRole } from '@/types/chat'
 import { MAIN_ACCOUNT_ID } from '@/constants/env'
 
 export const ROLE_ICONS: Record<UserRole, string> = {
@@ -86,4 +86,30 @@ export const getDaysOnSite = (createdAt?: number): number => {
 
 export const getChatId = (uid1: string, uid2: string): string => {
   return [uid1, uid2].sort().join('_')
+}
+
+export const sortUsersOnlineAlpha = (
+  users: UserProfile[],
+  viewer?: UserProfile | null,
+  nowTs = Date.now(),
+): UserProfile[] => {
+  const isViewerOwner = viewer?.role === 'owner' || viewer?.uid === MAIN_ACCOUNT_ID
+
+  const isOnlineVisible = (u: UserProfile): boolean => {
+    if (!u.isOnline) return false
+    if (nowTs - (u.lastSeen || 0) >= 75000) return false
+    if (!u.hideOnline) return true
+    return isViewerOwner
+  }
+
+  return [...users].sort((a, b) => {
+    const aOnline = isOnlineVisible(a)
+    const bOnline = isOnlineVisible(b)
+
+    if (aOnline !== bOnline) {
+      return aOnline ? -1 : 1
+    }
+
+    return a.displayName.localeCompare(b.displayName, ['uk', 'ru', 'en'], { sensitivity: 'base' })
+  })
 }

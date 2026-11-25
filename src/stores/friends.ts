@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuthStore } from './auth'
+import { useChatStore } from './chat'
 import type { FriendshipItem, UserProfile } from '@/types/chat'
 import {
   acceptFriendRequest,
@@ -9,6 +10,7 @@ import {
   subscribeFriendships,
 } from '@/api/friends'
 import { searchUsersByNickname, subscribeToUser } from '@/api/users'
+import { sortUsersOnlineAlpha } from '@/utils/userHelpers'
 
 export const useFriendsStore = defineStore('friends', () => {
   const authStore = useAuthStore()
@@ -16,8 +18,10 @@ export const useFriendsStore = defineStore('friends', () => {
   const profilesMap = ref<Record<string, UserProfile>>({})
   const searchResults = ref<UserProfile[]>([])
   const isSearching = ref(false)
+  const presenceTick = ref(Date.now())
 
   let unsubFriendships: (() => void) | null = null
+  let presenceTimer: ReturnType<typeof setInterval> | null = null
   const profileUnsubs = new Map<string, () => void>()
 
   const ensureProfileSubscribed = (uid: string) => {
@@ -35,6 +39,10 @@ export const useFriendsStore = defineStore('friends', () => {
     const uid = authStore.user?.uid
     if (!uid) return
 
+    presenceTimer = setInterval(() => {
+      presenceTick.value = Date.now()
+    }, 15000)
+
     unsubFriendships = subscribeFriendships(uid, (items) => {
       friendships.value = items
       items.forEach((f) => {
@@ -49,6 +57,10 @@ export const useFriendsStore = defineStore('friends', () => {
       unsubFriendships()
       unsubFriendships = null
     }
+    if (presenceTimer) {
+      clearInterval(presenceTimer)
+      presenceTimer = null
+    }
     profileUnsubs.forEach((u) => u())
     profileUnsubs.clear()
     friendships.value = []
@@ -59,7 +71,9 @@ export const useFriendsStore = defineStore('friends', () => {
   const acceptedFriends = computed(() => {
     const uid = authStore.user?.uid
     if (!uid) return []
-    return friendships.value
+    const chatStore = useChatStore()
+
+    const list = friendships.value
       .filter((f) => f.status === 'accepted')
       .map((f) => {
         const friendUid = f.users.find((id) => id !== uid)!
@@ -70,7 +84,19 @@ export const useFriendsStore = defineStore('friends', () => {
         }
       })
       .filter((item) => item.user && !item.user.isDeleted && !item.user.blockedUsers?.includes(uid))
+
+    const sortedUsers = sortUsersOnlineAlpha(
+      list.map((item) => item.user!),
+      chatStore.currentUserProfile,
+      presenceTick.value,
+    )
+    const orderMap = new Map(sortedUsers.map((u, idx) => [u.uid, idx]))
+
+    return [...list].sort(
+      (a, b) => (orderMap.get(a.friendUid) ?? 0) - (orderMap.get(b.friendUid) ?? 0),
+    )
   })
+
   const incomingRequests = computed(() => {
     const uid = authStore.user?.uid
     if (!uid) return []

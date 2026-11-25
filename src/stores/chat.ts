@@ -44,7 +44,7 @@ import {
   saveFeaturedCinephileConfig,
   saveRecommended,
 } from '@/api/firebase'
-import { getChatId } from '@/utils/userHelpers'
+import { getChatId, sortUsersOnlineAlpha } from '@/utils/userHelpers'
 import { playBellSound } from '@/utils/playBellSound'
 
 export type MainChatTab = 'system' | 'chat'
@@ -57,6 +57,7 @@ export const useChatStore = defineStore('chat', () => {
 
   const currentUserProfile = ref<UserProfile | null>(null)
   const rawAllUsers = ref<UserProfile[]>([])
+  const presenceTick = ref(Date.now())
 
   const isOpen = ref(false)
   const isExpanded = ref(false)
@@ -75,17 +76,18 @@ export const useChatStore = defineStore('chat', () => {
   let unsubAllUsers: (() => void) | null = null
   let unsubCurrentUser: (() => void) | null = null
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null
+  let presenceTimer: ReturnType<typeof setInterval> | null = null
   let visibilityHandler: (() => void) | null = null
   let pageHideHandler: (() => void) | null = null
 
   const allUsers = computed(() => {
     const myUid = authStore.user?.uid
     if (!myUid) return []
-    return rawAllUsers.value.filter(
+    const filtered = rawAllUsers.value.filter(
       (u) => u.uid !== myUid && !u.isDeleted && !u.blockedUsers?.includes(myUid),
     )
+    return sortUsersOnlineAlpha(filtered, currentUserProfile.value, presenceTick.value)
   })
-
   const canSeeAllUsers = computed(() =>
     Boolean(currentUserProfile.value?.permissions?.canSeeAllUsers),
   )
@@ -128,6 +130,7 @@ export const useChatStore = defineStore('chat', () => {
     mediaStore.recommended = cleanFavorites
     mediaStore.recommendedSourceUid = sourceUid
   }
+
   const resetCinephileToOwner = async () => {
     if (!canManageCinephile.value || !currentUserProfile.value) return
     await assignFeaturedCinephile({
@@ -208,6 +211,10 @@ export const useChatStore = defineStore('chat', () => {
       }
     }, 30000)
 
+    presenceTimer = setInterval(() => {
+      presenceTick.value = Date.now()
+    }, 15000)
+
     visibilityHandler = () => {
       const uid = authStore.user?.uid
       if (!uid) return
@@ -223,7 +230,6 @@ export const useChatStore = defineStore('chat', () => {
 
     document.addEventListener('visibilitychange', visibilityHandler)
     window.addEventListener('pagehide', pageHideHandler)
-
     let firstChatsLoad = true
     unsubChats = subscribeUserChats(fbUser.uid, (rooms) => {
       if (!firstChatsLoad) {
@@ -250,6 +256,7 @@ export const useChatStore = defineStore('chat', () => {
       systemMessages.value = items
     })
   }
+
   const cleanup = () => {
     if (unsubChats) unsubChats()
     if (unsubMessages) unsubMessages()
@@ -257,6 +264,7 @@ export const useChatStore = defineStore('chat', () => {
     if (unsubAllUsers) unsubAllUsers()
     if (unsubCurrentUser) unsubCurrentUser()
     if (heartbeatTimer) clearInterval(heartbeatTimer)
+    if (presenceTimer) clearInterval(presenceTimer)
     if (visibilityHandler) {
       document.removeEventListener('visibilitychange', visibilityHandler)
       visibilityHandler = null
@@ -272,6 +280,7 @@ export const useChatStore = defineStore('chat', () => {
     unsubAllUsers = null
     unsubCurrentUser = null
     heartbeatTimer = null
+    presenceTimer = null
 
     isOpen.value = false
     isExpanded.value = false
@@ -375,7 +384,6 @@ export const useChatStore = defineStore('chat', () => {
     })
     await subscribeToRoom(chatId, null)
   }
-
   const startChatWithSelected = async (selectedUids: string[], groupTitle?: string) => {
     const uid = authStore.user?.uid
     if (!uid || !currentUserProfile.value) return
@@ -396,6 +404,7 @@ export const useChatStore = defineStore('chat', () => {
     })
     await subscribeToRoom(chatId, null)
   }
+
   const sendMessage = async (text: string, mediaCard?: SharedMediaCard) => {
     if (!currentUserProfile.value || !activeChatId.value) return
     if (!text.trim() && !mediaCard) return
